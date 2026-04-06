@@ -9,9 +9,10 @@ import {
 } from 'lucide-react';
 
 const CaseAnalysis: React.FC = () => {
-    const { cases } = useApp();
+    const { cases, selectedCase, assessEntity } = useApp();
     const [showSTRViewer, setShowSTRViewer] = useState(false);
-    const activeCase = cases.find(c => c.status === 'ANALYSIS') || cases[1];
+    const activeCase = selectedCase || cases.find(c => c.status === 'ANALYSIS') || cases.find(c => c.status === 'TRIAGE') || cases[1];
+    const isEntity = activeCase.id.startsWith('ENT-');
 
     return (
         <div className="space-y-6">
@@ -20,10 +21,10 @@ const CaseAnalysis: React.FC = () => {
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-3 text-blue-700">
                         <TrendingUp className="w-6 h-6" />
-                        <h2 className="text-2xl font-bold tracking-tight text-gray-900">Intelligence Analysis Workbench</h2>
+                        <h2 className="text-2xl font-bold tracking-tight text-gray-900">{isEntity ? 'Entity Assessment Workbench' : 'Intelligence Analysis Workbench'}</h2>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
-                         <span className="px-2.5 py-1 bg-gray-100 border border-gray-200 text-gray-600 font-bold rounded uppercase tracking-wider">Active Case: {activeCase.id}</span>
+                         <span className="px-2.5 py-1 bg-gray-100 border border-gray-200 text-gray-600 font-bold rounded uppercase tracking-wider">{isEntity ? 'Pending Entity' : 'Active Case'}: {activeCase.id}</span>
                          <span className="text-gray-400 font-bold">/</span>
                          <span className="font-semibold text-gray-900">{activeCase.title}</span>
                     </div>
@@ -36,10 +37,12 @@ const CaseAnalysis: React.FC = () => {
                         <FileText className="w-4 h-4 text-gray-400" />
                         View Source STR
                     </button>
-                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-100">
-                        <Send className="w-4 h-4" />
-                        Request Dissemination
-                    </button>
+                    {!isEntity && (
+                      <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-100">
+                          <Send className="w-4 h-4" />
+                          Request Dissemination
+                      </button>
+                    )}
                 </div>
             </div>
 
@@ -149,10 +152,27 @@ const CaseAnalysis: React.FC = () => {
                         <p className="text-sm text-blue-800 bg-white p-4 rounded-lg border border-blue-100 shadow-sm leading-relaxed mb-5">
                             "Subject Profile indicates a moderate risk of domestic tax facilitation. Requesting immediate dissemination to MAS (AML Supervision) for a regulatory probe into the subject's related corporate entities."
                         </p>
-                        <button className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2">
-                            <ExternalLink className="w-4 h-4" />
-                            Escalate for Approval
-                        </button>
+                        {isEntity ? (
+                            <div className="flex flex-col gap-3">
+                                <button onClick={() => assessEntity(activeCase.id, 'ESCALATE')} className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2">
+                                    <ExternalLink className="w-4 h-4" />
+                                    Escalate (Create Case)
+                                </button>
+                                <div className="grid grid-cols-2 gap-3">
+                                   <button onClick={() => assessEntity(activeCase.id, 'HIBERNATE')} className="w-full py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-bold rounded-lg transition-all shadow-sm text-sm">
+                                      Hibernate
+                                   </button>
+                                   <button onClick={() => assessEntity(activeCase.id, 'DISMISS')} className="w-full py-2 bg-white hover:bg-red-50 border border-red-200 text-red-600 font-bold rounded-lg transition-all shadow-sm text-sm">
+                                      Dismiss
+                                   </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <button className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2">
+                                <ExternalLink className="w-4 h-4" />
+                                Escalate for Approval
+                            </button>
+                        )}
                      </div>
                 </div>
             </div>

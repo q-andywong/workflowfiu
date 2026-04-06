@@ -3,9 +3,9 @@ import { useApp } from '../contexts/AppContext';
 import { Inbox, Filter, ShieldAlert, ArrowRight, UserPlus, FileSearch } from 'lucide-react';
 
 const TriageQueue: React.FC = () => {
-    const { cases, stats, setView } = useApp();
-    // Triage includes non-priority cases that need initial analysis
-    const triageCases = cases.filter(c => c.status === 'TRIAGE' || c.status === 'ANALYSIS');
+    const { cases, stats, setView, setSelectedCase } = useApp();
+    // Triage strictly includes only pre-escalation entities
+    const triageEntities = cases.filter(c => c.status === 'TRIAGE');
 
     return (
         <div className="space-y-6">
@@ -30,7 +30,7 @@ const TriageQueue: React.FC = () => {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <div className="xl:col-span-2 space-y-4">
                     <div className="flex items-center justify-between px-4 pb-2 border-b border-gray-200">
-                        <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">Showing {triageCases.length} pending items</div>
+                        <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">Showing {triageEntities.length} pending items</div>
                         <div className="hidden sm:flex gap-8 text-xs font-bold text-gray-400 uppercase tracking-wider">
                             <div className="w-40">Intelligence Subject</div>
                             <div className="w-24 text-center">Risk Score</div>
@@ -38,7 +38,7 @@ const TriageQueue: React.FC = () => {
                         </div>
                     </div>
 
-                    {triageCases.map(c => (
+                    {triageEntities.map(c => (
                         <div key={c.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 group flex items-center justify-between hover:bg-gray-50 transition-colors border-l-4 border-l-blue-500 cursor-pointer">
                             <div className="flex items-center gap-4 sm:w-64">
                                 <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
@@ -60,7 +60,7 @@ const TriageQueue: React.FC = () => {
                                     <UserPlus className="w-4 h-4" />
                                 </button>
                                 <button 
-                                  onClick={() => setView('ANALYSIS')}
+                                  onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
                                   className="p-2 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white rounded-lg transition-colors border border-blue-100 shadow-sm"
                                 >
                                     <ArrowRight className="w-4 h-4" />
@@ -69,7 +69,7 @@ const TriageQueue: React.FC = () => {
                         </div>
                     ))}
                     
-                    {triageCases.length === 0 && (
+                    {triageEntities.length === 0 && (
                       <div className="p-12 bg-white rounded-xl border border-dashed border-gray-300 text-center space-y-4">
                           <FileSearch className="w-10 h-10 mx-auto text-gray-400" />
                           <div className="text-sm font-bold text-gray-600">The ingestion queue is currently empty.</div>

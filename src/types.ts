@@ -1,6 +1,6 @@
 export type RiskLevel = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
 
-export type CaseStatus = 'TRIAGE' | 'ANALYSIS' | 'DISSEMINATED' | 'CLOSED' | 'PRIORITY';
+export type CaseStatus = 'TRIAGE' | 'ANALYSIS' | 'DISSEMINATED' | 'CLOSED' | 'PRIORITY' | 'HIBERNATED' | 'DISMISSED';
 
 export type DisseminationAgency = 'CAD' | 'MAS' | 'ICA' | 'AGC' | 'FOREIGN_FIU';
 

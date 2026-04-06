@@ -10,6 +10,7 @@ interface AppContextType {
   setSelectedCase: (c: IntelligenceCase | null) => void;
   updateCaseStatus: (id: string, status: IntelligenceCase['status']) => void;
   addFeedback: (caseId: string, disseminationId: string, feedback: any) => void;
+  assessEntity: (id: string, action: 'ESCALATE' | 'HIBERNATE' | 'DISMISS') => void;
   view: 'DASHBOARD' | 'TRIAGE' | 'PRIORITY' | 'ANALYSIS' | 'DISSEMINATION';
   setView: (v: 'DASHBOARD' | 'TRIAGE' | 'PRIORITY' | 'ANALYSIS' | 'DISSEMINATION') => void;
 }
@@ -52,6 +53,32 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setCases(prev => prev.map(c => c.id === id ? { ...c, status } : c));
   };
 
+  const assessEntity = (id: string, action: 'ESCALATE' | 'HIBERNATE' | 'DISMISS') => {
+    let escalatedId = id;
+    setCases(prev => prev.map(c => {
+      if (c.id === id) {
+        if (action === 'ESCALATE') {
+          escalatedId = id.replace('ENT-', 'CASE-');
+          return { ...c, id: escalatedId, status: 'ANALYSIS' };
+        } else if (action === 'HIBERNATE') {
+          return { ...c, status: 'HIBERNATED' };
+        } else if (action === 'DISMISS') {
+          return { ...c, status: 'DISMISSED' };
+        }
+      }
+      return c;
+    }));
+    
+    if (action !== 'ESCALATE') {
+      setView('TRIAGE');
+      setSelectedCase(null);
+    } else {
+      // Find the mutated case and highlight it
+      const matched = cases.find(c => c.id === id);
+      if (matched) setSelectedCase({...matched, id: escalatedId, status: 'ANALYSIS'});
+    }
+  };
+
   const addFeedback = (caseId: string, disseminationId: string, feedback: any) => {
     setCases(prev => prev.map(c => {
       if (c.id === caseId) {
@@ -74,6 +101,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setSelectedCase, 
       updateCaseStatus, 
       addFeedback,
+      assessEntity,
       view,
       setView
     }}>
