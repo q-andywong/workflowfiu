@@ -12,7 +12,7 @@ const CaseAnalysis: React.FC = () => {
     const { cases, selectedCase, assessEntity } = useApp();
     const [showSTRViewer, setShowSTRViewer] = useState(false);
     const activeCase = selectedCase || cases.find(c => c.status === 'ANALYSIS') || cases.find(c => c.status === 'TRIAGE') || cases[1];
-    const isEntity = activeCase.id.startsWith('ENT-');
+    const isEntity = activeCase.id.startsWith('TASK-');
 
     return (
         <div className="space-y-6">
@@ -21,10 +21,10 @@ const CaseAnalysis: React.FC = () => {
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-3 text-blue-700">
                         <TrendingUp className="w-6 h-6" />
-                        <h2 className="text-2xl font-bold tracking-tight text-gray-900">{isEntity ? 'Entity Assessment Workbench' : 'Intelligence Analysis Workbench'}</h2>
+                        <h2 className="text-2xl font-bold tracking-tight text-gray-900">{isEntity ? 'Task Assessment Workbench' : 'Intelligence Analysis Workbench'}</h2>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
-                         <span className="px-2.5 py-1 bg-gray-100 border border-gray-200 text-gray-600 font-bold rounded uppercase tracking-wider">{isEntity ? 'Pending Entity' : 'Active Case'}: {activeCase.id}</span>
+                         <span className="px-2.5 py-1 bg-gray-100 border border-gray-200 text-gray-600 font-bold rounded uppercase tracking-wider">{isEntity ? 'Pending Task' : 'Active Case'}: {activeCase.id}</span>
                          <span className="text-gray-400 font-bold">/</span>
                          <span className="font-semibold text-gray-900">{activeCase.title}</span>
                     </div>

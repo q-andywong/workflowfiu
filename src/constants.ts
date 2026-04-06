@@ -131,7 +131,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
     createdAt: '2026-03-25T14:30:00Z'
   },
   {
-    id: 'ENT-2026-003',
+    id: 'TASK-2026-003',
     title: 'Syndicate Alpha - Cybercrime Extortion',
     subject: LI_WEI_PROFILE,
     reports: [],
@@ -164,7 +164,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
     createdAt: '2026-03-28T16:20:00Z'
   },
   {
-    id: 'ENT-2026-006',
+    id: 'TASK-2026-006',
     title: 'Project Shadow - Maritime Sanctions Evasion',
     subject: IGOR_DIMITROV_PROFILE,
     reports: [],

@@ -58,7 +58,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setCases(prev => prev.map(c => {
       if (c.id === id) {
         if (action === 'ESCALATE') {
-          escalatedId = id.replace('ENT-', 'CASE-');
+          escalatedId = id.replace('TASK-', 'CASE-');
           return { ...c, id: escalatedId, status: 'ANALYSIS' };
         } else if (action === 'HIBERNATE') {
           return { ...c, status: 'HIBERNATED' };
