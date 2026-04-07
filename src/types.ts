@@ -12,6 +12,11 @@ export interface RiskFactor {
   factor: string;
   score: number | 'N/A';
   notes?: string;
+  mitigation?: {
+    category: string;
+    notes: string;
+    savedAt: string;
+  };
 }
 
 export interface Scorecard {
@@ -25,6 +30,17 @@ export interface PersonProfile {
   name: string;
   nationality: string;
   occupation?: string;
+  type?: 'INDIVIDUAL' | 'COMPANY';
+  status?: 'Open' | 'Closed' | 'Under Review';
+  summary?: string;
+  actionRequired?: string;
+  ubos?: string[];
+  shareholders?: string[];
+  directors?: string[];
+  companiesAssociated?: Array<{ name: string; role: string }>;
+  involvedProjects?: Array<{ name: string; value: string; location: string; status: string }>;
+  previousCases?: Array<{ id: string; status: string; score: number }>;
+  linkedSTRs?: Array<{ id: string; date: string; amount: string; type: string }>;
   riskProfile: Scorecard;
 }
 

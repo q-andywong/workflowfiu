@@ -9,6 +9,7 @@ interface AppContextType {
   selectedCase: IntelligenceCase | null;
   setSelectedCase: (c: IntelligenceCase | null) => void;
   updateCaseStatus: (id: string, status: IntelligenceCase['status']) => void;
+  saveMitigation: (entityId: string, factorId: string, category: string, notes: string) => void;
   addFeedback: (caseId: string, disseminationId: string, feedback: any) => void;
   assessEntity: (id: string, action: 'ESCALATE' | 'HIBERNATE' | 'DISMISS') => void;
   view: 'DASHBOARD' | 'TRIAGE' | 'PRIORITY' | 'ANALYSIS' | 'DISSEMINATION';
@@ -79,6 +80,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const saveMitigation = (entityId: string, factorId: string, category: string, notes: string) => {
+    setCases(prev => prev.map(c => {
+      // Look inside c.subject.riskProfile.factors
+      if (c.id === entityId || c.subject.id === entityId) {
+        return {
+          ...c,
+          subject: {
+            ...c.subject,
+            riskProfile: {
+              ...c.subject.riskProfile,
+              factors: c.subject.riskProfile.factors.map(f => {
+                if (f.id === factorId) {
+                  return { ...f, mitigation: { category, notes, savedAt: new Date().toISOString() } };
+                }
+                return f;
+              })
+            }
+          }
+        };
+      }
+      return c;
+    }));
+  };
+
   const addFeedback = (caseId: string, disseminationId: string, feedback: any) => {
     setCases(prev => prev.map(c => {
       if (c.id === caseId) {
@@ -100,6 +125,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       selectedCase, 
       setSelectedCase, 
       updateCaseStatus, 
+      saveMitigation,
       addFeedback,
       assessEntity,
       view,
