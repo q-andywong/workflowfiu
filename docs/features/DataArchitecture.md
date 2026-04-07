@@ -18,6 +18,12 @@ The system maps two discrete variations of generic Entities inside tasks:
 
 All tasks (`TASK-xxx`) natively host historic traversal arrays (`previousCases` & `linkedSTRs`) that render interactively within the Task Assessment Workbench grid, allowing analysts to immediately reference related case materials against the profile logic.
 
+### Global Intelligence Registry
+A centralized array, `MOCK_STRS`, serves as the system's "Single Source of Truth" for all ingested financial reports. 
+- **Multi-Type Support**: Handles `STR`, `CTR`, and `CMR` reports within the same registry.
+- **Entity Linking**: Reports are dynamically cross-referenced against `PersonProfile` IDs, enabling the "STR Directory" to identify report subjects across the entire system.
+- **Triage Drivers**: Tasks like `TASK-2026-006` (Project Shadow) are now explicitly linked to high-value CTRs (e.g., $120k gem purchase) rather than generic alerts.
+
 ### Context Mitigation Engine
 `AppContext.tsx` natively tracks deep data manipulations across structured tasks without saving them entirely back to a database. Utilizing `saveMitigation`, analysts can drop targeted categorical notes mapped against a specific `factorId` located deep inside the `RiskScorecard` object model.
 

@@ -33,58 +33,78 @@ const Header: React.FC = () => {
           </div>
         </div>
         <div className="flex border-t border-gray-200 overflow-x-auto no-scrollbar">
-           {user?.role !== 'INVESTIGATOR' && (
-             <button
-               onClick={() => setView('DASHBOARD')}
-               className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
-                 view === 'DASHBOARD'
-                   ? 'border-b-2 border-amber-400 text-gray-900'
-                   : 'text-gray-500 hover:text-gray-900'
-               }`}
-             >
-               Dashboard
-             </button>
-           )}
-           <button
-             onClick={() => setView('TRIAGE')}
-             className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
-               view === 'TRIAGE'
-                 ? 'border-b-2 border-amber-400 text-gray-900'
-                 : 'text-gray-500 hover:text-gray-900'
-             }`}
-           >
-             Triage Queue
-           </button>
-           <button
-             onClick={() => setView('PRIORITY')}
-             className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
-               view === 'PRIORITY'
-                 ? 'border-b-2 border-amber-400 text-gray-900'
-                 : 'text-gray-500 hover:text-gray-900'
-             }`}
-           >
-             Priority Alerts
-           </button>
-           <button
-             onClick={() => setView('ANALYSIS')}
-             className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
-               view === 'ANALYSIS'
-                 ? 'border-b-2 border-amber-400 text-gray-900'
-                 : 'text-gray-500 hover:text-gray-900'
-             }`}
-           >
-             Analysis Workspace
-           </button>
-           <button
-             onClick={() => setView('DISSEMINATION')}
-             className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
-               view === 'DISSEMINATION'
-                 ? 'border-b-2 border-amber-400 text-gray-900'
-                 : 'text-gray-500 hover:text-gray-900'
-             }`}
-           >
-             Dissemination Tracker
-           </button>
+          <button
+            onClick={() => setView('DASHBOARD')}
+            className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
+              view === 'DASHBOARD'
+                ? 'border-b-2 border-amber-400 text-gray-900'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            Dashboard
+          </button>
+          {user?.role !== 'INVESTIGATOR' && (
+            <button
+              onClick={() => setView('APPROVALS')}
+              className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
+                view === 'APPROVALS'
+                  ? 'border-b-2 border-amber-400 text-gray-900'
+                  : 'text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              Approvals Queue
+            </button>
+          )}
+          <button
+            onClick={() => setView('TRIAGE')}
+            className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
+              view === 'TRIAGE'
+                ? 'border-b-2 border-amber-400 text-gray-900'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            Triage Queue
+          </button>
+          <button
+            onClick={() => setView('HIBERNATED')}
+            className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
+              view === 'HIBERNATED'
+                ? 'border-b-2 border-amber-400 text-gray-900'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            Hibernated List
+          </button>
+          <button
+            onClick={() => setView('DIRECTORY')}
+            className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
+              view === 'DIRECTORY'
+                ? 'border-b-2 border-amber-400 text-gray-900'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            Case Directory
+          </button>
+          <button
+            onClick={() => setView('STR_DIRECTORY')}
+            className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
+              view === 'STR_DIRECTORY'
+                ? 'border-b-2 border-amber-400 text-gray-900'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            STR Directory
+          </button>
+          <button
+            onClick={() => setView('DISSEMINATION')}
+            className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
+              view === 'DISSEMINATION'
+                ? 'border-b-2 border-amber-400 text-gray-900'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            Dissemination Tracker
+          </button>
         </div>
       </div>
     </header>

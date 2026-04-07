@@ -25,22 +25,21 @@ const MitigationScorecard: React.FC<MitigationProps> = ({ entityId, scorecard })
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <div className="p-5 border-b border-gray-200">
-        <h3 className="font-bold text-gray-900 tracking-tight">Risk Scorecard & Mitigation Plan</h3>
+      <div className="p-5 border-b border-gray-200 flex items-center justify-between bg-white">
+        <h3 className="font-bold text-gray-900 tracking-tight">Risk Scorecard & Investigation Findings</h3>
+        <div className="flex items-center gap-6">
+           <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Strategic Score</span>
+              <span className="text-2xl font-black text-red-600 tracking-tighter">{scorecard.totalScore}</span>
+           </div>
+           <div className="w-px h-6 bg-gray-200"></div>
+           <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Risk Factors</span>
+              <span className="text-xl font-black text-gray-900 tracking-tighter">{scorecard.factors.length}</span>
+           </div>
+        </div>
       </div>
       
-      <div className="p-4 bg-gray-50/50 border-b border-gray-200 flex items-center gap-6 text-sm">
-         <div className="flex items-center gap-2">
-            <span className="font-black text-red-600 text-xl">{scorecard.totalScore}</span>
-            <span className="text-gray-500 font-medium">Score</span>
-         </div>
-         <div className="w-px h-6 bg-gray-300"></div>
-         <div className="flex items-center gap-2">
-            <span className="font-bold text-gray-900">{scorecard.factors.length}</span>
-            <span className="text-gray-500 font-medium">Scorecard Items</span>
-         </div>
-      </div>
-
       <div className="grid grid-cols-12 px-6 py-3 border-b border-gray-200 bg-white text-[10px] font-bold text-gray-500 uppercase tracking-widest">
         <div className="col-span-1 text-center"></div>
         <div className="col-span-2 text-center">Score</div>
@@ -81,7 +80,7 @@ const MitigationScorecard: React.FC<MitigationProps> = ({ entityId, scorecard })
                     </div>
 
                     <div className="ml-12 space-y-4 pt-4 border-t border-gray-200">
-                       <h5 className="text-[11px] font-bold text-gray-800 uppercase tracking-widest">Mitigation Action</h5>
+                       <h5 className="text-[11px] font-bold text-gray-800 uppercase tracking-widest">Action</h5>
                        
                        <div className="space-y-2">
                          <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Category</label>
@@ -91,10 +90,12 @@ const MitigationScorecard: React.FC<MitigationProps> = ({ entityId, scorecard })
                            className="w-full p-2.5 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                          >
                            <option value="">Select a category...</option>
-                           <option value="IDD_CHECK">IDD Checked & Verified</option>
-                           <option value="SOURCE_OF_WEALTH">Source of Wealth Validated</option>
-                           <option value="REGULATORY_MATCH">Regulatory Exemptions Apply</option>
-                           <option value="OPEN">Remaining Open / Unmitigated</option>
+                           <option value="RFI_SENT">RFI sent to bank for more information</option>
+                           <option value="ICR_COMPLETED">Intelligence Cross-Reference (ICR) Completed</option>
+                           <option value="STR_CTR_SEARCH">Strategic STR/CTR Database Search</option>
+                           <option value="EXTERNAL_VAL">External Database Validation (WorldCheck/Gisec)</option>
+                           <option value="REG_DISCLOSURE">Regulatory Disclosure / SOP Triggered</option>
+                           <option value="OPEN_PRIORITY">Remaining Open / Priority Analysis</option>
                          </select>
                        </div>
 

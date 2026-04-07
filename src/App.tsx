@@ -5,8 +5,12 @@ import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
 import TriageQueue from './pages/TriageQueue';
 import PriorityWorkbench from './pages/PriorityWorkbench';
+import HibernatedList from './pages/HibernatedList';
+import STRDirectory from './pages/STRDirectory';
 import CaseAnalysis from './pages/CaseAnalysis';
 import Dissemination from './pages/Dissemination';
+import ApprovalsQueue from './pages/ApprovalsQueue';
+import CaseDirectory from './pages/CaseDirectory';
 import Login from './pages/Login';
 import './styles/index.css';
 
@@ -17,9 +21,11 @@ const AppContent: React.FC = () => {
     switch (view) {
       case 'DASHBOARD': return <Dashboard />;
       case 'TRIAGE': return <TriageQueue />;
-      case 'PRIORITY': return <PriorityWorkbench />;
-      case 'ANALYSIS': return <CaseAnalysis />;
+      case 'HIBERNATED': return <HibernatedList />;
       case 'DISSEMINATION': return <Dissemination />;
+      case 'APPROVALS': return <ApprovalsQueue />;
+      case 'DIRECTORY': return <CaseDirectory />;
+      case 'STR_DIRECTORY': return <STRDirectory />;
       default: return <Dashboard />;
     }
   };
@@ -27,9 +33,12 @@ const AppContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
       <Header />
-      <main className="container mx-auto p-4 sm:p-6 lg:p-8 animate-fade-in">
+      <main className="container mx-auto p-4 sm:p-6 lg:p-8">
         {renderView()}
       </main>
+      
+      {/* Global Analysis Modal Overlay */}
+      {view === 'ANALYSIS' && <CaseAnalysis />}
     </div>
   );
 };
@@ -37,13 +46,9 @@ const AppContent: React.FC = () => {
 const RootRouter: React.FC = () => {
   const { user } = useAuth();
   
-  if (!user) {
-    return <Login />;
-  }
-
   return (
     <AppProvider>
-      <AppContent />
+      {!user ? <Login /> : <AppContent />}
     </AppProvider>
   );
 };

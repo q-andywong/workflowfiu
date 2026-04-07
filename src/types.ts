@@ -1,6 +1,6 @@
 export type RiskLevel = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
 
-export type CaseStatus = 'TRIAGE' | 'ANALYSIS' | 'DISSEMINATED' | 'CLOSED' | 'PRIORITY' | 'HIBERNATED' | 'DISMISSED';
+export type CaseStatus = 'TRIAGE' | 'PENDING_APPROVAL' | 'ANALYSIS' | 'DISSEMINATED' | 'CLOSED' | 'PRIORITY' | 'HIBERNATED' | 'DISMISSED';
 
 export type DisseminationAgency = 'CAD' | 'MAS' | 'ICA' | 'AGC' | 'FOREIGN_FIU';
 
@@ -42,6 +42,23 @@ export interface PersonProfile {
   previousCases?: Array<{ id: string; status: string; score: number }>;
   linkedSTRs?: Array<{ id: string; date: string; amount: string; type: string }>;
   riskProfile: Scorecard;
+  crimeTypologies?: string[];
+  // New AML/FIU Particulars
+  dob?: string;
+  idNumber?: string;
+  gender?: 'Male' | 'Female' | 'Unknown';
+  countryOfBirth?: string;
+  taxResidency?: string;
+  aliases?: string[];
+  fullAddress?: string;
+  screeningStatus?: {
+    isPEP: boolean;
+    isPEPRelative: boolean;
+    adverseNewsForeign: boolean;
+    adverseNewsLocal: boolean;
+    sanctionsMatch: boolean;
+  };
+  investigationFindings?: string;
 }
 
 export interface SuspiciousTransactionReport {
@@ -53,6 +70,9 @@ export interface SuspiciousTransactionReport {
   type: 'STR' | 'CTR' | 'CMR';
   riskScore: number;
   status: 'PENDING' | 'TRIAGED' | 'LINKED';
+  crimeTypes?: string[];
+  suspicionCategories?: string[];
+  narrative?: string;
 }
 
 export interface IntelligenceCase {
@@ -63,8 +83,10 @@ export interface IntelligenceCase {
   status: CaseStatus;
   analyst?: string;
   priority: boolean;
+  rejectionReason?: string;
   disseminations: DisseminationRecord[];
   createdAt: string;
+  closedAt?: string;
 }
 
 export interface DisseminationRecord {
@@ -87,5 +109,10 @@ export interface DashboardStats {
   activeAnalyses: number;
   disseminatedTotal: number;
   priorityAlerts: number;
-  successRate: number; // For feedback loop visualization
+  successRate: number;
+  // New Investigator Metrics
+  triagesInQueue: number;
+  pendingApproval: number;
+  casesClosed: number;
+  avgResolutionTime: number; // in days
 }

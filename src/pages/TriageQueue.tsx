@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../contexts/AppContext';
-import { Inbox, Filter, ShieldAlert, ArrowRight, UserPlus, FileSearch } from 'lucide-react';
+import { Inbox, Filter, ShieldAlert, ArrowRight, UserPlus, FileSearch, AlertTriangle } from 'lucide-react';
 
 const TriageQueue: React.FC = () => {
     const { cases, stats, setView, setSelectedCase } = useApp();
@@ -39,32 +39,39 @@ const TriageQueue: React.FC = () => {
                     </div>
 
                     {triageEntities.map(c => (
-                        <div key={c.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 group flex items-center justify-between hover:bg-gray-50 transition-colors border-l-4 border-l-blue-500 cursor-pointer">
-                            <div className="flex items-center gap-4 sm:w-64">
-                                <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
-                                    <Inbox className="w-5 h-5 text-blue-600" />
+                        <div key={c.id} className="flex flex-col gap-2">
+                            {c.rejectionReason && (
+                                <div className="px-4 py-2 bg-red-50 border border-red-200 text-red-700 text-xs font-bold rounded-lg flex items-center gap-2">
+                                    <AlertTriangle className="w-4 h-4" /> REJECTED: {c.rejectionReason}
                                 </div>
-                                <div className="overflow-hidden">
-                                    <div className="text-sm font-bold text-gray-900 truncate">{c.subject.name}</div>
-                                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest">{c.id}</div>
+                            )}
+                            <div className={`bg-white p-4 rounded-xl shadow-sm border border-gray-200 group flex items-center justify-between hover:bg-gray-50 transition-colors border-l-4 cursor-pointer ${c.rejectionReason ? 'border-l-red-500' : 'border-l-blue-500'}`}>
+                                <div className="flex items-center gap-4 sm:w-64">
+                                    <div className={`w-10 h-10 rounded-lg border flex items-center justify-center shrink-0 ${c.rejectionReason ? 'bg-red-50 border-red-100 text-red-600' : 'bg-blue-50 border-blue-100 text-blue-600'}`}>
+                                        <Inbox className="w-5 h-5" />
+                                    </div>
+                                    <div className="overflow-hidden">
+                                        <div className="text-sm font-bold text-gray-900 truncate">{c.subject.name}</div>
+                                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest">{c.id}</div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="hidden sm:flex flex-col items-center w-24">
-                                <div className="text-lg font-black text-blue-600">{c.subject.riskProfile.totalScore}</div>
-                                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Confidence</div>
-                            </div>
+                                <div className="hidden sm:flex flex-col items-center w-24">
+                                    <div className="text-lg font-black text-blue-600">{c.subject.riskProfile.totalScore}</div>
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Confidence</div>
+                                </div>
 
-                            <div className="flex items-center justify-end gap-2 sm:w-28">
-                                <button className="p-2 border border-gray-200 hover:bg-gray-100 text-gray-500 hover:text-gray-900 rounded-lg transition-colors">
-                                    <UserPlus className="w-4 h-4" />
-                                </button>
-                                <button 
-                                  onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
-                                  className="p-2 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white rounded-lg transition-colors border border-blue-100 shadow-sm"
-                                >
-                                    <ArrowRight className="w-4 h-4" />
-                                </button>
+                                <div className="flex items-center justify-end gap-2 sm:w-28">
+                                    <button className="p-2 border border-gray-200 hover:bg-gray-100 text-gray-500 hover:text-gray-900 rounded-lg transition-colors">
+                                        <UserPlus className="w-4 h-4" />
+                                    </button>
+                                    <button 
+                                      onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
+                                      className="p-2 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white rounded-lg transition-colors border border-blue-100 shadow-sm"
+                                    >
+                                        <ArrowRight className="w-4 h-4" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     ))}
