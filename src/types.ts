@@ -1,6 +1,6 @@
 export type RiskLevel = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
 
-export type CaseStatus = 'TRIAGE' | 'PENDING_APPROVAL' | 'ANALYSIS' | 'DISSEMINATED' | 'CLOSED' | 'PRIORITY' | 'HIBERNATED' | 'DISMISSED';
+export type CaseStatus = 'TRIAGE' | 'PENDING_APPROVAL' | 'ANALYSIS' | 'DISSEMINATED' | 'CLOSED' | 'PRIORITY' | 'HIBERNATED' | 'DISMISSED' | 'PENDING_DELETION' | 'STAGING';
 
 export type DisseminationAgency = 'CAD' | 'MAS' | 'ICA' | 'AGC' | 'FOREIGN_FIU';
 
@@ -85,8 +85,36 @@ export interface IntelligenceCase {
   priority: boolean;
   rejectionReason?: string;
   disseminations: DisseminationRecord[];
+  attachments: Attachment[];
+  pendingModification?: CaseModificationRequest;
   createdAt: string;
   closedAt?: string;
+}
+
+export interface Attachment {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  url: string;
+  uploadedBy: string;
+  uploadedAt: string;
+}
+
+export interface CaseModificationRequest {
+  id: string;
+  requestedBy: string;
+  requestedAt: string;
+  type: 'STATUS_CHANGE' | 'DATA_CORRECTION' | 'DELETION';
+  details: {
+    field?: string;
+    oldValue?: any;
+    newValue?: any;
+    reason: string;
+    originalOwner?: string;
+    targetCase?: string;
+  };
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
 export interface DisseminationRecord {

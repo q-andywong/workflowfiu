@@ -15,13 +15,15 @@ import Login from './pages/Login';
 import './styles/index.css';
 
 const AppContent: React.FC = () => {
-  const { view } = useApp();
+  const { view, previousView } = useApp();
 
   const renderView = () => {
-    switch (view) {
+    const activeTab = view === 'ANALYSIS' ? previousView : view;
+    switch (activeTab) {
       case 'DASHBOARD': return <Dashboard />;
       case 'TRIAGE': return <TriageQueue />;
       case 'HIBERNATED': return <HibernatedList />;
+      case 'PRIORITY': return <PriorityWorkbench />;
       case 'DISSEMINATION': return <Dissemination />;
       case 'APPROVALS': return <ApprovalsQueue />;
       case 'DIRECTORY': return <CaseDirectory />;

@@ -70,6 +70,7 @@ const InvestigatorDashboard: React.FC = () => {
           value={stats.pendingApproval} 
           icon={Hourglass} 
           colorClass="bg-amber-50 text-amber-600" 
+          onClick={() => setView('DIRECTORY')}
         />
         <StatCard 
           title="Active Cases" 

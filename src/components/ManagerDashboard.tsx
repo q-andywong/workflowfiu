@@ -63,7 +63,7 @@ const ManagerDashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Incoming STRs" value={stats.totalIncoming} icon={TrendingUp} trend="up" trendValue={12.5} colorClass="bg-blue-50 text-blue-600" />
-        <StatCard title="Active Analyses" value={stats.activeAnalyses} icon={Users} trend="up" trendValue={4.2} colorClass="bg-orange-50 text-orange-600" />
+        <StatCard title="Active Analyses" value={stats.activeAnalyses} icon={Users} trend="up" trendValue={4.2} colorClass="bg-orange-50 text-orange-600" onClick={() => setView('DIRECTORY')} />
         <StatCard title="Disseminated" value={stats.disseminatedTotal} icon={Send} trend="up" trendValue={8.1} colorClass="bg-teal-50 text-teal-700" />
         <StatCard title="Global Success" value={`${stats.successRate}%`} icon={CheckCircle2} trend="up" trendValue={2.4} colorClass="bg-gray-100 text-gray-600" />
       </div>

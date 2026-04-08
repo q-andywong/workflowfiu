@@ -7,7 +7,8 @@ The `CaseDirectory.tsx` component serves as the central source of truth for all 
 * **Intelligence Consolidation:** Displays all entities with a status of `ANALYSIS`, `PRIORITY`, `PENDING_APPROVAL`, or `CLOSED`.
 * **Automated Noise Reduction:** Explicitly filters out `TRIAGE`, `DISMISSED`, and `HIBERNATED` records to ensure the directory remains focused on actionable intelligence.
 * **Direct Navigation:** Analysts can click any record to instantly mount the **Analysis Workspace** pre-loaded with that specific Case file.
-* **Search & Filter:** Support for multi-column filtering by Case ID, Subject, Analyst Assignment, and Live Risk Score.
+* **Manual Instantiation:** Features a "Create New Case" action to proactively start investigations on entities not yet flagged by automation.
+* **Search & Filter:** Support for multi-column filtering by Case ID, Investigation Title (including [MANUAL] tags), Analyst Assignment, and Live Risk Score.
 
 ## Logic Implementation
-The directory consumes the `activeCases` derivation from `AppContext.tsx`. This ensures that even if an investigator's typology filter is active, the directory respects the global state while adhering to the session's RBAC constraints.
+The directory consumes the `activeCases` derivation from `AppContext.tsx`. It prioritizes the `title` field for primary display, ensuring that custom investigation names and manual tags are visible. The target entity name remains visible as sub-text for quick reference.

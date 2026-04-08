@@ -2,7 +2,39 @@
 
 This document tracks major architectural deviations and deployments across the STRO STARS framework. Use this ledger as a reference if functional reversions are required.
 
-## [v2.2.0] - Operational Silos & SONAR Registry (Current)
+## [v2.4.0] - Investigator Workspace & Contextual Navigation (Current)
+
+### Added
+* **Investigator-Specific Triage Stack**: Decoupled the triage view to provide a full-width, vertical workbench for investigators. Removed managerial statistics to maximize screen real-estate for lead assessment.
+* **Priority Bypass Registry**: Dedicated high-risk bypass section (Risk > 150) featuring a dark-mode detection registry for critical hit analysis.
+* **Context-Aware Navigation Handshake**: Implemented stateful background-view preservation. Closing a Case Analysis panel now automatically restores the investigator to their previous tab (Triage, Directory, etc.) instead of resetting to the Dashboard.
+* **Firebase Evidence Locker**: Integrated high-speed evidentiary asset management within Case Analysis, supporting direct file uploads and secure cloud URL mapping.
+* **Hibernation Handshake**: Added a real-time hibernation summary and pivot link in the Triage footer for auto-resolved low-risk subjects.
+
+### Changed
+* **Router Modernization**: Refactored `App.tsx` router to support background persistence during analytical overlays.
+* **Managerial Telemetry**: Restricted Triage Statistics and operational efficiency charts to the Director/Manager role views.
+
+### Fixed
+* **Rendering Stability**: Fixed a critical "Blank Screen" crash in Case Analysis caused by a missing `BadgeCheck` icon import.
+* **Type Alignment**: Corrected property mismatches in `MitigationScorecard` and `STRViewer` to ensure analytical data persistence.
+
+## [v2.3.0] - Proactive Intelligence & Bulk Operations
+
+### Added
+* **Manual Case Creation**: Introduced the ability for investigators to proactively instantiate cases from the **Case Directory** or by bridging disparate reports in the **STR Master Registry**.
+* **Bulk Action Toolbar**: Implemented a context-aware floating toolbar (`BulkActionToolbar.tsx`) that triggers upon multi-selection in registries. Supports batch operations including **Escalate**, **Hibernate**, and **Dismiss**.
+* **Clustered Investigation Support**: The `createCase` logic now automatically populates the subject's intelligence dossier (`linkedSTRs`) when multiple reports are bridged together.
+* **Proactive Governance**: Manual cases are tagged with `[MANUAL]` and automatically routed to `PENDING_APPROVAL` for Director sign-off, ensuring strict governance over analyst-initiated investigations.
+
+### Changed
+* **Case Directory Visualization**: Overhauled the directory display to prioritize the **Investigation Title** over the subject name, enabling visibility of cluster names and manual tags.
+* **Registry Multi-Selection**: Added bulk-selection checkboxes and "Select All" logic to `TriageQueue.tsx` and `STRDirectory.tsx`.
+
+### Fixed
+* **Data Layer Synchronization**: Resolved a bug where bridged reports from the STR Registry were not surfacing in the "Linked Regulatory Reports" panel of the Analysis Workspace.
+
+## [v2.2.0] - Operational Silos & SONAR Registry
 
 ### Added
 * **Hibernated Registry**: Introduced a dedicated operational silo (`HibernatedList.tsx`) for low-risk entities (Score < 10). Subjects like Sarah Jenkins are now moved to background monitoring, reducing noise in the active Triage Queue.

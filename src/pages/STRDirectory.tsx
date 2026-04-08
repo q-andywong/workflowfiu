@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { MOCK_STRS } from '../constants';
-import { FileText, Search, Filter, Download, ExternalLink, AlertCircle } from 'lucide-react';
+import { FileText, Search, Filter, Download, ExternalLink, AlertCircle, PlusCircle, Link } from 'lucide-react';
 import STRViewer from '../components/STRViewer';
+import BulkActionToolbar from '../components/BulkActionToolbar';
+import ManualCaseModal from '../components/ManualCaseModal';
 
 const STRDirectory: React.FC = () => {
     const { allCases } = useApp();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSTR, setSelectedSTR] = useState<string | null>(null);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [showCreateModal, setShowCreateModal] = useState(false);
     
     // Combine mock master list with any dynamic reports and find associated subjects
     const filteredSTRs = MOCK_STRS.filter(str => 
@@ -22,6 +26,33 @@ const STRDirectory: React.FC = () => {
         );
         return linkedCase?.subject.name || 'Unknown / Unlinked';
     };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.length === filteredSTRs.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(filteredSTRs.map(s => s.id));
+        }
+    };
+
+    const toggleSelect = (id: string) => {
+        setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+    };
+
+    const bulkActions = [
+        { 
+            label: 'Create Case from Selection', 
+            icon: <PlusCircle className="w-4 h-4" />, 
+            onClick: () => setShowCreateModal(true),
+            variant: 'primary' as const 
+        },
+        { 
+            label: 'Link to Existing', 
+            icon: <Link className="w-4 h-4" />, 
+            onClick: () => alert('Feature coming in next update: Linking to existing cases.'),
+            variant: 'default' as const 
+        }
+    ];
 
     return (
         <div className="space-y-6">
@@ -65,6 +96,14 @@ const STRDirectory: React.FC = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-200">
+                                <th className="px-6 py-4 w-10">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={selectedIds.length === filteredSTRs.length && filteredSTRs.length > 0}
+                                        onChange={toggleSelectAll}
+                                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                    />
+                                </th>
                                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Report ID</th>
                                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Linked Subject</th>
                                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
@@ -76,7 +115,15 @@ const STRDirectory: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {filteredSTRs.map(str => (
-                                <tr key={str.id} className="hover:bg-blue-50/30 transition-colors group">
+                                <tr key={str.id} className={`hover:bg-blue-50/30 transition-colors group ${selectedIds.includes(str.id) ? 'bg-blue-50/50' : ''}`}>
+                                    <td className="px-6 py-4">
+                                        <input 
+                                            type="checkbox"
+                                            checked={selectedIds.includes(str.id)}
+                                            onChange={() => toggleSelect(str.id)}
+                                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        />
+                                    </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-white transition-colors">
@@ -134,7 +181,24 @@ const STRDirectory: React.FC = () => {
                 </div>
             </div>
 
+            <BulkActionToolbar 
+                selectedCount={selectedIds.length}
+                onClear={() => setSelectedIds([])}
+                actions={bulkActions}
+            />
+
             {selectedSTR && <STRViewer onClose={() => setSelectedSTR(null)} strId={selectedSTR} />}
+            
+            {showCreateModal && (
+                <ManualCaseModal 
+                    onClose={() => setShowCreateModal(false)} 
+                    preSelectedReportIds={selectedIds} 
+                    onSuccess={() => {
+                        setShowCreateModal(false);
+                        setSelectedIds([]);
+                    }}
+                />
+            )}
         </div>
     );
 };

@@ -1,11 +1,30 @@
-# Triage Queue
+# Feature: Automated Triage Queue
 
-## Objective
-The `TriageQueue.tsx` workspace is the default landing hub for operational Investigators once they clear the dual-track login pipeline. 
+The Triage Queue is the ingestion endpoint for upstream intelligence. It provides a specialized role-based interface for evaluating raw tasks before they are formally escalated into investigations.
 
-## Flow Control
-* **Auto-Routing:** Investigators bypassing the Main Dashboard default directly into this view via `src/contexts/AppContext.tsx` routing mutations.
-* **Manager Rejection Logic [NEW]:** If a Manager rejects a Case creation request, the Task is returned to the Triage Queue.
-* **Feedback Banners:** Rejected tasks are flagged with a red **High Priority** banner at the top of the entity list, displaying the Manager's direct comments (e.g., "Insufficient shipping docs", "Clarify UBO relationship").
-* **Data Targeting:** Because the AppContext actively applies standard `Array.filter` conditions bounding user bounds against case typologies securely at the state engine load-level, the Triage Queue component requires no localized filtration modifications. Whatever array of cases is presented here has already been vetted against the current session token's clearance level.
-* **Typology Constraints:** Cases are strictly segmented by type (e.g., Tax, AML, PEP) based on the analyst's selected specialization during the login flow.
+## Role-Based View Logic
+
+### 1. Investigator View (Vertical Workbench)
+The Investigator view is optimized for high-speed intake, removing managerial "noise" like statistics to maximize screen real estate.
+* **Layout**: Single-column vertical stack.
+* **Core Components**:
+    - **Ingestion Queue**: Full-width list of pending items sorted by risk score.
+    - **Priority Bypass Registry**: A high-fidelity section for critical hits (Risk > 150) that bypassed the triage queue.
+    - **Hibernation Registry Footer**: A summary card showing auto-resolved low-risk counts with a pivot link to baseline monitoring.
+
+### 2. Director View (Managerial Oversight)
+The Director view focuses on operational volume and triage efficiency.
+* **Layout**: Two-column layout with fixed sidebar telemetry.
+* **Core Components**:
+    - **Triage Statistics**: Real-time breakdown of pending intake, average time-to-triage, and risk distribution charts.
+    - **Priority Alerts**: Integrated sidebar notification for items that bypassed the queue.
+
+## Layout & Design Specifications
+- **Palette**: Clean Light Enterprise (`bg-gray-50`) with high-contrast type.
+- **Micro-Animations**: Hover-scale effects on Priority cards (`hover:scale-[1.02]`) and pulsing critical detection indicators.
+- **Role Toggle**: UI structure branches dynamically based on `user.role === 'INVESTIGATOR'`.
+
+## Operational Workflows
+1. **Bulk Escalation**: Users can select multiple items to "Escalate", "Hibernate", or "Dismiss" via the floating `BulkActionToolbar`.
+2. **Merge & Link**: Ability to merge multiple triage items into a single active Investigation via the "Link to Investigation" overlay.
+3. **Priority Bypass**: Critical intelligence is automatically routed to the Priority Registry, triggering a "Critical Hit Detection" status.

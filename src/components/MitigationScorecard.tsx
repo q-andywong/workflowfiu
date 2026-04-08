@@ -29,7 +29,7 @@ const MitigationScorecard: React.FC<MitigationProps> = ({ entityId, scorecard })
         <h3 className="font-bold text-gray-900 tracking-tight">Risk Scorecard & Investigation Findings</h3>
         <div className="flex items-center gap-6">
            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Strategic Score</span>
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Risk Score</span>
               <span className="text-2xl font-black text-red-600 tracking-tighter">{scorecard.totalScore}</span>
            </div>
            <div className="w-px h-6 bg-gray-200"></div>
