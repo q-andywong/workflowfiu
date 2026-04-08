@@ -46,5 +46,5 @@ firebase deploy --only hosting
 ```
 
 ## Post-Industrialization Narratives
-13. [Strategic Roadmap](./docs/OUTSTANDING_ROADMAP.md) [NEW]
-14. [User Story Flow](./docs/USER_STORY_FLOW.md) [NEW]
+13. [Strategic Roadmap](./docs/features/OUTSTANDING_ROADMAP.md) [NEW]
+14. [User Story Flow](./docs/features/USER_STORY_FLOW.md) [NEW]
