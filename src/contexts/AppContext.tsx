@@ -12,13 +12,10 @@ interface AppContextType {
   selectedCase: IntelligenceCase | null;
   setSelectedCase: (c: IntelligenceCase | null) => void;
   updateCaseStatus: (id: string, status: IntelligenceCase['status']) => void;
-  saveMitigation: (entityId: string, factorId: string, category: string, notes: string) => void;
-  saveFindings: (caseId: string, findings: string) => void;
   addFeedback: (caseId: string, disseminationId: string, feedback: any) => void;
   assessEntity: (id: string, action: 'ESCALATE' | 'HIBERNATE' | 'DISMISS') => void;
   approveCase: (id: string) => void;
   rejectCase: (id: string, reason: string) => void;
-  createCase: (subjectData: Partial<PersonProfile>, reportIds: string[], title?: string) => void;
   bulkUpdateCases: (ids: string[], updates: Partial<IntelligenceCase>) => void;
   bulkLinkReports: (caseId: string, reportIds: string[]) => void;
   linkEntitiesToCase: (targetCaseId: string, sourceEntityIds: string[]) => void;
@@ -26,6 +23,9 @@ interface AppContextType {
   removeAttachment: (caseId: string, attachmentId: string) => Promise<void>;
   requestModification: (caseId: string, type: CaseModificationRequest['type'], details: any) => void;
   processModification: (caseId: string, approved: boolean) => void;
+  saveMitigation: (caseId: string, subjectId: string, factorId: string, category: string, notes: string) => void;
+  saveFindings: (caseId: string, findings: string) => void;
+  createCase: (subjects: PersonProfile[], description: string, title?: string) => IntelligenceCase;
   view: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY';
   previousView: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY';
   setView: (v: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY') => void;
@@ -33,9 +33,11 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const initializeCases = (rawCases: IntelligenceCase[]) => {
+const initializeCases = (rawCases: any[]) => {
   return rawCases.map(c => {
-    const score = c.subject.riskProfile.totalScore;
+    // Migration: Handle both old 'subject' and new 'subjects' formats
+    const subjects = c.subjects || [c.subject];
+    const score = subjects[0]?.riskProfile?.totalScore || 0;
     let status = c.status;
     
     if (score < 10) status = 'HIBERNATED';
@@ -43,6 +45,9 @@ const initializeCases = (rawCases: IntelligenceCase[]) => {
     
     return { 
       ...c, 
+      subjects,
+      findings: c.findings || subjects[0]?.investigationFindings || '',
+      description: c.description || '',
       status: status as IntelligenceCase['status'],
       attachments: c.attachments || [],
       priority: status === 'PRIORITY',
@@ -156,13 +161,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (!targetCase || !user) return;
     const sourceEntities = cases.filter(c => sourceEntityIds.includes(c.id));
     const mergedReports = [...targetCase.reports];
-    const mergedLinkedSTRs = [...(targetCase.subject.linkedSTRs || [])];
+    const mergedLinkedSTRs: any[] = [];
+    
+    // Add existing linked STRs from the primary subjects of the target case
+    targetCase.subjects.forEach(s => {
+        s.linkedSTRs?.forEach(ls => { if (!mergedLinkedSTRs.find(existing => existing.id === ls.id)) mergedLinkedSTRs.push(ls); });
+    });
+
     sourceEntities.forEach(se => {
         se.reports.forEach(r => { if (!mergedReports.find(existing => existing.id === r.id)) mergedReports.push(r); });
-        se.subject.linkedSTRs?.forEach(ls => { if (!mergedLinkedSTRs.find(existing => existing.id === ls.id)) mergedLinkedSTRs.push(ls); });
+        se.subjects.forEach(s => {
+            s.linkedSTRs?.forEach(ls => { if (!mergedLinkedSTRs.find(existing => existing.id === ls.id)) mergedLinkedSTRs.push(ls); });
+        });
     });
     setCases(prev => prev.map(c => {
-        if (c.id === targetCaseId) return { ...c, reports: mergedReports, subject: { ...c.subject, linkedSTRs: mergedLinkedSTRs } };
+        if (c.id === targetCaseId) return { ...c, reports: mergedReports, subjects: [...c.subjects, ...sourceEntities.flatMap(se => se.subjects)] };
         if (sourceEntityIds.includes(c.id)) {
             const request: CaseModificationRequest = {
               id: `REQ-LINK-${Date.now()}-${c.id}`,
@@ -178,17 +191,29 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }));
   };
 
-  const saveMitigation = (entityId: string, factorId: string, category: string, notes: string) => {
+  const saveMitigation = (caseId: string, subjectId: string, factorId: string, category: string, notes: string) => {
     setCases(prev => prev.map(c => {
-      if (c.id === entityId) {
-        return { ...c, subject: { ...c.subject, riskProfile: { ...c.subject.riskProfile, factors: c.subject.riskProfile.factors.map(f => f.id === factorId ? { ...f, mitigation: { category, notes, savedAt: new Date().toISOString() } } : f) } } };
+      if (c.id === caseId) {
+        return { 
+          ...c, 
+          subjects: c.subjects.map(s => s.id === subjectId ? {
+            ...s,
+            riskProfile: {
+              ...s.riskProfile,
+              factors: s.riskProfile.factors.map(f => f.id === factorId ? {
+                ...f,
+                mitigation: { category, notes, savedAt: new Date().toISOString() }
+              } : f)
+            }
+          } : s)
+        };
       }
       return c;
     }));
   };
 
   const saveFindings = (caseId: string, findings: string) => {
-    setCases(prev => prev.map(c => c.id === caseId ? { ...c, subject: { ...c.subject, investigationFindings: findings } } : c));
+    setCases(prev => prev.map(c => c.id === caseId ? { ...c, findings } : c));
   };
 
   const bulkUpdateCases = (ids: string[], updates: Partial<IntelligenceCase>) => {
@@ -201,7 +226,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (c.id === caseId) {
         const existingReportIds = new Set(c.reports.map(r => r.id));
         const newReports = reportsToLink.filter((r: any) => !existingReportIds.has(r.id)).map((r: any) => ({ ...r, status: 'LINKED' as const }));
-        return { ...c, reports: [...c.reports, ...newReports], subject: { ...c.subject, linkedSTRs: [...(c.subject.linkedSTRs || []), ...newReports.map(r => ({ id: r.id, date: r.date, amount: `${r.amount.toLocaleString()} ${r.currency}`, type: r.type }))] } };
+        return { 
+          ...c, 
+          reports: [...c.reports, ...newReports], 
+          subjects: c.subjects.map((s, idx) => idx === 0 ? {
+            ...s,
+            linkedSTRs: [...(s.linkedSTRs || []), ...newReports.map(r => ({ id: r.id, date: r.date, amount: `${r.amount.toLocaleString()} ${r.currency}`, type: r.type }))]
+          } : s)
+        };
       }
       return c;
     }));
@@ -251,14 +283,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }));
   };
 
-  const createCase = (subjectData: Partial<PersonProfile>, reportIds: string[], customTitle?: string) => {
+  const createCase = (subjects: PersonProfile[], description: string, title?: string) => {
     const newCaseId = `CASE-2026-${String(cases.length + 1).padStart(3, '0')}`;
-    const linkedReports = MOCK_STRS.filter((str: any) => reportIds.includes(str.id));
     const newCase: IntelligenceCase = {
       id: newCaseId,
-      title: customTitle || `[MANUAL] Investigation: ${subjectData.name}`,
-      subject: { id: `P-NEW-${Date.now()}`, name: subjectData.name || 'Unknown Entity', nationality: subjectData.nationality || 'Unknown', riskProfile: { totalScore: 0, status: 'GRAY PENDING', factors: [] }, linkedSTRs: linkedReports.map((r: any) => ({ id: r.id, date: r.date, amount: `${r.amount.toLocaleString()} ${r.currency}`, type: r.type })), ...subjectData },
-      reports: linkedReports.map((r: any) => ({ ...r, status: 'LINKED' })),
+      title: title || `Investigation: ${subjects.map(s => s.name).join(', ')}`,
+      description,
+      subjects: subjects.map(s => ({
+        ...s,
+        id: s.id || `P-NEW-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        riskProfile: s.riskProfile || { totalScore: 0, status: 'GRAY PENDING', factors: [] }
+      })),
+      reports: [], // Initially empty, will be linked from the Analysis/Locker
       status: 'STAGING',
       priority: false,
       disseminations: [],

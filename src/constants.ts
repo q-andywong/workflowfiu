@@ -292,7 +292,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'CASE-2026-001',
     title: 'Operation Highland - Cross-border Laundering',
-    subject: IGOR_DIMITROV_PROFILE,
+    subjects: [IGOR_DIMITROV_PROFILE],
     reports: [
       {
         id: 'STR-2026-SANCTIONS',
@@ -317,7 +317,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'CASE-2026-002',
     title: 'Project Emerald - Domestic Tax Evasion',
-    subject: LI_WEI_PROFILE,
+    subjects: [LI_WEI_PROFILE],
     reports: [
        {
         id: 'STR-993-8845',
@@ -355,7 +355,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'TASK-2026-003',
     title: 'Syndicate Alpha - Cybercrime Extortion',
-    subject: TOBIAS_BLACK_PROFILE,
+    subjects: [TOBIAS_BLACK_PROFILE],
     reports: [
       {
         id: 'STR-993-8822',
@@ -380,7 +380,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'CASE-2026-004',
     title: 'Network Nexus - Terrorism Financing Link',
-    subject: AHMED_MALIK_PROFILE,
+    subjects: [AHMED_MALIK_PROFILE],
     reports: [
        {
         id: 'STR-555-1122',
@@ -405,7 +405,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'CASE-2026-005',
     title: 'Operation Mirage - Corporate Fraud / Cheating',
-    subject: SARAH_JENKINS_PROFILE,
+    subjects: [SARAH_JENKINS_PROFILE],
     reports: [],
     status: 'HIBERNATED',
     analyst: 'Insp. Lim',
@@ -416,7 +416,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'TASK-2026-006',
     title: 'Project Shadow - High-Value Gem Acquisition',
-    subject: MICHAEL_GREENE_PROFILE,
+    subjects: [MICHAEL_GREENE_PROFILE],
     reports: [
       {
         id: 'CTR-2026-9902',
@@ -439,7 +439,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'CASE-2025-110',
     title: 'Operation Copper - Retired Analysis',
-    subject: LI_WEI_PROFILE,
+    subjects: [LI_WEI_PROFILE],
     reports: [],
     status: 'CLOSED',
     analyst: 'Insp. Lim',
@@ -451,7 +451,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'CASE-2025-125',
     title: 'Project Zenith - Resolved Fraud',
-    subject: SARAH_JENKINS_PROFILE,
+    subjects: [SARAH_JENKINS_PROFILE],
     reports: [],
     status: 'DISMISSED',
     analyst: 'Insp. Lim',
@@ -463,7 +463,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'CASE-2026-008',
     title: 'Operation Frost - Quick Closure',
-    subject: TOBIAS_BLACK_PROFILE,
+    subjects: [TOBIAS_BLACK_PROFILE],
     reports: [],
     status: 'CLOSED',
     analyst: 'Insp. Lim',
@@ -475,7 +475,7 @@ export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'CASE-2026-015',
     title: 'Project Cobalt - March Completion',
-    subject: IGOR_DIMITROV_PROFILE,
+    subjects: [IGOR_DIMITROV_PROFILE],
     reports: [],
     status: 'CLOSED',
     analyst: 'Insp. Lim',
@@ -607,3 +607,12 @@ export const MOCK_STRS: SuspiciousTransactionReport[] = [
 ].filter((str, index, self) => 
   index === self.findIndex((t) => t.id === str.id)
 );
+
+export const MOCK_ENTITIES: PersonProfile[] = [
+  TOBIAS_BLACK_PROFILE,
+  MICHAEL_GREENE_PROFILE,
+  LI_WEI_PROFILE,
+  AHMED_MALIK_PROFILE,
+  SARAH_JENKINS_PROFILE,
+  IGOR_DIMITROV_PROFILE
+];

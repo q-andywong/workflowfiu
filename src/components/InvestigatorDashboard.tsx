@@ -166,7 +166,7 @@ const InvestigatorDashboard: React.FC = () => {
         <button onClick={() => setView('HIBERNATED')} className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-green-200 transition-all focus:ring-4 focus:ring-green-100 w-full sm:w-auto uppercase tracking-wider">View Hibernated List</button>
       </div>
 
-      {/* Hibernated Registry Overview [UPDATED] */}
+      {/* Hibernated List Overview [UPDATED] */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
         <div className="bg-gray-100 px-6 py-4 flex items-center justify-between">
            <div className="flex items-center gap-3">
@@ -181,14 +181,14 @@ const InvestigatorDashboard: React.FC = () => {
                 <div className="flex items-center gap-4">
                    <div className="w-12 h-12 rounded-xl bg-green-50 border border-green-100 flex flex-col items-center justify-center shrink-0">
                       <span className="text-[10px] font-black text-green-400 uppercase leading-none">Score</span>
-                      <span className="text-lg font-black text-green-600 leading-none mt-1">{hibCase.subject.riskProfile.totalScore}</span>
+                      <span className="text-lg font-black text-green-600 leading-none mt-1">{hibCase.subjects[0]?.riskProfile.totalScore}</span>
                    </div>
                    <div>
                       <div className="flex items-center gap-2">
-                         <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{hibCase.subject.name}</h4>
+                         <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{hibCase.subjects[0]?.name}</h4>
                          <span className="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-black uppercase tracking-widest">{hibCase.id}</span>
                       </div>
-                      <p className="text-xs text-gray-500 font-medium mt-1">Status: <span className="text-green-600 font-bold uppercase tracking-widest">{hibCase.status}</span> • Territory: {hibCase.subject.nationality}</p>
+                      <p className="text-xs text-gray-500 font-medium mt-1">Status: <span className="text-green-600 font-bold uppercase tracking-widest">{hibCase.status}</span> • Territory: {hibCase.subjects[0]?.nationality}</p>
                    </div>
                 </div>
                 <button 

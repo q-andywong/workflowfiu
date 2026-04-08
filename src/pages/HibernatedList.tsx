@@ -1,74 +1,74 @@
 import React from 'react';
 import { useApp } from '../contexts/AppContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Moon, Filter, ShieldCheck, ArrowRight, FileSearch, Clock } from 'lucide-react';
+import { IntelligenceCase } from '../types';
 
 const HibernatedList: React.FC = () => {
     const { cases, setSelectedCase, setView } = useApp();
+    const { user } = useAuth();
     
     // Hibernated includes only low-risk items (<10) that were auto-triaged or manually moved
-    const hibernatedEntities = cases.filter(c => c.status === 'HIBERNATED');
+    const hibernatedEntities = cases.filter((c: IntelligenceCase) => {
+        const isHibernated = c.status === 'HIBERNATED';
+        if (!isHibernated) return false;
+        
+        if (user?.role === 'INVESTIGATOR' && user.typology) {
+            const typs = c.subjects.flatMap(s => s.crimeTypologies || []);
+            return typs.length === 0 || typs.includes(user.typology);
+        }
+        return true;
+    });
 
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
-                        Hibernation Registry
+                        Hibernated List
                     </h2>
                     <p className="text-gray-500 mt-1 font-medium text-sm">Low-risk entities and automated monitoring tasks</p>
-                </div>
-                <div className="flex gap-3">
-                    <button className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-sm">
-                        <Filter className="w-4 h-4" />
-                        Re-scan All
-                    </button>
-                    <div className="px-4 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-bold flex items-center gap-2 border border-green-100">
-                        <ShieldCheck className="w-4 h-4" />
-                        Automated Mode
-                    </div>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <div className="xl:col-span-2 space-y-4">
-                    <div className="flex items-center justify-between px-4 pb-2 border-b border-gray-200">
-                        <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">Showing {hibernatedEntities.length} hibernated items</div>
-                        <div className="hidden sm:flex gap-8 text-xs font-bold text-gray-400 uppercase tracking-wider">
-                            <div className="w-40">Intelligence Subject</div>
-                            <div className="w-24 text-center">Last Score</div>
-                            <div className="w-28 text-right">Actions</div>
+                    <div className="px-4 pb-2 border-b border-gray-200 mb-2">
+                        <div className="flex items-center gap-4">
+                            <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{hibernatedEntities.length} Entities in Baseline Monitoring</div>
                         </div>
                     </div>
 
                     {hibernatedEntities.map(c => (
-                        <div key={c.id} className="flex flex-col gap-2">
-                            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 group flex items-center justify-between hover:bg-gray-50 transition-colors border-l-4 border-l-green-400 cursor-pointer">
-                                <div className="flex items-center gap-4 sm:w-64">
-                                    <div className="w-10 h-10 rounded-lg border border-green-100 bg-green-50 text-green-600 flex items-center justify-center shrink-0">
-                                        <Moon className="w-5 h-5" />
+                        <div key={c.id} 
+                            onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
+                            className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer border-l-4 border-l-green-500"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div>
+                                    <div className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                                        {c.subjects[0]?.name}
+                                        {c.subjects.length > 1 && (
+                                            <span className="bg-green-50 text-green-600 px-1.5 py-0.5 rounded text-[8px] border border-green-100 uppercase">+ {c.subjects.length - 1} Entities</span>
+                                        )}
                                     </div>
-                                    <div className="overflow-hidden">
-                                        <div className="text-sm font-bold text-gray-900 truncate">{c.subject.name}</div>
-                                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest">{c.id}</div>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.id}</div>
+                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                        <div className="text-[9px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-100">
+                                            Low Risk / Hibernated
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div className="hidden sm:flex flex-col items-center w-24">
-                                    <div className="text-lg font-black text-green-600">{c.subject.riskProfile.totalScore}</div>
-                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Score: LOW</div>
-                                </div>
-
-                                <div className="flex items-center justify-end gap-2 sm:w-28">
-                                    <div className="p-2 text-gray-400 hover:text-gray-600 transition-colors" title="Scheduled Rescan">
-                                        <Clock className="w-4 h-4" />
+                            </div>
+                            <div className="flex items-center gap-8 text-right">
+                                <div>
+                                    <div className="text-lg font-black text-green-600">
+                                        {Math.max(...c.subjects.map(s => s.riskProfile.totalScore))}
                                     </div>
-                                    <button 
-                                      onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
-                                      className="p-2 bg-gray-50 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors border border-gray-200 shadow-sm"
-                                    >
-                                        <ArrowRight className="w-4 h-4" />
-                                    </button>
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase">Max Risk</div>
                                 </div>
+                                <ArrowRight className="w-5 h-5 text-gray-300" />
                             </div>
                         </div>
                     ))}

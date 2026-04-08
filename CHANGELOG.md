@@ -2,7 +2,16 @@
 
 This document tracks major architectural deviations and deployments across the STRO STARS framework. Use this ledger as a reference if functional reversions are required.
 
-## [v2.4.0] - Investigator Workspace & Contextual Navigation (Current)
+## [v2.5.1] - Multi-Entity Attribution & Stability (Current)
+
+### Added
+* **Intelligence Attribution Hub**: Introduced visual indicators in Case Analysis to show which specific subject triggered a related case or regulatory report. Includes blue source tags (e.g., `LINKED TO: IGOR DIMITROV`) and attribution labels on historical cards.
+
+### Fixed
+* **Investigator Dashboard Stability**: Resolved a critical runtime crash on the Investigator login path caused by legacy property access in the multi-entity domain model.
+* **Typology Isolation**: Refined typology-based visibility rules in the Case Directory to ensure Investigators only see relevant operational assets.
+
+## [v2.5.0] - Multi-Entity Case Management Industrialization
 
 ### Added
 * **Investigator-Specific Triage Stack**: Decoupled the triage view to provide a full-width, vertical workbench for investigators. Removed managerial statistics to maximize screen real-estate for lead assessment.

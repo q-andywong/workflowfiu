@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { MOCK_STRS } from '../constants';
-import { FileText, Search, Filter, Download, ExternalLink, AlertCircle, PlusCircle, Link } from 'lucide-react';
+import { FileText, Search, Filter, Download, ExternalLink, AlertCircle, PlusCircle, Link, Calendar, DollarSign, Settings2, Trash2, Check, ChevronDown, X as XIcon } from 'lucide-react';
 import STRViewer from '../components/STRViewer';
 import BulkActionToolbar from '../components/BulkActionToolbar';
 import ManualCaseModal from '../components/ManualCaseModal';
+
+interface QueryRule {
+    id: string;
+    field: 'date' | 'amount' | 'name' | 'riskScore' | 'type';
+    operator: 'between' | 'gt' | 'lt' | 'contains' | 'eq';
+    value: any;
+    valueEnd?: any;
+}
 
 const STRDirectory: React.FC = () => {
     const { allCases } = useApp();
@@ -13,18 +21,54 @@ const STRDirectory: React.FC = () => {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [showCreateModal, setShowCreateModal] = useState(false);
     
-    // Combine mock master list with any dynamic reports and find associated subjects
-    const filteredSTRs = MOCK_STRS.filter(str => 
-        str.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        str.institution.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Query Builder State
+    const [activeRules, setActiveRules] = useState<QueryRule[]>([]);
+    const [isAddingRule, setIsAddingRule] = useState(false);
+    const [newRule, setNewRule] = useState<Partial<QueryRule>>({ field: 'name', operator: 'contains' });
 
-    const getSubjectForSTR = (strId: string) => {
+    const getSubjectForSTR = React.useCallback((strId: string) => {
         const linkedCase = allCases.find(c => 
             c.reports.some(r => r.id === strId) || 
             c.subject.linkedSTRs?.some(ls => ls.id === strId)
         );
         return linkedCase?.subject.name || 'Unknown / Unlinked';
+    }, [allCases]);
+
+    const getFieldOperators = (field: string) => {
+        switch (field) {
+            case 'amount': return [
+                { id: 'gt', label: 'Greater Than' },
+                { id: 'lt', label: 'Less Than' },
+                { id: 'eq', label: 'Equals' }
+            ];
+            case 'date': return [{ id: 'between', label: 'Between Range' }];
+            case 'riskScore': return [{ id: 'gt', label: 'Greater Than' }];
+            case 'name': return [{ id: 'contains', label: 'Contains' }];
+            case 'type': return [{ id: 'eq', label: 'Equals' }];
+            default: return [];
+        }
+    };
+    
+    const addRule = () => {
+        if (!newRule.field || !newRule.operator || !newRule.value) return;
+        const rule: QueryRule = {
+            id: `rule-${Date.now()}`,
+            field: newRule.field as any,
+            operator: newRule.operator as any,
+            value: newRule.value,
+            valueEnd: newRule.valueEnd
+        };
+        setActiveRules(prev => [...prev, rule]);
+        setNewRule({ field: 'name', operator: 'contains' });
+        setIsAddingRule(false);
+    };
+
+    const removeRule = (id: string) => {
+        setActiveRules(prev => prev.filter(r => r.id !== id));
+    };
+
+    const toggleSelect = (id: string) => {
+        setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
     };
 
     const toggleSelectAll = () => {
@@ -35,9 +79,81 @@ const STRDirectory: React.FC = () => {
         }
     };
 
-    const toggleSelect = (id: string) => {
-        setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+    const handleExportCSV = () => {
+        const headers = ["Report ID", "Subject", "Date", "Institution", "Amount", "Currency", "Type", "Risk Score"];
+        const rows = filteredSTRs.map(str => [
+            str.id,
+            getSubjectForSTR(str.id).replace(/"/g, '""'), // Escape quotes for CSV
+            str.date,
+            str.institution.replace(/"/g, '""'),
+            str.amount,
+            str.currency,
+            str.type,
+            str.riskScore
+        ]);
+        
+        const csvContent = [
+            headers.join(','),
+            ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+        ].join('\n');
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `intelligence_export_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
+
+    // Intelligence filtering engine using rule-based cumulative logic
+    const filteredSTRs = React.useMemo(() => {
+        return MOCK_STRS.filter(str => {
+            // 1. Initial Intelligence Sweep (Free-text search)
+            const matchesSearch = str.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                str.institution.toLowerCase().includes(searchTerm.toLowerCase());
+            
+            if (!matchesSearch) return false;
+
+            // 2. Multi-Vector Rule Validation (AND logic)
+            return activeRules.every(rule => {
+                const subjectName = getSubjectForSTR(str.id).toLowerCase();
+                
+                switch (rule.field) {
+                    case 'name':
+                        return subjectName.includes(String(rule.value).toLowerCase());
+                    case 'type':
+                        return str.type === rule.value;
+                    case 'amount':
+                        const amt = str.amount;
+                        const val = Number(rule.value);
+                        if (rule.operator === 'gt') return amt > val;
+                        if (rule.operator === 'lt') return amt < val;
+                        if (rule.operator === 'eq') return amt === val;
+                        return true;
+                    case 'riskScore':
+                        return str.riskScore > Number(rule.value);
+                    case 'date':
+                        const parseDate = (dStr: string) => {
+                            if (!dStr) return 0;
+                            const [d, m, y] = dStr.split('/').map(Number);
+                            return new Date(y, m - 1, d).getTime();
+                        };
+                        const strTime = parseDate(str.date);
+                        if (rule.operator === 'between') {
+                            const start = parseDate(rule.value);
+                            const end = parseDate(rule.valueEnd);
+                            return strTime >= start && strTime <= end;
+                        }
+                        return true;
+                    default:
+                        return true;
+                }
+            });
+        });
+    }, [searchTerm, activeRules, getSubjectForSTR]);
 
     const bulkActions = [
         { 
@@ -59,37 +175,162 @@ const STRDirectory: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
-                        STR Master Registry
+                        STR/CTR/CMR Listing
                     </h2>
                     <p className="text-gray-500 mt-1 font-medium text-sm">Comprehensive repository of all suspicious transaction reports</p>
-                </div>
-                <div className="flex gap-3">
-                    <button className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-sm">
-                        <Download className="w-4 h-4" />
-                        Export Registry
-                    </button>
-                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow-sm transition-all">
-                        Upload Batch
-                    </button>
                 </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-                <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row gap-4 justify-between items-center">
-                    <div className="relative w-full md:w-96">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input 
-                            type="text" 
-                            placeholder="Search by STR ID or Institution..." 
-                            className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex flex-col gap-4">
+                    <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+                        <div className="relative w-full md:w-96">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input 
+                                type="text" 
+                                placeholder="Search by Report ID, Institution..." 
+                                className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        <div className="flex gap-2">
+                            <button 
+                                onClick={() => setIsAddingRule(!isAddingRule)}
+                                className={`px-4 py-2 text-sm font-bold rounded-lg flex items-center gap-2 transition-all ${
+                                    isAddingRule ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                                }`}
+                            >
+                                <Settings2 className="w-4 h-4" />
+                                Advanced Query
+                            </button>
+                            <button 
+                                onClick={handleExportCSV}
+                                className="px-4 py-2 text-sm font-bold text-gray-600 bg-white border border-gray-200 rounded-lg flex items-center gap-2 hover:bg-gray-50"
+                            >
+                                <Download className="w-4 h-4" />
+                                Export as CSV
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex gap-2">
-                        <button className="px-3 py-1.5 text-xs font-bold text-gray-600 bg-white border border-gray-200 rounded flex items-center gap-1.5 hover:bg-gray-50"><Filter className="w-3.5 h-3.5" /> All Types</button>
-                        <button className="px-3 py-1.5 text-xs font-bold text-gray-600 bg-white border border-gray-200 rounded flex items-center gap-1.5 hover:bg-gray-50"><AlertCircle className="w-3.5 h-3.5" /> High Risk Only</button>
-                    </div>
+
+                    {/* Active Filter Pills */}
+                    {activeRules.length > 0 && (
+                        <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-200/60 mt-2">
+                            {activeRules.map(rule => (
+                                <div key={rule.id} className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg border border-blue-100 text-xs font-black uppercase tracking-wider animate-in fade-in zoom-in duration-200">
+                                    <span className="opacity-60">{rule.field}:</span> 
+                                    <span>{rule.operator} {rule.value} {rule.valueEnd ? `~ ${rule.valueEnd}` : ''}</span>
+                                    <button onClick={() => removeRule(rule.id)} className="ml-1 p-0.5 hover:bg-blue-200 rounded-full transition-colors">
+                                        <XIcon className="w-3 h-3" />
+                                    </button>
+                                </div>
+                            ))}
+                            <button onClick={() => setActiveRules([])} className="text-xs font-bold text-red-600 hover:underline px-2">Clear All</button>
+                        </div>
+                    )}
+
+                    {/* Rule Builder Panel */}
+                    {isAddingRule && (
+                        <div className="p-5 mt-2 bg-white border border-blue-100 rounded-xl shadow-lg ring-4 ring-blue-50/50 animate-in slide-in-from-top-4 duration-300">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                                    <PlusCircle className="w-5 h-5" />
+                                </div>
+                                <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest">Construct Intelligence Rule</h4>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                <div>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Attribute</label>
+                                    <select 
+                                        value={newRule.field}
+                                        onChange={(e) => {
+                                            const field = e.target.value as any;
+                                            setNewRule({ ...newRule, field, operator: getFieldOperators(field)[0].id as any, value: '', valueEnd: '' });
+                                        }}
+                                        className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                    >
+                                        <option value="name">Subject Name</option>
+                                        <option value="type">Report Type</option>
+                                        <option value="amount">Transaction Amount</option>
+                                        <option value="date">Date Range</option>
+                                        <option value="riskScore">Risk Score</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Operator</label>
+                                    <select 
+                                        value={newRule.operator}
+                                        onChange={(e) => setNewRule({ ...newRule, operator: e.target.value as any })}
+                                        className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                    >
+                                        {getFieldOperators(newRule.field || 'name').map(op => (
+                                            <option key={op.id} value={op.id}>{op.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className={newRule.operator === 'between' ? 'md:col-span-1' : 'md:col-span-1'}>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">
+                                        {newRule.field === 'date' ? 'Start Date' : 'Value'}
+                                    </label>
+                                    <div className="relative">
+                                        {newRule.field === 'amount' && <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />}
+                                        {newRule.field === 'type' ? (
+                                            <select 
+                                                value={newRule.value || ''}
+                                                onChange={(e) => setNewRule({ ...newRule, value: e.target.value })}
+                                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                            >
+                                                <option value="">Select Type...</option>
+                                                <option value="STR">STR</option>
+                                                <option value="CTR">CTR</option>
+                                                <option value="CMR">CMR</option>
+                                            </select>
+                                        ) : (
+                                            <input 
+                                                type={newRule.field === 'date' ? 'text' : (newRule.field === 'amount' || newRule.field === 'riskScore' ? 'number' : 'text')} 
+                                                placeholder={newRule.field === 'date' ? 'DD/MM/YYYY' : 'Enter value...'}
+                                                value={newRule.value || ''}
+                                                onChange={(e) => setNewRule({ ...newRule, value: e.target.value })}
+                                                className={`w-full ${newRule.field === 'amount' ? 'pl-9' : 'px-4'} py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all`}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+
+                                {newRule.operator === 'between' && (
+                                    <div>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">End Date</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="DD/MM/YYYY"
+                                            value={newRule.valueEnd || ''}
+                                            onChange={(e) => setNewRule({ ...newRule, valueEnd: e.target.value })}
+                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        />
+                                    </div>
+                                )}
+
+                                <div className="flex gap-2">
+                                    <button 
+                                        onClick={addRule}
+                                        className="flex-1 py-3 bg-blue-600 text-white font-black text-[10px] rounded-xl shadow-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest"
+                                    >
+                                        <Check className="w-4 h-4" /> Add Rule
+                                    </button>
+                                    <button 
+                                        onClick={() => setIsAddingRule(false)}
+                                        className="py-3 px-4 bg-gray-100 text-gray-500 font-bold text-[10px] rounded-xl hover:bg-gray-200 transition-all uppercase tracking-widest"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="overflow-x-auto">

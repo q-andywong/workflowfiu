@@ -78,14 +78,16 @@ export interface SuspiciousTransactionReport {
 export interface IntelligenceCase {
   id: string;
   title: string;
-  subject: PersonProfile;
+  description?: string;
+  subjects: PersonProfile[];
   reports: SuspiciousTransactionReport[];
   status: CaseStatus;
   analyst?: string;
   priority: boolean;
   rejectionReason?: string;
-  disseminations: DisseminationRecord[];
-  attachments: Attachment[];
+  disseminations?: DisseminationRecord[];
+  attachments?: Attachment[];
+  findings?: string;
   pendingModification?: CaseModificationRequest;
   createdAt: string;
   closedAt?: string;

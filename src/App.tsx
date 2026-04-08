@@ -47,18 +47,15 @@ const AppContent: React.FC = () => {
 
 const RootRouter: React.FC = () => {
   const { user } = useAuth();
-  
-  return (
-    <AppProvider>
-      {!user ? <Login /> : <AppContent />}
-    </AppProvider>
-  );
+  return !user ? <Login /> : <AppContent />;
 };
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <RootRouter />
+      <AppProvider>
+        <RootRouter />
+      </AppProvider>
     </AuthProvider>
   );
 };

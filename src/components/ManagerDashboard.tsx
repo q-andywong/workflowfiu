@@ -167,7 +167,7 @@ const ManagerDashboard: React.FC = () => {
             <CheckCircle2 className="w-6 h-6" />
           </div>
           <div>
-            <h4 className="font-black text-sm text-green-900 uppercase tracking-widest">Hibernation Registry: {cases.filter(c => c.status === 'HIBERNATED').length} Entities</h4>
+            <h4 className="font-black text-sm text-green-900 uppercase tracking-widest">Hibernation List: {cases.filter(c => c.status === 'HIBERNATED').length} Entities</h4>
             <p className="text-sm text-green-700 mt-1 font-medium">Auto-triage has successfully moved low-risk subjects into background monitoring. No manual review is required.</p>
           </div>
         </div>
@@ -175,7 +175,7 @@ const ManagerDashboard: React.FC = () => {
           onClick={() => setView('HIBERNATED')}
           className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-green-100 transition-all focus:ring-4 focus:ring-green-100 w-full sm:w-auto uppercase tracking-wider"
         >
-          Audit Registry
+          Audit List
         </button>
       </div>
     </div>

@@ -2,8 +2,10 @@
 
 This document captures the prioritized technical and functional debt remaining in the STRO STARS operational expansion.
 
-## Urgent: UX & Operational Polish
-- [ ] **Managerial UI Refinement**: Conduct a component-level audit and cleanup of the Case Analysis Panel for the Managerial role. Ensure high-fidelity spacing, consistent typography, and optimized action triggers for sign-off workflows.
+## Completed: Industrialization & Operational Polish
+- [x] **Managerial UI Refinement**: Conducted a component-level audit and cleanup of the Case Analysis Panel and Triage Queue. Implemented high-fidelity spacing, unified card designs (horizontal list format), and standardized nomenclature (Registry → List) across all registries.
+- [x] **Registry Design Unification**: Refactored Triage, Priority, and Hibernation task cards into a unified horizontal list layout for better mental modeling and operational scanning.
+- [x] **Nomenclature Standardization**: Globally renamed all "Registry" instances to "List" (e.g. *Hibernated List*, *Priority Bypass List*).
 
 ## High Priority: Analytical Depth
 - [ ] **Dissemination Report Builder**: Implement the "Packaging" interface to compile analyst findings, evidence attachments, and network diagrams into standardized PDF/XML outputs.

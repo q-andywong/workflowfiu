@@ -93,7 +93,7 @@ const Header: React.FC = () => {
                 : 'text-gray-500 hover:text-gray-900'
             }`}
           >
-            STR Directory
+            STR/CTR/CMR Directory
           </button>
           <button
             onClick={() => setView('DISSEMINATION')}

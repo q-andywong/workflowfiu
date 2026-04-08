@@ -1,11 +1,23 @@
 import React from 'react';
 import { useApp } from '../contexts/AppContext';
-import Scorecard from '../components/Scorecard';
-import { ShieldAlert, Zap, Clock, UserPlus, ExternalLink } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { ShieldAlert, Zap, Clock, UserPlus, ExternalLink, ArrowRight } from 'lucide-react';
+import { IntelligenceCase } from '../types';
 
 const PriorityWorkbench: React.FC = () => {
-  const { cases } = useApp();
-  const priorityCases = cases.filter(c => c.status === 'PRIORITY');
+  const { cases, setSelectedCase, setView } = useApp();
+  const { user } = useAuth();
+  
+  const priorityCases = cases.filter((c: IntelligenceCase) => {
+    const isPriority = c.status === 'PRIORITY';
+    if (!isPriority) return false;
+    
+    if (user?.role === 'INVESTIGATOR' && user.typology) {
+        const typs = c.subjects.flatMap(s => s.crimeTypologies || []);
+        return typs.length === 0 || typs.includes(user.typology);
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -13,7 +25,7 @@ const PriorityWorkbench: React.FC = () => {
         <div>
           <div className="flex items-center gap-3 text-red-600 mb-1">
             <ShieldAlert className="w-6 h-6" />
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900">Priority Analytics Workbench</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900">Priority Bypass List</h2>
           </div>
           <p className="text-gray-500 font-medium text-sm">Immediate assessment of "Above Risk Appetite" intelligence hits</p>
         </div>
@@ -30,65 +42,46 @@ const PriorityWorkbench: React.FC = () => {
           <p className="text-gray-500 max-w-md mx-auto italic text-sm">All critical triggers have been triaged or escalated for investigation.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-8">
+        <div className="space-y-4">
           {priorityCases.map((c) => (
-            <div key={c.id} className="bg-white rounded-xl shadow-md border-t-4 border-t-red-600 overflow-hidden outline outline-1 outline-gray-200">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-                <div className="lg:col-span-4 bg-gray-50 p-6 sm:p-8 border-r border-gray-200 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-5">
-                       <span className="px-2.5 py-1 bg-red-600 text-white text-[10px] font-bold rounded shadow-sm uppercase tracking-widest">Immediate</span>
-                       <span className="text-xs font-bold text-gray-500 tracking-wider uppercase">{c.id}</span>
-                    </div>
-                    <h3 className="text-2xl font-extrabold text-gray-900 mb-1">{c.subject.name}</h3>
-                    <p className="text-gray-600 font-medium text-sm leading-relaxed mb-6">{c.title}</p>
-                    
-                    <div className="space-y-3 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                        <div className="flex items-center gap-3 text-sm font-medium text-gray-700">
-                            <Clock className="w-4 h-4 text-gray-400" />
-                            Detected {new Date(c.createdAt).toLocaleString()}
-                        </div>
-                        <div className="flex items-center gap-3 text-sm font-medium text-gray-700">
-                            <UserPlus className="w-4 h-4 text-gray-400" />
-                            Assigned to {c.analyst}
-                        </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 flex flex-col gap-3">
-                    <button className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2">
-                        <ShieldAlert className="w-4 h-4" />
-                        Initiate Immediate Freeze
-                    </button>
-                    <button className="w-full py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm">
-                        <ExternalLink className="w-4 h-4 text-gray-400" />
-                        Cross-Reference Databases
-                    </button>
-                  </div>
+            <div 
+              key={c.id} 
+              onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
+              className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer border-l-4 border-l-red-600"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-100 text-red-600 flex items-center justify-center shrink-0">
+                  <ShieldAlert className="w-5 h-5" />
                 </div>
-
-                <div className="lg:col-span-8 p-6 sm:p-8 bg-white">
-                  <div className="flex items-center justify-between mb-6">
-                     <h4 className="text-sm font-bold text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                        Triggered Risk Factors
-                     </h4>
-                     <button className="text-xs font-bold text-blue-600 hover:underline uppercase tracking-wider">View Full Subject Dossier</button>
+                <div>
+                  <div className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    {c.subjects[0]?.name}
+                    {c.subjects.length > 1 && (
+                      <span className="bg-red-50 text-red-600 px-1.5 py-0.5 rounded text-[8px] border border-red-100 uppercase">+ {c.subjects.length - 1} Entities</span>
+                    )}
                   </div>
-                  <Scorecard scorecard={c.subject.riskProfile} title={c.subject.name} />
-                  
-                  <div className="mt-8 p-5 bg-red-50 rounded-lg border border-red-100 flex gap-4 items-start shadow-sm">
-                    <div className="p-2 bg-white rounded border border-red-200 shrink-0">
-                      <ShieldAlert className="w-5 h-5 text-red-600" />
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.id}</div>
+                    <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                    <div className="text-[9px] font-black text-red-600 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded border border-red-100">
+                      Priority Bypass
                     </div>
-                    <div>
-                      <h5 className="text-xs font-bold text-red-800 uppercase tracking-wider mb-1">Automation Summary</h5>
-                      <p className="text-sm text-red-900 leading-relaxed">
-                          Subject <strong>"{c.subject.name}"</strong> has been automatically flagged due to a direct match on the <strong>Office of Foreign Assets Control (OFAC)</strong> sanctions list. High-volume cross-border transfers (&gt; $5M) from high-risk Baltic jurisdictions were detected within the last 24 hours. <strong>SONAR risk signal ingested:</strong> Prompt manual dissemination to CAD Financial Investigation Division recommended.
-                      </p>
+                    <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                      <UserPlus className="w-2.5 h-2.5" />
+                      {c.analyst || 'Unallocated'}
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="flex items-center gap-8 text-right">
+                <div>
+                  <div className="text-lg font-black text-red-600">
+                    {Math.max(...c.subjects.map(s => s.riskProfile.totalScore))}
+                  </div>
+                  <div className="text-[10px] font-bold text-gray-400 uppercase">Max Risk</div>
+                </div>
+                <ArrowRight className="w-5 h-5 text-gray-300" />
               </div>
             </div>
           ))}

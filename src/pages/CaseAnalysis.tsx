@@ -3,26 +3,28 @@ import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
 import MitigationScorecard from '../components/MitigationScorecard';
 import STRViewer from '../components/STRViewer';
-import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck } from 'lucide-react';
+import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase } from 'lucide-react';
 
 const CaseAnalysis: React.FC = () => {
-    const { cases, selectedCase, setSelectedCase, assessEntity, view, previousView, setView, saveFindings, uploadAttachment, removeAttachment, requestModification, approveCase, rejectCase, processModification, updateCaseStatus } = useApp();
+    const { cases, allCases, selectedCase, setSelectedCase, assessEntity, view, previousView, setView, saveFindings, uploadAttachment, removeAttachment, requestModification, approveCase, rejectCase, processModification, updateCaseStatus } = useApp();
     const { user } = useAuth();
     const [showSTRViewer, setShowSTRViewer] = useState<string | null>(null);
-    const [selectedAction, setSelectedAction] = useState<string>('');
     const [isUploading, setIsUploading] = useState(false);
+    const [selectedAction, setSelectedAction] = useState<string>('');
+    const [activeSubjectId, setActiveSubjectId] = useState<string | null>(null);
     
     // Manager Rejection State
     const [isRejecting, setIsRejecting] = useState(false);
     const [rejectionReason, setRejectionReason] = useState('');
     
-    // In modal mode, we strictly respect the selection
-    const activeCase = selectedCase;
+    const activeCase = cases.find(c => c.id === selectedCase?.id);
+    
+    if (!activeCase || !selectedCase) return null;
 
-    if (!activeCase) return null;
-
-    const profile = activeCase.subject;
-    const isEntity = profile.type === 'INDIVIDUAL' || profile.type === 'COMPANY';
+    // Use selected subject or default to the first one
+    const currentSubjectId = activeSubjectId || activeCase.subjects[0]?.id;
+    const profile = activeCase.subjects.find(s => s.id === currentSubjectId) || activeCase.subjects[0];
+    const isEntity = profile?.type === 'INDIVIDUAL' || profile?.type === 'COMPANY';
 
     const handleClose = () => {
         setIsRejecting(false);
@@ -81,53 +83,72 @@ const CaseAnalysis: React.FC = () => {
         <div className="fixed inset-0 z-[80] bg-black/40 backdrop-blur-md flex justify-center items-center p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="bg-gray-100 w-full max-w-7xl rounded-2xl shadow-2xl flex flex-col h-[95vh] transform transition-all animate-in zoom-in duration-300 overflow-hidden relative border border-gray-200">
                 {/* Header */}
-                <div className="bg-[#100628] p-6 flex justify-between items-center shadow-lg border-b border-white/10 shrink-0">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-blue-600/20 p-2.5 rounded-xl border border-blue-500/30">
-                            <FileText className="w-6 h-6 text-blue-400" />
+                <div className="bg-[#100628] p-6 lg:p-8 flex flex-col lg:flex-row justify-between lg:items-center gap-6 shadow-lg border-b border-white/10 shrink-0">
+                    <div className="flex items-center gap-5">
+                        <div className="bg-[#00D7BA]/10 p-3.5 rounded-2xl border border-[#00D7BA]/20 shadow-inner">
+                            <FileText className="w-8 h-8 text-[#00D7BA]" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-black text-white tracking-tight">{activeCase.title}</h2>
-                            <div className="flex items-center gap-3 mt-1">
+                            <div className="flex items-center gap-3 mb-1.5 font-black uppercase">
                                 {activeCase.status === 'STAGING' ? (
-                                    <span className="bg-amber-500/20 text-amber-300 text-[10px] font-black px-2.5 py-1 rounded-full border border-amber-500/30 uppercase tracking-[0.2em]">
-                                        Analyst Draft • Staging
+                                    <span className="bg-amber-500/20 text-amber-300 text-[10px] px-3 py-1 rounded-full border border-amber-500/30 tracking-[0.2em]">
+                                        Draft Intel
                                     </span>
                                 ) : (
-                                    <span className="bg-blue-500/20 text-blue-300 text-[10px] font-black px-2.5 py-1 rounded-full border border-blue-500/30 uppercase tracking-widest">
+                                    <span className={`text-[10px] px-3 py-1 rounded-full border tracking-[0.2em] ${
+                                        activeCase.status === 'PRIORITY' ? 'bg-red-500/20 text-red-400 border-red-500/30 animate-pulse' : 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                                    }`}>
                                         {activeCase.status}
                                     </span>
                                 )}
-                                <span className="text-white/40 text-[11px] font-bold">Case ID: {activeCase.id}</span>
+                                <span className="text-white/30 text-[10px] tracking-widest">OP-ID: {activeCase.id}</span>
+                            </div>
+                            <h2 className="text-2xl font-black text-white tracking-tight leading-none">{activeCase.title}</h2>
+                            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3">
+                                <div className="flex items-center gap-2">
+                                    <Users className="w-3.5 h-3.5 text-white/40" />
+                                    <span className="text-[11px] font-bold text-white/60 tracking-wider">Owner: <span className="text-white/90 font-black">{activeCase.analyst || 'System Auto'}</span></span>
+                                </div>
+                                {activeCase.subjects.flatMap(s => s.crimeTypologies || []).length > 0 && (
+                                    <div className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-lg border border-white/5">
+                                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                                        <span className="text-[10px] font-black text-white/80 uppercase tracking-widest">
+                                            {[...new Set(activeCase.subjects.flatMap(s => s.crimeTypologies || []))].join(' • ')}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        {user?.role === 'MANAGER' && (
-                            <div className="flex items-center gap-2 pr-4 border-r border-white/10 mr-2">
+                        {user?.role === 'MANAGER' && (activeCase.status === 'PENDING_APPROVAL' || activeCase.pendingModification) && (
+                            <div className="flex items-center gap-3 pr-6 border-r border-white/10">
                                 <button 
                                     onClick={() => setIsRejecting(true)}
-                                    className="px-4 py-2 bg-white/5 hover:bg-red-600/20 text-red-400 hover:text-red-300 border border-red-500/30 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
+                                    className="px-6 py-3 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/30 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group"
                                 >
-                                    <XCircle className="w-3.5 h-3.5" /> Reject
+                                    <XCircle className="w-4 h-4 group-hover:scale-110 transition-transform" /> 
+                                    Push Back
                                 </button>
                                 <button 
                                     onClick={handleSignOff}
-                                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-lg flex items-center gap-2"
+                                    className="px-8 py-3 bg-[#00D7BA] hover:bg-[#00c4a8] text-[#100628] rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-[#00D7BA]/10 flex items-center gap-2"
                                 >
-                                    <UserCheck className="w-3.5 h-3.5" /> Sign-Off & Escalate
+                                    <UserCheck className="w-4 h-4" /> 
+                                    Authorize & Disseminate
                                 </button>
                             </div>
                         )}
                         <button 
                             onClick={handleClose}
-                            className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white"
+                            className="w-12 h-12 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-2xl transition-all text-white/40 hover:text-white border border-white/5"
                         >
                             <X className="w-6 h-6" />
                         </button>
                     </div>
                 </div>
+
 
                 {/* Content Area */}
                 <div className="flex-1 overflow-y-auto custom-scrollbar bg-gray-100 p-6">
@@ -146,6 +167,26 @@ const CaseAnalysis: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="text-[10px] font-black text-amber-600 uppercase tracking-widest bg-white px-3 py-1.5 rounded-lg border border-amber-100">STG-2026-ALPHA</div>
+                            </div>
+                        )}
+
+                        {/* Subject Switcher (Only if multi-entity) */}
+                        {activeCase.subjects.length > 1 && (
+                            <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+                                {activeCase.subjects.map(s => (
+                                    <button
+                                        key={s.id}
+                                        onClick={() => setActiveSubjectId(s.id)}
+                                        className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2 ${
+                                            currentSubjectId === s.id 
+                                                ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-200' 
+                                                : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200 hover:text-blue-600'
+                                        }`}
+                                    >
+                                        {s.type === 'COMPANY' ? <Briefcase className="w-3 h-3" /> : <User className="w-3 h-3" />}
+                                        {s.name}
+                                    </button>
+                                ))}
                             </div>
                         )}
 
@@ -169,14 +210,18 @@ const CaseAnalysis: React.FC = () => {
                                     </label>
                                 </div>
                                 
-                                <div className="p-6 space-y-6 flex-1 flex flex-col">
+                                <div className="p-8 space-y-8 flex-1 flex flex-col">
                                     {/* Findings Textarea */}
                                     <div className="flex-grow flex flex-col">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Operational Narrative</h4>
+                                            <span className="text-[9px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase">Auto-Saving Enabled</span>
+                                        </div>
                                         <textarea 
-                                            value={profile.investigationFindings || ''}
+                                            value={activeCase.findings || ''}
                                             onChange={(e) => saveFindings(activeCase.id, e.target.value)}
                                             placeholder="Document key investigation findings, typology matching, or justification for disposal..."
-                                            className="w-full flex-1 min-h-[140px] p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all resize-none outline-none leading-relaxed placeholder:text-gray-300 shadow-inner"
+                                            className="w-full flex-1 min-h-[160px] p-5 bg-gray-50/50 border border-gray-200 rounded-2xl text-sm font-bold text-gray-900 focus:ring-4 focus:ring-blue-500/10 focus:bg-white focus:border-blue-400 transition-all resize-none outline-none leading-relaxed placeholder:text-gray-300 shadow-inner"
                                         />
                                     </div>
 
@@ -224,31 +269,41 @@ const CaseAnalysis: React.FC = () => {
                         </div>
 
                         {/* ROW 2: Vital Particulars & Subject Identity (Full Horizontal) */}
-                        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                            <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                                <h3 className="text-xs font-black text-gray-900 uppercase tracking-widest">Vital Particulars & Subject Identity</h3>
+                        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden border-t-4 border-t-emerald-600">
+                            <div className="bg-gray-50/50 px-8 py-5 border-b border-gray-100 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
+                                    <h3 className="text-xs font-black text-gray-900 uppercase tracking-[0.2em]">Vital Particulars & Target Identity</h3>
+                                </div>
+                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-md">Reg-Verified</div>
                             </div>
-                            <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-12">
-                                <div className="space-y-1">
-                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Full Name / Entity Name</span>
-                                    <span className="text-base font-black text-gray-900">{profile.name}</span>
+                            <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-16">
+                                <div className="space-y-2">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block">Entity Designation</span>
+                                    <span className="text-lg font-black text-gray-900 tracking-tight leading-tight">{profile.name}</span>
                                 </div>
-                                <div className="space-y-1">
-                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Nationality / Registry</span>
-                                    <span className="text-base font-black text-gray-900">{profile.nationality}</span>
+                                <div className="space-y-2">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block">Jurisdiction / Origin</span>
+                                    <div className="flex items-center gap-2">
+                                         <div className="w-4 h-3 bg-gray-200 rounded-sm"></div> {/* Placeholder for flag */}
+                                         <span className="text-sm font-black text-gray-900">{profile.nationality}</span>
+                                    </div>
                                 </div>
-                                <div className="space-y-1">
-                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Primary ID Number</span>
-                                    <span className="text-sm font-bold text-gray-900">{profile.idNumber || 'S8831**** (Masked)'}</span>
+                                <div className="space-y-2">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block">Operational ID</span>
+                                    <span className="text-sm font-black text-blue-600 font-mono p-1 bg-blue-50 rounded border border-blue-100">{profile.idNumber || 'S8831****'}</span>
                                 </div>
-                                <div className="space-y-1">
-                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Date of Birth / Incorp</span>
-                                    <span className="text-sm font-bold text-gray-900">{profile.dob || '14 Oct 1982'}</span>
+                                <div className="space-y-2">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block">Birth / Incorp Date</span>
+                                    <span className="text-sm font-black text-gray-900">{profile.dob || '14 Oct 1982'}</span>
                                 </div>
-                                <div className="space-y-1 md:col-span-2 lg:col-span-3">
-                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Registered Address</span>
-                                    <span className="text-sm font-bold text-gray-900">{profile.fullAddress || 'N/A'}</span>
+                                <div className="space-y-2 md:col-span-2 lg:col-span-4 pt-6 border-t border-gray-50">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-2">Primary Registered Address</span>
+                                    <div className="flex items-start gap-4">
+                                        <div className="p-2 bg-gray-50 rounded-lg border border-gray-100 italic font-medium">
+                                            <span className="text-xs font-bold text-gray-600 leading-relaxed uppercase tracking-wider">{profile.fullAddress || 'Address details currently encrypted or unavailable in repository.'}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -256,22 +311,39 @@ const CaseAnalysis: React.FC = () => {
                         {/* ROW 3: Linked Cases & Linked Regulatory Reports (Side-by-Side) */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                                <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 text-center">Intelligence Case History</h4>
+                                <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 text-center">Cross-Entity Related Cases</h4>
                                 <div className="space-y-4 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-                                    {profile.previousCases?.map((pc, i) => (
-                                        <div key={i} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
-                                            <div>
-                                                <div className="text-xs font-black text-gray-900 uppercase tracking-wider">{pc.id}</div>
-                                                <div className="text-[10px] text-gray-500 font-bold uppercase mt-0.5">{pc.status}</div>
+                                    {allCases.filter((c: any) => c.id !== activeCase.id && c.subjects.some((cs: any) => activeCase.subjects.some(as => as.id === cs.id || (as.idNumber && as.idNumber === cs.idNumber)))).map((rc: any, i: number) => {
+                                        const matchingSubjects = activeCase.subjects.filter(as => 
+                                            rc.subjects.some((rs: any) => rs.id === as.id || (as.idNumber && as.idNumber === rs.idNumber))
+                                        );
+                                        
+                                        return (
+                                            <div key={i} onClick={() => { setSelectedCase(rc); }} className="flex justify-between items-center p-3 bg-blue-50/30 hover:bg-blue-50 rounded-lg border border-blue-100/50 cursor-pointer transition-all">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-6 h-6 rounded bg-blue-100 text-blue-600 flex items-center justify-center">
+                                                        <FileText className="w-3 h-3" />
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[10px] font-black text-gray-900 uppercase tracking-wider">{rc.id}</div>
+                                                        <div className="text-[9px] text-blue-600 font-bold uppercase truncate max-w-[150px]">{rc.title}</div>
+                                                        <div className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">
+                                                            Linked to: {matchingSubjects.map(s => s.name).join(', ')}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className={`text-[8px] font-black px-1.5 py-0.5 rounded border uppercase ${
+                                                        rc.status === 'CLOSED' ? 'bg-gray-100 text-gray-400 border-gray-200' : 'bg-green-100 text-green-600 border-green-200'
+                                                    }`}>
+                                                        {rc.status}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div className="flex flex-col items-end">
-                                                <span className="text-xs font-black text-red-600">{pc.score}</span>
-                                                <span className="text-[10px] font-black text-blue-500 mt-1 bg-blue-50 px-2 py-0.5 rounded uppercase">Verified</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {(!profile.previousCases || profile.previousCases.length === 0) && (
-                                        <div className="text-center py-8 text-gray-400 text-[10px] font-bold uppercase">No prior intelligence cases</div>
+                                        );
+                                    })}
+                                    {allCases.filter((c: any) => c.id !== activeCase.id && c.subjects.some((cs: any) => activeCase.subjects.some(as => as.id === cs.id || (as.idNumber && as.idNumber === cs.idNumber)))).length === 0 && (
+                                        <div className="text-center py-8 text-gray-400 text-[10px] font-bold uppercase">No related cross-entity cases found</div>
                                     )}
                                 </div>
                             </div>
@@ -279,10 +351,15 @@ const CaseAnalysis: React.FC = () => {
                             <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                                 <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 text-center">Linked Regulatory Reports</h4>
                                 <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-                                    {profile.linkedSTRs?.map((str, i) => (
+                                    {activeCase.subjects.flatMap(s => 
+                                        (s.linkedSTRs || []).map(str => ({ ...str, sourceEntity: s.name }))
+                                    ).filter((v, i, a) => a.findIndex(t => t.id === v.id) === i).map((str, i) => (
                                         <div key={i} onClick={() => setShowSTRViewer(str.id)} className="flex justify-between items-center p-3 bg-gray-50/50 hover:bg-gray-100 rounded-lg cursor-pointer transition-all border border-gray-200 group">
                                             <div className="flex flex-col">
-                                                <span className="text-xs font-black text-gray-700 tracking-wider group-hover:text-blue-600">{str.id}</span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs font-black text-gray-700 tracking-wider group-hover:text-blue-600">{str.id}</span>
+                                                    <span className="text-[8px] font-black text-blue-500 bg-blue-50 px-1.5 rounded uppercase border border-blue-100">{str.sourceEntity}</span>
+                                                </div>
                                                 <span className="text-[10px] text-gray-500 mt-1 font-black uppercase tracking-widest">{str.date}</span>
                                             </div>
                                             <div className="flex flex-col items-end">
@@ -291,7 +368,7 @@ const CaseAnalysis: React.FC = () => {
                                             </div>
                                         </div>
                                     ))}
-                                    {(!profile.linkedSTRs || profile.linkedSTRs.length === 0) && (
+                                    {activeCase.subjects.flatMap(s => s.linkedSTRs || []).length === 0 && (
                                         <div className="text-center py-8 text-gray-400 text-[10px] font-bold uppercase">No linked regulatory reports</div>
                                     )}
                                 </div>
