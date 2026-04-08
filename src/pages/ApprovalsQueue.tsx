@@ -23,10 +23,9 @@ const ApprovalsQueue: React.FC = () => {
     return (
         <div className="space-y-6">
             <header className="mb-8">
-                <h2 className="text-2xl font-bold tracking-tight text-gray-900">Manager Approvals</h2>
-                <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-green-600" />
-                    Review escalated intelligence entities and authorize formal Case status
+                <h2 className="text-2xl font-black tracking-tight text-gray-900 uppercase">Pending Approvals</h2>
+                <p className="text-sm text-gray-500 mt-1 font-medium italic">
+                    Director Oversight & Sign-off Pipeline
                 </p>
             </header>
 
