@@ -44,3 +44,7 @@ npm run dev
 # Deploy to Production
 firebase deploy --only hosting
 ```
+
+## Post-Industrialization Narratives
+13. [Strategic Roadmap](./docs/OUTSTANDING_ROADMAP.md) [NEW]
+14. [User Story Flow](./docs/USER_STORY_FLOW.md) [NEW]
