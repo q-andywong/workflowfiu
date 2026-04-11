@@ -10,7 +10,7 @@ Approved cases with a status of `ANALYSIS` or `PRIORITY` feature a deep-link int
 ## Functional Logic
 * **Dynamic Routing:** Each case maps its internal `TaskID` or `CaseID` directly to a corresponding investigation link.
 * **Target Environment:** `https://demo.quantexa.com/banking/share/investigation?id={CASE_ID}`.
-* **Secure Transit:** The link is rendered as a clean, target-blank button ensuring the analyst maintains their session in STRO STARS while pivoting to the topological graph.
+* **Secure Transit:** The link is rendered as a clean, target-blank button ensuring the analyst maintains their session in FIU STR analysis platform while pivoting to the topological graph.
 
 ## State Constraints
 The **Open in Quantexa** capability is strictly locked until a Manager has authorized the Case creation. If an analyst attempts to view a raw `TRIAGE` or `PENDING_APPROVAL` entity, the button is hidden or replaced by the "Escalation Status" panel.

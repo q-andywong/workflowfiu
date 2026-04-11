@@ -25,7 +25,7 @@ const Dissemination: React.FC = () => {
           <h2 className="text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
             Intelligence Dissemination & Feedback
           </h2>
-          <p className="text-gray-500 mt-1 font-medium text-sm">Tracking the operational impact of STRO financial intelligence</p>
+          <p className="text-gray-500 mt-1 font-medium text-sm">Tracking the operational impact of FIU financial intelligence</p>
         </div>
         <div className="flex gap-2 p-1 bg-gray-100 rounded-lg border border-gray-200 shadow-sm">
            <button 
@@ -52,7 +52,7 @@ const Dissemination: React.FC = () => {
         <div className="bg-white p-5 rounded-xl shadow-sm border-t-4 border-t-green-500 border border-gray-200">
             <ClipboardCheck className="w-5 h-5 text-green-500 mb-3" />
             <div className="text-2xl font-black text-gray-900">$42.5M</div>
-            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Assets Seized via STRO</div>
+            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Assets Seized via FIU</div>
         </div>
         <div className="bg-white p-5 rounded-xl shadow-sm border-t-4 border-t-amber-400 border border-gray-200">
             <Clock className="w-5 h-5 text-amber-500 mb-3" />
@@ -89,7 +89,10 @@ const Dissemination: React.FC = () => {
                        <FileCheck className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-gray-900">{c.subject.name}</div>
+                      <div className="text-sm font-bold text-gray-900">
+                        {c.subjects[0]?.name}
+                        {c.subjects.length > 1 && ` (+${c.subjects.length - 1} more)`}
+                      </div>
                       <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider truncate max-w-[200px] mt-0.5">{c.title}</div>
                     </div>
                   </div>

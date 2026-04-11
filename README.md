@@ -1,15 +1,15 @@
-# STRO STARS
+# FIU STR analysis platform
 
 ### Restricted Case Management System
-STRO STARS is an enterprise-grade, downstream intelligence analysis and case management platform. It acts as the operational endpoint for analysts digesting intelligence ingested upstream by STRO SONAR. 
+FIU STR analysis platform is an enterprise-grade, downstream intelligence analysis and case management platform. It acts as the operational endpoint for analysts digesting intelligence ingested upstream by FIU Q Platform. 
 
 ## Core Capabilities
-* **Investigator-Centric Triage:** A streamlined, full-width ingestion stack designed for high-speed evidence assessment. Features a **Priority Bypass Registry** for critical hit detection and a **Hibernation Handshake** for auto-resolved low-risk subjects.
-* **Director Oversight Workbench:** Dedicated managerial telemetry for reviewing operational efficiency and oversight of the **Approvals Queue**.
-* **Stateful Analytical Registry:** Context-aware navigation system that ensures investigators never lose their place when pivoting between primary tabs and the **Case Analysis** workbench.
-* **Intelligence Lifecycle Workflow:** Formally manages the transition of a raw **Task** into an active **Case** via a mandatory **Director Sign-off** pipeline.
-* **STR Master Directory:** Centralized, globally searchable registry for STR, CTR, and CMR reports with real-time filtering and linked-subject identification.
-* **Proactive Case Management:** Features "Manual Case Creation" triggers and "Entity Information" mapping to instantiate investigations from the Master Registry or manual subject input.
+* **Multi-Entity Intelligence Framework:** A robust data model standardizing investigations on N-to-N relationships between cases and subjects. Supports complex networks involving both **Individuals** and **Companies**.
+* **Industrialized Case Inception:** A professional 3-step wizard for initiating investigations. Features operational metadata definition, multi-entity intelligence discovery (seeding from master lists), and operational review.
+* **Investigator-Centric Triage:** A streamlined, full-width ingestion stack designed for high-speed evidence assessment. Features **Aggregated Max Risk** indicators and **Multi-Entity Indicators (+X)**.
+* **Cross-Entity Discovery Engine:** Automated scanner built into the Analysis workspace that identifies historical investigations across the entire platform involving any currently selected subjects.
+* **Stateful Analytical Registry:** Context-aware navigation system with an integrated **Subject-Switcher** for pivoting between entity profiles within a single investigation.
+* **Unified Operational Narrative:** Consolidates scattered subject notes into a single, case-level **Findings** ledger for standardized operational reporting.
 * **Bulk Intelligence Operations:** Multi-select framework enabled via a context-aware floating `BulkActionToolbar`.
 * **Quantexa Integration:** Approved cases feature native, secure-routing to external Quantexa network analysis graphs for deep-link investigation.
 

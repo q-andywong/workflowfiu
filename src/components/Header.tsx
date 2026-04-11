@@ -14,7 +14,7 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-3">
             <ShieldAlert className="h-6 w-6 text-blue-600" strokeWidth={1.5} />
             <h1 className="text-xl font-bold text-gray-900">
-              STRO STARS
+              FIU STR analysis platform
             </h1>
           </div>
           <div className="flex items-center space-x-4">

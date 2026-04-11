@@ -6,7 +6,7 @@ import ManualCaseModal from '../components/ManualCaseModal';
 import { FolderGit2, ArrowRight, PlusCircle, ShieldAlert, ArrowUpDown, ArrowUp, ArrowDown, Search } from 'lucide-react';
 
 const CaseDirectory: React.FC = () => {
-    const { cases, setSelectedCase, setView } = useApp();
+    const { allCases, setSelectedCase, setView } = useApp();
     const { user } = useAuth();
     const [showCreateModal, setShowCreateModal] = React.useState(false);
 
@@ -16,7 +16,7 @@ const CaseDirectory: React.FC = () => {
 
     // The Master Directory filters out Triage/Dismissed and enforces privacy for STAGING drafts
     const registry = React.useMemo(() => {
-        let filtered = cases.filter(c => {
+        let filtered = allCases.filter(c => {
             // Exclude system drops
             if (['TRIAGE', 'DISMISSED', 'HIBERNATED'].includes(c.status)) return false;
             
@@ -88,7 +88,7 @@ const CaseDirectory: React.FC = () => {
         }
 
         return filtered;
-    }, [cases, user, sortConfig, statusFilter, searchQuery]);
+    }, [allCases, user, sortConfig, statusFilter, searchQuery]);
 
     const handleSort = (key: string) => {
         setSortConfig(prev => {
@@ -208,12 +208,13 @@ const CaseDirectory: React.FC = () => {
                                         <div>
                                             <div className="text-sm font-black text-gray-900 truncate group-hover:text-blue-600 transition-colors flex items-center gap-2">
                                                 {c.title}
-                                                {c.subjects.length > 1 && (
-                                                    <span className="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded text-[8px] border border-blue-100">+{c.subjects.length - 1} Entities</span>
-                                                )}
                                             </div>
-                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest truncate mt-0.5">
-                                                {c.subjects[0]?.name} {c.subjects.length > 1 && 'et al.'}
+                                            <div className="flex flex-wrap items-center gap-1 mt-1.5">
+                                                {c.subjects.map(s => (
+                                                    <span key={s.id} className="text-[8px] font-black text-white bg-gradient-to-r from-blue-500 to-indigo-500 px-1.5 py-0.5 rounded shadow-sm shadow-blue-500/20 uppercase border border-blue-400/30">
+                                                        {s.name}
+                                                    </span>
+                                                ))}
                                             </div>
                                         </div>
                                     </td>

@@ -1,6 +1,6 @@
 # Changelog & Version History
 
-This document tracks major architectural deviations and deployments across the STRO STARS framework. Use this ledger as a reference if functional reversions are required.
+This document tracks major architectural deviations and deployments across the FIU STR analysis platform framework. Use this ledger as a reference if functional reversions are required.
 
 ## [v2.5.1] - Multi-Entity Attribution & Stability (Current)
 
@@ -43,12 +43,12 @@ This document tracks major architectural deviations and deployments across the S
 ### Fixed
 * **Data Layer Synchronization**: Resolved a bug where bridged reports from the STR Registry were not surfacing in the "Linked Regulatory Reports" panel of the Analysis Workspace.
 
-## [v2.2.0] - Operational Silos & SONAR Registry
+## [v2.2.0] - Operational Silos & Q Platform Registry
 
 ### Added
 * **Hibernated Registry**: Introduced a dedicated operational silo (`HibernatedList.tsx`) for low-risk entities (Score < 10). Subjects like Sarah Jenkins are now moved to background monitoring, reducing noise in the active Triage Queue.
 * **STR Master Directory**: Implemented a globally searchable registry (`STRDirectory.tsx`) for all ingested reports (STR, CTR, CMR). Feature includes real-time filtering by Report ID (e.g., '993-8822') and direct links to the formal STR Viewer.
-* **SONAR CTR Integration**: Researched and documented the full 9-page **Form NP 784 (CTR)** standard for PSMD. Integrated high-fidelity mock CTR data (Gems, Gold, AML-Tokens) for subjects like Michael Greene (Project Shadow).
+* **Q Platform CTR Integration**: Researched and documented the full 9-page **Form NP 784 (CTR)** standard for PSMD. Integrated high-fidelity mock CTR data (Gems, Gold, AML-Tokens) for subjects like Michael Greene (Project Shadow).
 * **Automated Hibernation KPIs**: Updated Investigator and Manager dashboards with live "Hibernation Activity" alerts and registry oversight widgets.
 
 ### Changed
@@ -85,7 +85,7 @@ This document tracks major architectural deviations and deployments across the S
 * **Wiki Architecture:** Populated exhaustive feature-level modular documentation.
 
 ### Changed
-* **System Designation:** The platform's objective formally shifted from replacing SONAR entirely to acting as a **downstream analysis & case management** system ingesting SONAR outputs.
+* **System Designation:** The platform's objective formally shifted from replacing Q Platform entirely to acting as a **downstream analysis & case management** system ingesting Q Platform outputs.
 * **Aesthetic Refactor:** Completely stripped previous aggressive Glassmorphism elements (`index.css` overrides). Migrated entirely to a high-contrast, clean-card Enterprise UI leveraging `bg-gray-50`.
 * **Sidebar Removal:** Stripped vertical navigation architecture in favor of a compressed `Header.tsx` horizontal tab bar.
 * **Component Renaming:** Refactored entire global data scope from `SIMSContext` to `AppContext`.

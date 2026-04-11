@@ -60,7 +60,10 @@ const ApprovalsQueue: React.FC = () => {
                                         <div className="flex flex-wrap gap-4 mt-2">
                                             <div className="flex flex-col">
                                                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-[8px]">Target Entity</span>
-                                                <span className="text-sm font-semibold text-gray-700">{c.subject.name}</span>
+                                                <span className="text-sm font-semibold text-gray-700">
+                                                    {(c.subjects || [])[0]?.name || 'Unknown Entity'}
+                                                    {(c.subjects || []).length > 1 && ` (+${(c.subjects || []).length - 1} more)`}
+                                                </span>
                                             </div>
 
                                             {isLinkClose ? (
@@ -71,7 +74,7 @@ const ApprovalsQueue: React.FC = () => {
                                                     </div>
                                                     <div className="flex flex-col">
                                                         <span className="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Original Owner</span>
-                                                        <span className="text-sm font-semibold text-gray-700">{c.pendingModification?.details.originalOwner}</span>
+                                                        <span className="text-sm font-semibold text-gray-700">{c.pendingModification?.details?.originalOwner}</span>
                                                     </div>
                                                 </>
                                             ) : (
@@ -83,8 +86,12 @@ const ApprovalsQueue: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <h4 className="text-3xl font-black text-red-600 tracking-tighter">{c.subject.riskProfile.totalScore}</h4>
-                                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Risk Score</div>
+                                        <h4 className="text-3xl font-black text-red-600 tracking-tighter">
+                                            {(c.subjects || []).length > 0 
+                                                ? Math.max(...(c.subjects || []).map(s => s?.riskProfile?.totalScore || 0)) 
+                                                : 0}
+                                        </h4>
+                                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Risk Score</div>
                                     </div>
                                 </div>
                                 
@@ -95,7 +102,7 @@ const ApprovalsQueue: React.FC = () => {
                                                 <LinkIcon className="w-5 h-5 text-amber-500 shrink-0" />
                                                 <span>
                                                     <strong>{c.pendingModification?.requestedBy}</strong> is requesting to merge this lead into master investigation 
-                                                    <code className="mx-1 px-1.5 py-0.5 bg-white border border-amber-200 rounded text-amber-700 font-bold">{c.pendingModification?.details.targetCase}</code>.
+                                                    <code className="mx-1 px-1.5 py-0.5 bg-white border border-amber-200 rounded text-amber-700 font-bold">{c.pendingModification?.details?.targetCase}</code>.
                                                 </span>
                                             </>
                                         ) : (

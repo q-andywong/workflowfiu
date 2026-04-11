@@ -1,20 +1,24 @@
 # Industrial User Story: The investigator Journey
 
-This narrative outlines the modernized investigative lifecycle as of v2.4.0.
+This narrative outlines the modernized investigative lifecycle in the Multi-Entity Intelligence era (v2.5.1).
 
-## 1. High-Volume Intelligence Ingestion
-An Investigator starts their day in the **Automated Triage Queue**. Instead of navigating through statistical noise, they are presented with a full-width, high-density ingestion stack. 
-* **The Bypass**: They immediately identify a "Critical Hit Detection" in the **Priority Bypass Registry**. A high-risk subject has jumped the queue due to a risk score of 185, triggered by upstream SONAR alerts.
+## 1. High-Volume Ingestion & Operational Domain Authentication
+An Investigator starts their day by logging into the **FIU STR analysis platform** portal. They declare their operational domain (e.g., *Cybercrime* or *Money Laundering*) and securely boot into the **Investigator Dashboard**.
 
-## 2. Proactive Inception & Manual Bridge
-Later, while scanning the **STR Master Directory**, the investigator notices a pattern across three disparate transaction reports. They use the **Bulk Action Toolbar** to select these reports and trigger **Manual Case Creation**. Within seconds, a new investigation cluster is born, bridging the reports into a unified dossier.
+Immediately glancing at their dynamic tracker, they notice the filtered **Triage Queue** count matches their assigned domain load. Drilling down into the queue, they immediately spot a multi-subject indicator (`+2 Entities`) on a high-risk task. The **Aggregated Max Risk** logic has bubbled this to the top because one of the subjects, Igor Dimitrov, has triggered a Sanctions hit.
 
-## 3. Deep-Dive Analysis (The "No-Loss" Flow)
-The investigator pivots into the **Case Analysis Workbench**. 
-* **Context Preservation**: They evaluate risk factors and document findings. Crucially, they use the **Firebase Evidence Locker** to attach bank statements and identity documents directly to the case from their machine.
-* **Contextual Persistence**: When they need a quick reference back to the Triage Queue, they close the panel and are **automatically restored** to their exact place in the queue—no more manual clicks back from the Dashboard.
+## 2. The 3-Step Inception Wizard
+Later, the investigator needs to start a proactive investigation based on external intelligence. They initiate the **3-Step Inception Wizard**:
+1. **Operational Intent**: They name the project "Operation Highland" and document the intelligence source.
+2. **Intelligence Discovery**: They search the **Master Registry**, linking Tobias Black and Apex Holdings LLC to the folder.
+3. **Verification**: They verify the entity bundle and launch the investigation dossier.
+
+## 3. Multi-Entity Network Analysis
+Inside the **Case Analysis Workbench**, the investigator pivots between Tobias (Individual) and Apex Holdings (Company) using the **Subject Switcher**.
+- **Discovery Attribution**: The system's relationship engine finds a related case from 2024. The attribution marker confirms the hit is linked to Tobias Black.
+- **Evidence Locker**: Bank statements are uploaded and securely mapped via **Firebase Storage**, providing a unified evidence chain for all subjects in the folder.
 
 ## 4. Formal Escalation & Director Sign-Off
-Satisfied with their findings, the investigator submits the case for **Case Creation Approval**.
-* **Managerial Oversight**: The Director receives an alert on their specialized dashboard. They pivot to the **Approvals Queue**, inspect the analyst's evidence, and provide a formal **Digital Sign-Off**. 
-* **The Promotion**: The draft task is formally promoted to an active Investigation ID, ready for Quantexa network analysis and eventual dissemination.
+Satisfied with the consolidated findings, the investigator submits the multi-entity bundle for **Director Approval**.
+- **Managerial Oversight**: The Operations Manager reviews the "Operation Highland" folder. They verify the links between subjects and the attached evidence before providing a **Digital Sign-Off**. 
+- **The Transition**: The inception task is formally promoted into the active Investigation Directory, unlocking Quantexa network exports and standardized reporting.

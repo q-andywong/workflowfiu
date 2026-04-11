@@ -1,7 +1,7 @@
 # Authentication & RBAC
 
 ## Objective
-The `Login.tsx` pipeline serves as the primary gateway into the STRO STARS matrix, intercepting unauthorized users and strictly defining rendering conditions.
+The `Login.tsx` pipeline serves as the primary gateway into the FIU STR analysis platform matrix, intercepting unauthorized users and strictly defining rendering conditions.
 
 ## Mechanism
 The `App.tsx` root wraps the entire execution thread inside an `<AuthProvider>` (`src/contexts/AuthContext.tsx`).

@@ -28,10 +28,15 @@ const STRDirectory: React.FC = () => {
 
     const getSubjectForSTR = React.useCallback((strId: string) => {
         const linkedCase = allCases.find(c => 
-            c.reports.some(r => r.id === strId) || 
-            c.subject.linkedSTRs?.some(ls => ls.id === strId)
+            c.reports?.some(r => r.id === strId) || 
+            c.subjects?.some(s => s.linkedSTRs?.some(ls => ls.id === strId))
         );
-        return linkedCase?.subject.name || 'Unknown / Unlinked';
+        if (linkedCase) {
+            const subject = linkedCase.subjects?.find(s => s.linkedSTRs?.some(ls => ls.id === strId));
+            if (subject) return subject.name;
+            return linkedCase.subjects?.[0]?.name || 'Unknown / Unlinked';
+        }
+        return 'Unknown / Unlinked';
     }, [allCases]);
 
     const getFieldOperators = (field: string) => {
@@ -356,34 +361,34 @@ const STRDirectory: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {filteredSTRs.map(str => (
-                                <tr key={str.id} className={`hover:bg-blue-50/30 transition-colors group ${selectedIds.includes(str.id) ? 'bg-blue-50/50' : ''}`}>
-                                    <td className="px-6 py-4">
+                                <tr key={str.id} className={`hover:bg-blue-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-blue-600 ${selectedIds.includes(str.id) ? 'bg-blue-50/50' : ''}`}>
+                                    <td className="px-6 py-4 border-r border-gray-100">
                                         <input 
                                             type="checkbox"
                                             checked={selectedIds.includes(str.id)}
                                             onChange={() => toggleSelect(str.id)}
-                                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                         />
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 cursor-pointer" onClick={() => setSelectedSTR(str.id)}>
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-white transition-colors">
+                                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-100 transition-colors">
                                                 <FileText className="w-4 h-4" />
                                             </div>
-                                            <span className="text-sm font-black text-gray-900 tracking-tight">{str.id}</span>
+                                            <span className="text-sm font-black text-gray-900 tracking-tight group-hover:text-blue-600 transition-colors">{str.id}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 cursor-pointer" onClick={() => setSelectedSTR(str.id)}>
                                         <div className="text-sm font-bold text-gray-700">{getSubjectForSTR(str.id)}</div>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 cursor-pointer" onClick={() => setSelectedSTR(str.id)}>
                                         <div className="text-[11px] font-bold text-gray-500 uppercase tracking-tighter">{str.date}</div>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-6 py-4 text-right cursor-pointer" onClick={() => setSelectedSTR(str.id)}>
                                         <div className="text-sm font-black text-gray-900 tracking-tight">{str.amount.toLocaleString()} {str.currency}</div>
                                     </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className={`px-2 py-0.5 text-[10px] font-black rounded border uppercase ${
+                                    <td className="px-6 py-4 text-center cursor-pointer" onClick={() => setSelectedSTR(str.id)}>
+                                        <span className={`px-2 py-0.5 text-[10px] font-black rounded shadow-sm border uppercase ${
                                             str.type === 'STR' ? 'bg-amber-50 text-amber-700 border-amber-200' :
                                             str.type === 'CTR' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                                             'bg-teal-50 text-teal-700 border-teal-200'
@@ -391,22 +396,19 @@ const STRDirectory: React.FC = () => {
                                             {str.type}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <div className={`text-sm font-black ${
-                                            str.riskScore > 80 ? 'text-red-600' :
-                                            str.riskScore > 50 ? 'text-amber-600' :
-                                            'text-green-600'
+                                    <td className="px-6 py-4 text-center cursor-pointer" onClick={() => setSelectedSTR(str.id)}>
+                                        <div className={`font-black px-2.5 py-1 rounded shadow-sm text-xs border w-10 mx-auto ${
+                                            str.riskScore > 80 ? 'text-red-600 bg-red-50 border-red-100' :
+                                            str.riskScore > 50 ? 'text-amber-600 bg-amber-50 border-amber-100' :
+                                            'text-green-600 bg-green-50 border-green-100'
                                         }`}>
                                             {str.riskScore}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <button 
-                                            onClick={() => setSelectedSTR(str.id)}
-                                            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all"
-                                        >
+                                    <td className="px-6 py-4 text-right cursor-pointer" onClick={() => setSelectedSTR(str.id)}>
+                                        <div className="p-1.5 inline-block bg-gray-50 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-all text-gray-400">
                                             <ExternalLink className="w-4 h-4" />
-                                        </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

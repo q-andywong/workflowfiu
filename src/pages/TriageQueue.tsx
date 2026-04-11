@@ -45,8 +45,8 @@ const TriageQueue: React.FC = () => {
         }
     };
 
-    const toggleSelect = (id: string, e: React.MouseEvent) => {
-        e.stopPropagation();
+    const toggleSelect = (id: string, e?: React.SyntheticEvent) => {
+        if (e) e.stopPropagation();
         setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
     };
 
@@ -158,193 +158,298 @@ const TriageQueue: React.FC = () => {
                             {(isInvestigator || managerView === 'TRIAGE') && (
                                 <>
                                     <h3 className="text-lg font-black text-gray-900 flex items-center gap-3 mb-2"><Inbox className="w-6 h-6 text-blue-600" /> Pending Triage List</h3>
-                                    <div className="px-4 pb-2 border-b border-gray-200">
-                                        <div className="flex items-center gap-4">
-                                            <input 
-                                                type="checkbox" 
-                                                checked={selectedIds.length === triageEntities.length && triageEntities.length > 0}
-                                                onChange={toggleSelectAll}
-                                                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                            />
-                                            <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{triageEntities.length} Items Awaiting Assessment</div>
-                                        </div>
+                                    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="bg-gray-50 border-b border-gray-200">
+                                                    <th className="px-6 py-4 w-12 border-r border-gray-100">
+                                                        <input 
+                                                            type="checkbox" 
+                                                            checked={selectedIds.length === triageEntities.length && triageEntities.length > 0}
+                                                            onChange={toggleSelectAll}
+                                                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                        />
+                                                    </th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Task ID & Target Entities</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Risk Score</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Access</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100 italic font-medium">
+                                                {triageEntities.map(c => (
+                                                    <tr key={c.id} className="hover:bg-blue-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-blue-600">
+                                                        <td className="px-6 py-4 border-r border-gray-100">
+                                                            <input 
+                                                                type="checkbox" 
+                                                                checked={selectedIds.includes(c.id)}
+                                                                onChange={(e) => { e.stopPropagation(); toggleSelect(c.id); }}
+                                                                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                            />
+                                                        </td>
+                                                        <td className="px-6 py-4 cursor-pointer" onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}>
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
+                                                                    <Inbox className="w-5 h-5" />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="text-sm font-black text-gray-900 flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                                                                        {c.subjects[0]?.name}
+                                                                        {c.subjects.length > 1 && (
+                                                                            <span className="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded text-[8px] border border-blue-100">+{c.subjects.length - 1} Entities</span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.id}</div>
+                                                                        {Array.from(new Set(c.subjects.flatMap(s => s.crimeTypologies || []))).length > 0 ? (
+                                                                            Array.from(new Set(c.subjects.flatMap(s => s.crimeTypologies || []))).map((typ, idx) => (
+                                                                                <React.Fragment key={idx}>
+                                                                                    <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                                                                    <div className="text-[9px] font-black w-fit flex items-center gap-1.5 text-amber-600 uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded border border-amber-200 shadow-sm shrink-0">
+                                                                                        <AlertTriangle className="w-2.5 h-2.5" />
+                                                                                        {typ}
+                                                                                    </div>
+                                                                                </React.Fragment>
+                                                                            ))
+                                                                        ) : (
+                                                                            <React.Fragment>
+                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                                                                <div className="text-[9px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded border border-blue-100 shrink-0">
+                                                                                    General Triage
+                                                                                </div>
+                                                                            </React.Fragment>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-center cursor-pointer" onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}>
+                                                            <span className="font-black px-2.5 py-1 rounded shadow-sm text-xs border text-blue-600 bg-blue-50 border-blue-100">
+                                                                {Math.max(...c.subjects.map(s => s.riskProfile.totalScore))}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right cursor-pointer" onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}>
+                                                            <div className="p-1.5 inline-block bg-gray-50 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-all text-gray-400">
+                                                                <ArrowRight className="w-4 h-4" />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        {triageEntities.length === 0 && (
+                                            <div className="p-12 text-center text-gray-400 font-bold italic w-full">
+                                                Queue is currently empty.
+                                            </div>
+                                        )}
                                     </div>
-
-                                    {triageEntities.map(c => (
-                                        <div key={c.id} 
-                                            onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
-                                            className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer border-l-4 border-l-blue-500"
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-                                                    <Inbox className="w-5 h-5" />
-                                                </div>
-                                                <div>
-                                                    <div className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                                                        {c.subjects[0]?.name}
-                                                        {c.subjects.length > 1 && (
-                                                            <span className="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded text-[8px] border border-blue-100">+{c.subjects.length - 1} Entities</span>
-                                                        )}
-                                                    </div>
-                                                    <div className="flex items-center gap-2 mt-0.5">
-                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.id}</div>
-                                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                        <div className="text-[9px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                                                            {c.subjects[0]?.crimeTypologies?.[0] || 'General Triage'}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-8 text-right">
-                                                <div>
-                                                    <div className="text-lg font-black text-blue-600">
-                                                        {Math.max(...c.subjects.map(s => s.riskProfile.totalScore))}
-                                                    </div>
-                                                    <div className="text-[10px] font-bold text-gray-400 uppercase">Max Risk</div>
-                                                </div>
-                                                <ArrowRight className="w-5 h-5 text-gray-300" />
-                                            </div>
-                                        </div>
-                                    ))}
-
-                                    {triageEntities.length === 0 && (
-                                        <div className="p-12 bg-white rounded-xl border border-dashed border-gray-200 text-center text-gray-400 font-bold italic">
-                                            Queue is currently empty.
-                                        </div>
-                                    )}
                                 </>
                             )}
 
                             {/* Priority Detail View */}
                             {!isInvestigator && managerView === 'PRIORITY' && (
                                 <div className="space-y-4">
-                                    {priorityCases.map(pc => (
-                                        <div key={pc.id} 
-                                            onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}
-                                            className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer border-l-4 border-l-red-600"
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-100 text-red-600 flex items-center justify-center shrink-0">
-                                                    <ShieldAlert className="w-5 h-5" />
-                                                </div>
-                                                <div>
-                                                    <div className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                                                        {pc.subjects[0]?.name}
-                                                        {pc.subjects.length > 1 && (
-                                                            <span className="bg-red-50 text-red-600 px-1.5 py-0.5 rounded text-[8px] border border-red-100">+{pc.subjects.length - 1} Entities</span>
-                                                        )}
-                                                    </div>
-                                                    <div className="flex items-center gap-2 mt-0.5">
-                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{pc.id}</div>
-                                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                        <div className="text-[9px] font-black text-red-600 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded border border-red-100">
-                                                            Priority Bypass
-                                                        </div>
-                                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                                                            <UserPlus className="w-2.5 h-2.5" />
-                                                            {pc.analyst || 'Unallocated'}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="bg-gray-50 border-b border-gray-200">
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Case ID</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Investigation Title</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Assigned Analyst</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Score</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Lifecycle</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Access</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100 italic font-medium">
+                                                {priorityCases.map(pc => (
+                                                    <tr key={pc.id} className="hover:bg-red-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-red-600 cursor-pointer" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
+                                                        <td className="px-6 py-4">
+                                                            <span className="text-sm font-black text-gray-900 tracking-tight">{pc.id}</span>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div>
+                                                                <div className="text-sm font-black text-gray-900 truncate group-hover:text-red-600 transition-colors flex items-center gap-2">
+                                                                    {pc.title}
+                                                                </div>
+                                                                <div className="flex flex-wrap items-center gap-1 mt-1.5">
+                                                                    {pc.subjects.map(s => (
+                                                                        <span key={s.id} className="text-[8px] font-black text-white bg-gradient-to-r from-red-500 to-orange-500 px-1.5 py-0.5 rounded shadow-sm shadow-red-500/20 uppercase border border-red-400/30">
+                                                                            {s.name}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-black text-gray-500 uppercase">
+                                                                    {(pc.analyst || 'UN')[0]}
+                                                                </div>
+                                                                <span className="text-xs font-bold text-gray-700">{pc.analyst || 'Unassigned'}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-center">
+                                                            <span className={`font-black px-2.5 py-1 rounded shadow-sm text-xs border ${
+                                                                Math.max(...pc.subjects.map(s => s.riskProfile.totalScore)) > 100 
+                                                                  ? 'text-red-600 bg-red-50 border-red-100' 
+                                                                  : 'text-amber-600 bg-amber-50 border-amber-100'
+                                                            }`}>
+                                                                {Math.max(...pc.subjects.map(s => s.riskProfile.totalScore))}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-center">
+                                                            <div className="flex justify-center">
+                                                                <span className="bg-red-50 text-red-600 px-2 py-0.5 rounded text-[10px] border border-red-100 flex items-center gap-1.5 font-bold uppercase w-fit"><ShieldAlert className="w-3 h-3" /> PRIORITY</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <div className="p-1.5 inline-block bg-gray-50 rounded-lg group-hover:bg-red-600 group-hover:text-white transition-all text-gray-400">
+                                                                <ArrowRight className="w-4 h-4" />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        {priorityCases.length === 0 && (
+                                            <div className="p-12 border-t border-dashed border-gray-200 text-center text-gray-400 font-bold italic w-full">
+                                                No Priority Bypass items currently active.
                                             </div>
-                                            <div className="flex items-center gap-8 text-right">
-                                                <div>
-                                                    <div className="text-lg font-black text-red-600">
-                                                        {Math.max(...pc.subjects.map(s => s.riskProfile.totalScore))}
-                                                    </div>
-                                                    <div className="text-[10px] font-bold text-gray-400 uppercase">Max Risk</div>
-                                                </div>
-                                                <ArrowRight className="w-5 h-5 text-gray-300" />
-                                            </div>
-                                        </div>
-                                    ))}
+                                        )}
+                                    </div>
                                 </div>
                             )}
 
                             {/* Hibernation Detail View */}
                             {!isInvestigator && managerView === 'HIBERNATED' && (
-                                <div className="space-y-4">
-                                    {hibernatedEntities.map(hc => (
-                                        <div key={hc.id} 
-                                            onClick={() => { setSelectedCase(hc); setView('ANALYSIS'); }}
-                                            className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer border-l-4 border-l-green-500"
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-lg bg-green-50 border border-green-100 text-green-600 flex items-center justify-center shrink-0">
-                                                    <Clock className="w-5 h-5" />
-                                                </div>
-                                                <div>
-                                                    <div className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                                                        {hc.subjects[0]?.name}
-                                                        {hc.subjects.length > 1 && (
-                                                            <span className="bg-green-50 text-green-600 px-1.5 py-0.5 rounded text-[8px] border border-green-100">+{hc.subjects.length - 1} Entities</span>
-                                                        )}
-                                                    </div>
-                                                    <div className="flex items-center gap-2 mt-0.5">
-                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{hc.id}</div>
-                                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                        <div className="text-[9px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-100">
-                                                            Low Risk / Hibernated
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="bg-gray-50 border-b border-gray-200">
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Task ID & Target Entities</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Risk Score</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Access</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100 italic font-medium">
+                                                {hibernatedEntities.map(hc => (
+                                                    <tr key={hc.id} className="hover:bg-green-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-green-500 cursor-pointer" onClick={() => { setSelectedCase(hc); setView('ANALYSIS'); }}>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="w-10 h-10 rounded-lg bg-green-50 border border-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover:bg-green-100 transition-colors">
+                                                                    <Clock className="w-5 h-5" />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="text-sm font-black text-gray-900 flex items-center gap-2 group-hover:text-green-600 transition-colors">
+                                                                        {hc.subjects[0]?.name}
+                                                                        {hc.subjects.length > 1 && (
+                                                                            <span className="bg-green-50 text-green-600 px-1.5 py-0.5 rounded text-[8px] border border-green-100 uppercase">+ {hc.subjects.length - 1} Entities</span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{hc.id}</div>
+                                                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                                                        <div className="text-[9px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-100">
+                                                                            Low Risk / Hibernated
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-center">
+                                                            <span className="font-black px-2.5 py-1 rounded shadow-sm text-xs border text-green-600 bg-green-50 border-green-100">
+                                                                {Math.max(...hc.subjects.map(s => s.riskProfile.totalScore))}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <div className="p-1.5 inline-block bg-gray-50 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-all text-gray-400">
+                                                                <ArrowRight className="w-4 h-4" />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        {hibernatedEntities.length === 0 && (
+                                            <div className="p-12 border-t border-dashed border-gray-200 text-center text-gray-400 font-bold italic w-full">
+                                                No entities currently in hibernation.
                                             </div>
-                                            <div className="flex items-center gap-8 text-right">
-                                                <div>
-                                                    <div className="text-lg font-black text-green-600">
-                                                        {Math.max(...hc.subjects.map(s => s.riskProfile.totalScore))}
-                                                    </div>
-                                                    <div className="text-[10px] font-bold text-gray-400 uppercase">Max Risk</div>
-                                                </div>
-                                                <ArrowRight className="w-5 h-5 text-gray-300" />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        )}
+                                    </div>
                             )}
 
                             {/* Investigator-Only Priority Sidebar (Duplicate functionality for investigator vertical scroll) */}
                             {isInvestigator && priorityCases.length > 0 && (
                                 <div className="mt-12 space-y-6">
                                     <h3 className="text-lg font-black text-gray-900 flex items-center gap-3"><ShieldAlert className="w-6 h-6 text-red-600" /> Priority Bypass List</h3>
-                                    <div className="space-y-4">
-                                        {priorityCases.map(pc => (
-                                            <div key={pc.id} 
-                                                onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}
-                                                className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer border-l-4 border-l-red-600"
-                                            >
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-100 text-red-600 flex items-center justify-center shrink-0">
-                                                        <ShieldAlert className="w-5 h-5" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                                                            {pc.subjects[0]?.name}
-                                                            {pc.subjects.length > 1 && (
-                                                                <span className="bg-red-50 text-red-600 px-1.5 py-0.5 rounded text-[8px] border border-red-100">+{pc.subjects.length - 1} Entities</span>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex items-center gap-2 mt-0.5">
-                                                            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{pc.id}</div>
-                                                            <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                            <div className="text-[9px] font-black text-red-600 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded border border-red-100">
-                                                                Priority Bypass
+                                    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="bg-gray-50 border-b border-gray-200">
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Case ID</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Investigation Title</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Assigned Analyst</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Score</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Lifecycle</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Access</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100 italic font-medium">
+                                                {priorityCases.map(pc => (
+                                                    <tr key={pc.id} className="hover:bg-red-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-red-600 cursor-pointer" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
+                                                        <td className="px-6 py-4">
+                                                            <span className="text-sm font-black text-gray-900 tracking-tight">{pc.id}</span>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div>
+                                                                <div className="text-sm font-black text-gray-900 truncate group-hover:text-red-600 transition-colors flex items-center gap-2">
+                                                                    {pc.title}
+                                                                </div>
+                                                                <div className="flex flex-wrap items-center gap-1 mt-1.5">
+                                                                    {pc.subjects.map(s => (
+                                                                        <span key={s.id} className="text-[8px] font-black text-white bg-gradient-to-r from-red-500 to-orange-500 px-1.5 py-0.5 rounded shadow-sm shadow-red-500/20 uppercase border border-red-400/30">
+                                                                            {s.name}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-8 text-right">
-                                                    <div>
-                                                        <div className="text-lg font-black text-red-600">
-                                                            {Math.max(...pc.subjects.map(s => s.riskProfile.totalScore))}
-                                                        </div>
-                                                        <div className="text-[10px] font-bold text-gray-400 uppercase">Max Risk</div>
-                                                    </div>
-                                                    <ArrowRight className="w-5 h-5 text-gray-300" />
-                                                </div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-black text-gray-500 uppercase">
+                                                                    {(pc.analyst || 'UN')[0]}
+                                                                </div>
+                                                                <span className="text-xs font-bold text-gray-700">{pc.analyst || 'Unassigned'}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-center">
+                                                            <span className={`font-black px-2.5 py-1 rounded shadow-sm text-xs border ${
+                                                                Math.max(...pc.subjects.map(s => s.riskProfile.totalScore)) > 100 
+                                                                  ? 'text-red-600 bg-red-50 border-red-100' 
+                                                                  : 'text-amber-600 bg-amber-50 border-amber-100'
+                                                            }`}>
+                                                                {Math.max(...pc.subjects.map(s => s.riskProfile.totalScore))}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-center">
+                                                            <div className="flex justify-center">
+                                                                <span className="bg-red-50 text-red-600 px-2 py-0.5 rounded text-[10px] border border-red-100 flex items-center gap-1.5 font-bold uppercase w-fit"><ShieldAlert className="w-3 h-3" /> PRIORITY</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <div className="p-1.5 inline-block bg-gray-50 rounded-lg group-hover:bg-red-600 group-hover:text-white transition-all text-gray-400">
+                                                                <ArrowRight className="w-4 h-4" />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        {priorityCases.length === 0 && (
+                                            <div className="p-12 border-t border-dashed border-gray-200 text-center text-gray-400 font-bold italic w-full">
+                                                No Priority Bypass items currently active.
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
                                 </div>
                             )}

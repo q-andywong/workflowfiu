@@ -39,46 +39,62 @@ const HibernatedList: React.FC = () => {
                         </div>
                     </div>
 
-                    {hibernatedEntities.map(c => (
-                        <div key={c.id} 
-                            onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
-                            className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer border-l-4 border-l-green-500"
-                        >
-                            <div className="flex items-center gap-4">
-                                <div>
-                                    <div className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                                        {c.subjects[0]?.name}
-                                        {c.subjects.length > 1 && (
-                                            <span className="bg-green-50 text-green-600 px-1.5 py-0.5 rounded text-[8px] border border-green-100 uppercase">+ {c.subjects.length - 1} Entities</span>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-2 mt-0.5">
-                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.id}</div>
-                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                        <div className="text-[9px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-100">
-                                            Low Risk / Hibernated
-                                        </div>
-                                    </div>
-                                </div>
+                    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-gray-50 border-b border-gray-200">
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Task Overview & Entity Name</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Max Risk</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Analysis Profile</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 italic font-medium">
+                                {hibernatedEntities.map(c => (
+                                    <tr key={c.id} className="hover:bg-green-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-green-500 cursor-pointer" onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-lg bg-green-50 border border-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover:bg-green-100 transition-colors">
+                                                    <Clock className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <div className="text-sm font-black text-gray-900 flex items-center gap-2 group-hover:text-green-600 transition-colors">
+                                                        {c.subjects[0]?.name}
+                                                        {c.subjects.length > 1 && (
+                                                            <span className="bg-green-50 text-green-600 px-1.5 py-0.5 rounded text-[8px] border border-green-100 uppercase">+ {c.subjects.length - 1} Entities</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.id}</div>
+                                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                                        <div className="text-[9px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-100">
+                                                            Low Risk / Hibernated
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className="font-black px-2.5 py-1 rounded shadow-sm text-xs border text-green-600 bg-green-50 border-green-100">
+                                                {Math.max(...c.subjects.map(s => s.riskProfile.totalScore))}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="p-1.5 inline-block bg-gray-50 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-all text-gray-400">
+                                                <ArrowRight className="w-4 h-4" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        
+                        {hibernatedEntities.length === 0 && (
+                            <div className="p-12 border-t border-dashed border-gray-200 text-center space-y-4 w-full">
+                                <FileSearch className="w-10 h-10 mx-auto text-gray-400" />
+                                <div className="text-sm font-bold text-gray-600">No entities are currently in hibernation.</div>
                             </div>
-                            <div className="flex items-center gap-8 text-right">
-                                <div>
-                                    <div className="text-lg font-black text-green-600">
-                                        {Math.max(...c.subjects.map(s => s.riskProfile.totalScore))}
-                                    </div>
-                                    <div className="text-[10px] font-bold text-gray-400 uppercase">Max Risk</div>
-                                </div>
-                                <ArrowRight className="w-5 h-5 text-gray-300" />
-                            </div>
-                        </div>
-                    ))}
-                    
-                    {hibernatedEntities.length === 0 && (
-                      <div className="p-12 bg-white rounded-xl border border-dashed border-gray-300 text-center space-y-4">
-                          <FileSearch className="w-10 h-10 mx-auto text-gray-400" />
-                          <div className="text-sm font-bold text-gray-600">No entities are currently in hibernation.</div>
-                      </div>
-                    )}
+                        )}
+                    </div>
                 </div>
 
                 <div className="space-y-6">

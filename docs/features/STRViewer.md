@@ -5,7 +5,7 @@ The `STRViewer.tsx` is one of the heaviest components in the architecture, desig
 
 ## Digital Reconstruction Constraints
 We mapped the structure of an inherited 15-page legacy PDF document containing upstream Suspicious Transaction Reports natively into the React environment.
-* **Read-Only Rigidity:** To preserve absolute integrity from upstream SONAR pipelines, no component inside the viewer allows modification. Standard text-area inputs were redesigned into crisp, tabular grids spanning 7 explicit tabs.
+* **Read-Only Rigidity:** To preserve absolute integrity from upstream Q Platform pipelines, no component inside the viewer allows modification. Standard text-area inputs were redesigned into crisp, tabular grids spanning 7 explicit tabs.
 
 ## Form Structure Breakdown
 * **Part I & II:** General profiling.

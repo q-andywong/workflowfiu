@@ -1,6 +1,6 @@
 # FUNCTIONS_REQUIRED.md
 
-This document serves as the implementation roadmap for the STRO STARS functional expansion, based on the Success Criteria scorecard.
+This document serves as the implementation roadmap for the FIU STR analysis platform functional expansion, based on the Success Criteria scorecard.
 
 ## Phase 1: Case & Entity Lifecycle Management
 - [x] **Manual Case Creation** (S/N 5-7): Add functionality to manually create a case by inputting entity details or selecting disparate reports.
@@ -22,4 +22,4 @@ This document serves as the implementation roadmap for the STRO STARS functional
 - [ ] **Export Approval Loop** (S/N 3): Route data export requests (PDF/XML) for Manager approval before they are processed.
 
 ---
-*Note: This list is derived from the "STRO STARS Case Management" Success Criteria scorecard.*
+*Note: This list is derived from the "FIU STR analysis platform Case Management" Success Criteria scorecard.*

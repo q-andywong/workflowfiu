@@ -82,20 +82,18 @@ export const TOBIAS_BLACK_PROFILE: PersonProfile = {
   ],
   previousCases: [
     { id: 'CASE-2023-112', status: 'Closed', score: 45 },
-    { id: 'CASE-2024-089', status: 'Closed', score: 60 },
+    { id: 'CASE-2024-001', status: 'Closed', score: 82 },
     { id: 'CASE-2025-012', status: 'Under Review', score: 75 },
-    { id: 'CASE-2025-045', status: 'Closed', score: 40 },
     { id: 'CASE-2025-099', status: 'Closed', score: 55 }
   ],
   linkedSTRs: [
-    { id: 'STR-993-8822', date: '2025-10-14', amount: '$450,000', type: 'STR' },
-    { id: 'STR-993-8845', date: '2025-11-02', amount: '$1.2M', type: 'STR' },
-    { id: 'CTR-882-1110', date: '2025-12-15', amount: '$55,000', type: 'CTR' },
-    { id: 'STR-994-0021', date: '2026-01-10', amount: '$890,000', type: 'STR' },
-    { id: 'STR-994-0556', date: '2026-02-28', amount: '$2.4M', type: 'STR' }
+    { id: 'STR-2025-7711', date: '2025-10-14', amount: '$450,000', type: 'STR' },
+    { id: 'STR-2025-7734', date: '2025-11-02', amount: '$1.2M', type: 'STR' },
+    { id: 'CTR-2025-8810', date: '2025-12-15', amount: '$55,000', type: 'CTR' },
+    { id: 'STR-2026-1121', date: '2026-01-10', amount: '$890,000', type: 'STR' }
   ],
   riskProfile: {
-    totalScore: 50, // Amber - Stay in Triage
+    totalScore: 82,
     status: 'AMBER 4',
     factors: [
       { id: 'f1', category: 'Primary Area of Concern', factor: 'Domestic', score: 10 },
@@ -104,7 +102,7 @@ export const TOBIAS_BLACK_PROFILE: PersonProfile = {
       { id: 'f4', category: 'Asset Recovery Opportunity', factor: 'High', score: 20 }
     ]
   },
-  crimeTypologies: ['Money Laundering', 'Terrorism Financing'],
+  crimeTypologies: ['Money Laundering', 'Tax Evasion'],
   dob: '1978-05-14',
   idNumber: 'UK-PASSPORT-BB99331',
   gender: 'Male',
@@ -121,55 +119,121 @@ export const TOBIAS_BLACK_PROFILE: PersonProfile = {
   }
 };
 
-export const MICHAEL_GREENE_PROFILE: PersonProfile = {
-  id: 'P-002',
-  name: 'Michael Greene',
-  nationality: 'American',
-  occupation: 'Corporate Director',
+export const APEX_HOLDINGS_PROFILE: PersonProfile = {
+  id: 'P-007',
+  name: 'Apex Holdings LLC',
+  nationality: 'Cayman Islands',
+  occupation: 'Holding Company',
   type: 'COMPANY',
   status: 'Open',
-  summary: 'Malapanagudi Water User Cooperative Society is a cooperative society in India, a jurisdiction with moderate procurement risk. Primary concern is its potentially less formal governance structure requiring closer review.',
-  actionRequired: 'Integrity Due Diligence checklist must be completed for this entity.',
-  ubos: ['Governing Board Members'],
-  shareholders: ['Member-owned'],
-  directors: ['Society President', 'Society Secretary'],
+  summary: 'Apex Holdings LLC acts as the primary vehicle for cross-border asset movement within the Blackthorn network. Recent intelligence suggests it may be used for disguising ultimate beneficial ownership of maritime assets located in high-risk jurisdictions.',
+  actionRequired: 'Perform deep-scan of UBO register and verify directorship links to high-risk PEPs.',
+  ubos: ['Tobias Black', 'Undisclosed Trust (Seychelles)'],
+  shareholders: ['Blackthorn Global', 'Maritime Partners LTD'],
+  directors: ['Tobias Black', 'Elena Vassiliou'],
   involvedProjects: [
-    { name: 'National Rural Roads Program - Phase 3', value: '$250M', location: 'India - 2021', status: 'Open' },
-    { name: 'Agricultural Supply Chain Modernization', value: '$150M', location: 'India - 2021', status: 'Closed' }
+    { name: 'Highland Logistics Hub', value: '$45M', location: 'Singapore', status: 'Open' },
+    { name: 'Baltic Freight Terminal', value: '$12M', location: 'Estonia', status: 'Closed' }
   ],
   previousCases: [
-    { id: 'CASE-2021-001', status: 'Open', score: 30 },
-    { id: 'CASE-2022-442', status: 'Closed', score: 45 },
-    { id: 'CASE-2023-883', status: 'Closed', score: 20 },
-    { id: 'CASE-2024-112', status: 'Closed', score: 50 },
-    { id: 'CASE-2024-889', status: 'Under Review', score: 65 }
+    { id: 'CASE-2024-001', status: 'Closed', score: 82 }
   ],
   linkedSTRs: [
-    { id: 'STR-555-1122', date: '2021-04-12', amount: '$5.5M', type: 'STR' },
-    { id: 'STR-666-4444', date: '2022-08-30', amount: '$12.0M', type: 'STR' },
-    { id: 'CMR-777-1111', date: '2023-01-15', amount: '$800,000', type: 'CMR' },
-    { id: 'STR-888-2222', date: '2024-05-18', amount: '$4.2M', type: 'STR' },
-    { id: 'STR-999-3333', date: '2025-11-22', amount: '$1.1M', type: 'STR' },
+    { id: 'STR-2026-9905', date: '2026-02-15', amount: '$1.4M', type: 'STR' },
+    { id: 'STR-2026-9912', date: '2026-03-22', amount: '$2.8M', type: 'STR' }
+  ],
+  riskProfile: {
+    totalScore: 115,
+    status: 'RED ALPHA',
+    factors: [
+      { id: 'f_ax1', category: 'Jurisdiction', factor: 'Offshore Secrecy Jurisdiction', score: 25 },
+      { id: 'f_ax2', category: 'Ownership', factor: 'Opaque Trust Structure', score: 20 },
+      { id: 'f_ax3', category: 'Activity', factor: 'High Volume Cross-Border Flow', score: 15 }
+    ]
+  },
+  crimeTypologies: ['Money Laundering', 'Sanctions Evasion'],
+  idNumber: 'KY-CORP-442299',
+  countryOfBirth: 'Cayman Islands',
+  taxResidency: 'Cayman Islands',
+  fullAddress: 'Cricket Square, Hutchins Drive, PO Box 2681, Grand Cayman, KY1-1111',
+  screeningStatus: {
+    isPEP: false,
+    isPEPRelative: false,
+    adverseNewsForeign: true,
+    adverseNewsLocal: false,
+    sanctionsMatch: false
+  }
+};
+
+export const IGOR_DIMITROV_PROFILE: PersonProfile = {
+  id: 'P-006',
+  name: 'Igor Dimitrov',
+  nationality: 'Russian',
+  occupation: 'Shipping Magnate',
+  type: 'INDIVIDUAL',
+  status: 'Open',
+  summary: 'Igor Dimitrov is the primary controller of a large-scale maritime logistics network. Recent regulatory filings indicate significant involvement in the transfer of sensitive technologies to restricted jurisdictions via intermediary Estonian entities.',
+  actionRequired: 'Immediate block on all pending outbound transfers. Verify sanctions nexus.',
+  riskProfile: {
+    totalScore: 195,
+    status: 'RED CRITICAL',
+    factors: [
+      { id: 'f15', category: 'Primary Area of Concern', factor: 'Sanctions Evasion', score: 35 },
+      { id: 'f16', category: 'Sector', factor: 'Maritime & Freight', score: 15 },
+      { id: 'f17', category: 'Screening', factor: 'Direct Sanctions Match', score: 40 }
+    ]
+  },
+  linkedSTRs: [
+    { id: 'STR-2026-SANCTIONS', date: '2026-03-14', amount: '$3.9M', type: 'STR' },
+    { id: 'STR-2026-8801', date: '2026-04-01', amount: '$540,000', type: 'STR' }
+  ],
+  dob: '1965-02-28',
+  idNumber: 'RU-INT-8833110',
+  gender: 'Male',
+  countryOfBirth: 'Russia',
+  taxResidency: 'Russia / Cyprus',
+  aliases: ['The Magnate', 'I.D. Shipping'],
+  fullAddress: '44 Volkov Street, St. Petersburg, Russia',
+  screeningStatus: {
+    isPEP: true,
+    isPEPRelative: false,
+    adverseNewsForeign: true,
+    adverseNewsLocal: true,
+    sanctionsMatch: true
+  },
+  crimeTypologies: ['Sanctions Evasion', 'Money Laundering']
+};
+
+export const MICHAEL_GREENE_PROFILE: PersonProfile = {
+  id: 'P-002',
+  name: 'Gov. Board - Malapanagudi',
+  nationality: 'Indian',
+  type: 'COMPANY',
+  status: 'Open',
+  summary: 'Malapanagudi Water User Cooperative Society is a cooperative society in India. Concerns revolve around potential funneling of agricultural subsidies into private real estate development.',
+  actionRequired: 'Integrity Due Diligence checklist must be completed for this entity.',
+  involvedProjects: [
+    { name: 'National Rural Roads Program', value: '$250M', location: 'India', status: 'Open' }
+  ],
+  previousCases: [
+    { id: 'CASE-2021-001', status: 'Open', score: 30 }
+  ],
+  linkedSTRs: [
+    { id: 'STR-2021-5511', date: '2021-04-12', amount: '$5.5M', type: 'STR' },
     { id: 'CTR-2026-9902', date: '2026-04-03', amount: '$120,000', type: 'CTR' }
   ],
   riskProfile: {
-    totalScore: 132,
-    status: 'RED BRAVO HIGH',
+    totalScore: 78,
+    status: 'AMBER 3',
     factors: [
-      { id: 'f5', category: 'Primary Area of Concern', factor: 'Foreign Predicate Offences', score: 18 },
-      { id: 'f6', category: 'Primary Area of Concern', factor: 'International/Cross Border', score: 16 },
-      { id: 'f7', category: 'Sector', factor: 'Legal Persons & Arrangements - Non-Jersey Company', score: 18 },
-      { id: 'f8', category: 'Jurisdiction/Location', factor: 'Proximity Country Risk', score: 16 },
-      { id: 'f9', category: 'Typology Focus', factor: 'Organised Money Laundering', score: 14 }
+      { id: 'f5', category: 'Jurisdiction', factor: 'High Procurement Risk', score: 18 }
     ]
   },
-  crimeTypologies: ['Cybercrime', 'Fraud'],
-  dob: '1998-11-20',
-  idNumber: 'IN-CORP-442211-MWA',
-  gender: 'Unknown',
+  crimeTypologies: ['Fraud', 'Corruption'],
+  idNumber: 'IN-CORP-442211',
   countryOfBirth: 'India',
-  taxResidency: 'India / Mauritius',
-  fullAddress: 'Block 4, Industrial Estate, Bangalore, Karnataka, India',
+  taxResidency: 'India',
+  fullAddress: 'Block 4, Industrial Estate, Bangalore, India',
   screeningStatus: {
     isPEP: false,
     isPEPRelative: false,
@@ -184,22 +248,17 @@ export const LI_WEI_PROFILE: PersonProfile = {
   name: 'Li Wei',
   nationality: 'Singaporean',
   occupation: 'IT Consultant',
+  type: 'INDIVIDUAL',
   riskProfile: {
     totalScore: 85,
     status: 'AMBER 5',
     factors: [
-      { id: 'f10', category: 'Primary Area of Concern', factor: 'Cybercrime', score: 15 },
-      { id: 'f11', category: 'Typology Focus', factor: 'Ransomware Proceeds', score: 12 }
+      { id: 'f10', category: 'Primary Area of Concern', factor: 'Cybercrime', score: 15 }
     ]
   },
   crimeTypologies: ['Cybercrime'],
-  dob: '1992-07-15',
   idNumber: 'SG-NRIC-S9933110E',
-  gender: 'Male',
-  countryOfBirth: 'Singapore',
-  taxResidency: 'Singapore',
-  aliases: ['L.W.', 'CodeMaster'],
-  fullAddress: 'Block 112, Ang Mo Kio Ave 4, #08-22, Singapore',
+  fullAddress: 'Block 112, Ang Mo Kio Ave 4, Singapore',
   screeningStatus: {
     isPEP: false,
     isPEPRelative: false,
@@ -215,24 +274,17 @@ export const LI_WEI_PROFILE: PersonProfile = {
 export const AHMED_MALIK_PROFILE: PersonProfile = {
   id: 'P-004',
   name: 'Ahmed Malik',
-  nationality: 'Unknown',
-  occupation: 'Unregistered NGO Director',
+  nationality: 'Syrian',
+  type: 'INDIVIDUAL',
   riskProfile: {
     totalScore: 190,
     status: 'RED CRITICAL',
     factors: [
-      { id: 'f12', category: 'Primary Area of Concern', factor: 'Terrorism Financing', score: 25 },
-      { id: 'f13', category: 'Jurisdiction/Location', factor: 'High Risk Conflict Zone', score: 20 }
+      { id: 'f12', category: 'Primary Area of Concern', factor: 'Terrorism Financing', score: 25 }
     ]
   },
   crimeTypologies: ['Terrorism Financing'],
-  dob: '1985-03-22',
   idNumber: 'SY-ID-MM882244',
-  gender: 'Male',
-  countryOfBirth: 'Syria',
-  taxResidency: 'Unknown',
-  aliases: ['A.M.', 'Project Saham'],
-  fullAddress: 'Compartmented Office, Refugee Sector 4, Border Zone',
   screeningStatus: {
     isPEP: false,
     isPEPRelative: false,
@@ -246,53 +298,23 @@ export const SARAH_JENKINS_PROFILE: PersonProfile = {
   id: 'P-005',
   name: 'Sarah Jenkins',
   nationality: 'Australian',
-  occupation: 'Procurement Officer',
+  type: 'INDIVIDUAL',
   riskProfile: {
-    totalScore: 8, // Green - Automated Hibernation
+    totalScore: 8,
     status: 'GREEN LOW',
     factors: [
-      { id: 'f14', category: 'Primary Area of Concern', factor: 'Fraud / Cheating', score: 8 }
+      { id: 'f14', category: 'Risk', factor: 'Low Transaction Volume', score: 8 }
     ]
-  }
-};
-
-export const IGOR_DIMITROV_PROFILE: PersonProfile = {
-  id: 'P-006',
-  name: 'Igor Dimitrov',
-  nationality: 'Russian',
-  occupation: 'Shipping Magnate',
-  riskProfile: {
-    totalScore: 160,
-    status: 'RED BRAVO HIGH',
-    factors: [
-      { id: 'f15', category: 'Primary Area of Concern', factor: 'Sanctions Evasion', score: 22 },
-      { id: 'f16', category: 'Sector', factor: 'Maritime & Freight', score: 15 }
-    ]
-  },
-  linkedSTRs: [
-    { id: 'STR-2026-SANCTIONS', date: '2026-03-14', amount: '$3.9M', type: 'STR' }
-  ],
-  dob: '1965-02-28',
-  idNumber: 'RU-INT-8833110',
-  gender: 'Male',
-  countryOfBirth: 'Russia',
-  taxResidency: 'Russia / Cyprus',
-  aliases: ['The Magnate', 'I.D. Shipping'],
-  fullAddress: '44 Volkov Street, St. Petersburg, Russia',
-  screeningStatus: {
-    isPEP: true,
-    isPEPRelative: false,
-    adverseNewsForeign: true,
-    adverseNewsLocal: true,
-    sanctionsMatch: true
   }
 };
 
 export const MOCK_CASES: IntelligenceCase[] = [
   {
     id: 'CASE-2026-001',
-    title: 'Operation Highland - Cross-border Laundering',
-    subjects: [IGOR_DIMITROV_PROFILE],
+    title: 'Operation Highland - Cross-border Sanctions Evasion',
+    description: 'High-priority investigation into a logistics ring involving maritime assets and shell companies across Russia, Cyprus, and the Cayman Islands. Intelligence suggests use of domestic consultants to facilitate payments for restricted strategic goods.',
+    subjects: [IGOR_DIMITROV_PROFILE, TOBIAS_BLACK_PROFILE, APEX_HOLDINGS_PROFILE],
+    findings: 'Initial evaluation confirms that Igor Dimitrov is the primary beneficiary of funds flowing through Apex Holdings LLC. Tobias Black acts as the facilitator, providing the fiduciary shell needed for Estonian brokerage services. Strategic goods match Russian aerospace procurement profiles.',
     reports: [
       {
         id: 'STR-2026-SANCTIONS',
@@ -305,314 +327,167 @@ export const MOCK_CASES: IntelligenceCase[] = [
         status: 'LINKED',
         crimeTypes: ['ML_NP', 'ML_FTD', 'T_T_NS_RS'],
         suspicionCategories: ['S_L_T_B_I', 'T_W_NAB_A_IV'],
-        narrative: 'Client account version was funded rapidly via domestic shell structures. Consolidation followed by immediate outbound transfer to Estonian entity participating in strategic goods brokering.'
+        narrative: 'Client account was funded rapidly via domestic shell structures. Consolidation followed by immediate outbound transfer to Estonian entity participating in strategic goods brokering.'
+      },
+      {
+        id: 'STR-2026-9905',
+        date: '2026-02-15',
+        amount: 1400000,
+        currency: 'USD',
+        institution: 'CAYMAN OFFSHORE BANK',
+        type: 'STR',
+        riskScore: 78,
+        status: 'LINKED',
+        narrative: 'High-value transfer from Apex Holdings LLC to a maritime consultancy in Cyprus. Source of funds is unclear.'
       }
     ],
     status: 'PRIORITY',
     analyst: 'Sgt. Wong',
     priority: true,
-    disseminations: [],
+    attachments: [
+      { id: '1', name: 'Identity-Verification-ID-Shipping.pdf', url: '#', type: 'application/pdf', uploadedBy: 'Sgt. Wong', uploadedAt: '2026-03-15' },
+      { id: '2', name: 'Logistics-Nexus-Chart.png', url: '#', type: 'image/png', uploadedBy: 'Sgt. Wong', uploadedAt: '2026-03-16' }
+    ],
     createdAt: '2026-03-15T09:00:00Z'
   },
   {
-    id: 'CASE-2026-002',
-    title: 'Project Emerald - Domestic Tax Evasion',
-    subjects: [LI_WEI_PROFILE],
+    id: 'CASE-2024-001',
+    title: 'Project Cobalt - 2024 Historical Review',
+    description: 'Historical investigation into the early setup of the Blackthorn trust network. Focus was on establishing the primary nodes used for subsequent asset movement.',
+    subjects: [TOBIAS_BLACK_PROFILE, APEX_HOLDINGS_PROFILE],
+    findings: 'Case was closed after initial review found insufficient evidence for further escalation at the time. Entities were placed on a monitoring list.',
     reports: [
-       {
-        id: 'STR-993-8845',
-        date: '2026-03-20',
-        amount: 850000,
-        currency: 'SGD',
-        institution: 'MAS BANK',
+      {
+        id: 'STR-2024-001A',
+        date: '2024-01-12',
+        amount: 215000,
+        currency: 'USD',
+        institution: 'HSBC CAYMAN',
         type: 'STR',
-        riskScore: 72,
+        riskScore: 65,
         status: 'LINKED',
-        crimeTypes: ['TC_S_DTE', 'ML_NP'],
-        suspicionCategories: ['S_L_T_C', 'S_L_T_A'],
-        narrative: 'Multiple structured cash deposits identified beneath reporting thresholds. Subject unable to provide documentation for primary source of wealth.'
+        narrative: 'Initial structural setup payments. Source of wealth unverified.'
       }
     ],
-    status: 'ANALYSIS',
+    status: 'CLOSED',
     analyst: 'Insp. Lim',
     priority: false,
-    disseminations: [
-      {
-        id: 'D-001',
-        agency: 'MAS',
-        date: '2026-03-20',
-        intelligenceSummary: 'Suspicious fund layering detected in domestic shell companies.',
-        feedback: {
-          receivedDate: '2026-04-01',
-          outcome: 'ONGOING',
-          notes: 'Regulatory audit initiated on subject entities.',
-          officialRef: 'MAS/ENT/2026/45'
-        }
-      }
-    ],
-    createdAt: '2026-03-25T14:30:00Z'
+    createdAt: '2024-01-15T09:00:00Z',
+    closedAt: '2024-01-18T14:00:00Z'
   },
   {
-    id: 'TASK-2026-003',
-    title: 'Syndicate Alpha - Cybercrime Extortion',
-    subjects: [TOBIAS_BLACK_PROFILE],
+    id: 'TASK-2026-010',
+    title: 'Automated Triage: Cybercrime Extortion',
+    subjects: [LI_WEI_PROFILE],
     reports: [
-      {
-        id: 'STR-993-8822',
-        date: '2025-10-14',
-        amount: 450000,
-        currency: 'USD',
-        institution: 'BLACKTHORN FIDUCIARY',
-        type: 'STR',
-        riskScore: 68,
-        status: 'TRIAGED',
-        crimeTypes: ['ML_SPL_PL', 'ML_FWT'],
-        suspicionCategories: ['S_L_T_A', 'S_L_T_B_I'],
-        narrative: 'Structuring of funds via multiple domestic entities followed by layering through offshore consultancy accounts. Fails economic rationale for advisory fee volumes.'
-      }
+        {
+          id: 'CTR-2026-9903',
+          date: '2026-04-05',
+          amount: 25000,
+          currency: 'USD',
+          institution: 'CRYPTOTREASURES PSMD',
+          type: 'CTR',
+          riskScore: 40,
+          status: 'TRIAGED',
+          narrative: 'Asset-backed token transaction via cash primary.'
+        }
     ],
     status: 'TRIAGE',
-    analyst: 'Insp. Lim',
     priority: false,
-    disseminations: [],
     createdAt: '2026-04-02T10:15:00Z'
   },
   {
-    id: 'CASE-2026-004',
-    title: 'Network Nexus - Terrorism Financing Link',
-    subjects: [AHMED_MALIK_PROFILE],
-    reports: [
-       {
-        id: 'STR-555-1122',
-        date: '2026-04-01',
-        amount: 5500000,
-        currency: 'USD',
-        institution: 'GLOBAL TRUST BANK',
-        type: 'STR',
-        riskScore: 95,
-        status: 'LINKED',
-        crimeTypes: ['T_T_NS_TF', 'T_T_NS_IAT'],
-        suspicionCategories: ['S_L_T_B_II', 'T_W_NAB_QFI'],
-        narrative: 'Wire transfers conducted on behalf of third-party NGO profiles. Fund destination is a high-risk conflict zone with known militant logistics nodes.'
-      }
-    ],
-    status: 'PRIORITY',
-    analyst: 'Sgt. Wong',
-    priority: true,
-    disseminations: [],
-    createdAt: '2026-04-05T08:45:00Z'
-  },
-  {
     id: 'CASE-2026-005',
-    title: 'Operation Mirage - Corporate Fraud / Cheating',
+    title: 'Operation Mirage - Low Risk Monitoring',
     subjects: [SARAH_JENKINS_PROFILE],
     reports: [],
     status: 'HIBERNATED',
     analyst: 'Insp. Lim',
     priority: false,
-    disseminations: [],
     createdAt: '2026-03-28T16:20:00Z'
-  },
-  {
-    id: 'TASK-2026-006',
-    title: 'Project Shadow - High-Value Gem Acquisition',
-    subjects: [MICHAEL_GREENE_PROFILE],
-    reports: [
-      {
-        id: 'CTR-2026-9902',
-        date: '2026-04-03',
-        amount: 120000,
-        currency: 'USD',
-        institution: 'IMPERIAL GEMS SINGAPORE',
-        type: 'CTR',
-        riskScore: 28,
-        status: 'TRIAGED',
-        narrative: 'Cash purchase of primary-grade diamonds exceeding regulatory threshold. Source of funds attributed to foreign corporate dividends, awaiting verification.'
-      }
-    ],
-    status: 'TRIAGE',
-    analyst: 'Insp. Lim',
-    priority: false,
-    disseminations: [],
-    createdAt: '2026-04-04T11:00:00Z'
-  },
-  {
-    id: 'CASE-2025-110',
-    title: 'Operation Copper - Retired Analysis',
-    subjects: [LI_WEI_PROFILE],
-    reports: [],
-    status: 'CLOSED',
-    analyst: 'Insp. Lim',
-    priority: false,
-    disseminations: [],
-    createdAt: '2025-11-05T09:00:00Z',
-    closedAt: '2025-11-12T16:00:00Z'
-  },
-  {
-    id: 'CASE-2025-125',
-    title: 'Project Zenith - Resolved Fraud',
-    subjects: [SARAH_JENKINS_PROFILE],
-    reports: [],
-    status: 'DISMISSED',
-    analyst: 'Insp. Lim',
-    priority: false,
-    disseminations: [],
-    createdAt: '2025-12-10T11:00:00Z',
-    closedAt: '2025-12-14T10:00:00Z'
-  },
-  {
-    id: 'CASE-2026-008',
-    title: 'Operation Frost - Quick Closure',
-    subjects: [TOBIAS_BLACK_PROFILE],
-    reports: [],
-    status: 'CLOSED',
-    analyst: 'Insp. Lim',
-    priority: false,
-    disseminations: [],
-    createdAt: '2026-01-15T09:00:00Z',
-    closedAt: '2026-01-18T14:00:00Z'
-  },
-  {
-    id: 'CASE-2026-015',
-    title: 'Project Cobalt - March Completion',
-    subjects: [IGOR_DIMITROV_PROFILE],
-    reports: [],
-    status: 'CLOSED',
-    analyst: 'Insp. Lim',
-    priority: false,
-    disseminations: [],
-    createdAt: '2026-03-02T10:00:00Z',
-    closedAt: '2026-03-08T17:00:00Z'
   }
 ];
 
+const GENERATED_TASKS: IntelligenceCase[] = Array.from({ length: 15 }).map((_, i) => {
+  const types = ['Money Laundering', 'Tax Evasion', 'Sanctions Evasion', 'Fraud', 'Cybercrime', 'Terrorism Financing'];
+  const sgNames = [
+    'Tan Wei Ming', 'Lee Boon Hock', 'Siti Azizah', 'Rajesh Kumar', 
+    'Lim Pei Shan', 'Desmond Ng', 'Ahmad bin Ibrahim', 'Wong Li Qin', 
+    'Muthu Subramaniam', 'Chong Wei Jie'
+  ];
+  const companyNames = [
+    'Raffles Logistics Group', 'Merlion Trading Pte Ltd', 'Apex Digital Solutions', 
+    'Sentosa Maritime Corp', 'Crescent Holdings LLC'
+  ];
+  
+  const entityName = i < 10 ? sgNames[i] : companyNames[i - 10];
+  const entityType = i < 10 ? 'INDIVIDUAL' : 'COMPANY';
+
+  const crimeType = types[i % 6];
+  const assignedCrimes = [crimeType];
+  
+  // Assign a second crime type to half of the mock tasks (even indices) to simulate overlapping queues
+  if (i % 2 === 0) {
+      assignedCrimes.push(types[(i + 1) % 6]);
+  }
+
+  return {
+    id: `TASK-2026-GEN0${i}`,
+    title: `Automated Triage: Potential ${assignedCrimes.join(' & ')} Match`,
+    description: `System flag matching ${assignedCrimes.join(' and ')} heuristic indicators. Pipeline analysis indicates suspicious activity. Priority review required.`,
+    subjects: [{
+      id: `P-TEST-${i}`,
+      name: entityName,
+      nationality: 'Singaporean',
+      type: entityType as 'INDIVIDUAL' | 'COMPANY',
+      status: 'Open',
+      riskProfile: {
+        totalScore: 50 + (i * 4),
+        status: 'AMBER 3',
+        factors: [
+          { id: `f_gen1_${i}`, category: 'Typology Match', factor: 'Automated Keyword Hit', score: 30 + (i * 2) },
+          { id: `f_gen2_${i}`, category: 'Transaction Pattern', factor: 'High Velocity Transfers', score: 20 + (i * 2) }
+        ]
+      },
+      crimeTypologies: assignedCrimes,
+      linkedSTRs: []
+    }],
+    reports: [],
+    status: 'TRIAGE',
+    priority: false,
+    createdAt: new Date(new Date('2026-04-09T00:00:00Z').getTime() - (i * 86400000)).toISOString()
+  };
+});
+
+MOCK_CASES.push(...GENERATED_TASKS);
+
 export const MOCK_STRS: SuspiciousTransactionReport[] = [
   ...MOCK_CASES.flatMap(c => c.reports),
-  {
-    id: 'STR-993-8822',
-    date: '2025-10-14',
-    amount: 450000,
-    currency: 'USD',
-    institution: 'BLACKTHORN FIDUCIARY',
-    type: 'STR' as const,
-    riskScore: 68,
-    status: 'TRIAGED' as const,
-    crimeTypes: ['ML_SPL_PL', 'ML_FWT'],
-    suspicionCategories: ['S_L_T_A', 'S_L_T_B_I'],
-    narrative: 'Structuring of funds via multiple domestic entities.'
-  },
-  {
-    id: 'CTR-882-1110',
-    date: '2025-12-15',
-    amount: 55000,
-    currency: 'USD',
-    institution: 'HSBC JERSEY',
-    type: 'CTR' as const,
-    riskScore: 15,
-    status: 'LINKED' as const
-  },
-  {
-    id: 'STR-994-0021',
-    date: '2026-01-10',
-    amount: 890000,
-    currency: 'USD',
-    institution: 'STANDARD CHARTERED',
-    type: 'STR' as const,
-    riskScore: 78,
-    status: 'LINKED' as const
-  },
-  {
-    id: 'STR-994-0556',
-    date: '2026-02-28',
-    amount: 2400000,
-    currency: 'GBP',
-    institution: 'BARCLAYS UK',
-    type: 'STR' as const,
-    riskScore: 85,
-    status: 'LINKED' as const
-  },
-  {
-    id: 'STR-666-4444',
-    date: '2022-08-30',
-    amount: 12000000,
-    currency: 'USD',
-    institution: 'GLOBAL TRUST BANK',
-    type: 'STR' as const,
-    riskScore: 88,
-    status: 'LINKED' as const
-  },
-  {
-    id: 'CMR-777-1111',
-    date: '2023-01-15',
-    amount: 800000,
-    currency: 'USD',
-    institution: 'CASH MANAGEMENT CORP',
-    type: 'CMR' as const,
-    riskScore: 45,
-    status: 'TRIAGED' as const
-  },
-  {
-    id: 'STR-888-2222',
-    date: '2024-05-18',
-    amount: 4200000,
-    currency: 'EUR',
-    institution: 'DEUTSCHE BANK',
-    type: 'STR' as const,
-    riskScore: 75,
-    status: 'LINKED' as const
-  },
-  {
-    id: 'STR-999-3333',
-    date: '2025-11-22',
-    amount: 1100000,
-    currency: 'SGD',
-    institution: 'DBS BANK',
-    type: 'STR' as const,
-    riskScore: 62,
-    status: 'TRIAGED' as const
-  },
-  {
-    id: 'CTR-2026-9901',
-    date: '2026-04-02',
-    amount: 35000,
-    currency: 'USD',
-    institution: 'BLACKTHORN GOLD EXCHANGE',
-    type: 'CTR' as const,
-    riskScore: 32,
-    status: 'TRIAGED' as const,
-    narrative: 'Cash purchase of precious metal bullion.'
-  },
-  {
-    id: 'CTR-2026-9902',
-    date: '2026-04-03',
-    amount: 120000,
-    currency: 'USD',
-    institution: 'IMPERIAL GEMS SINGAPORE',
-    type: 'CTR' as const,
-    riskScore: 28,
-    status: 'TRIAGED' as const,
-    narrative: 'Cash purchase of primary-grade diamonds.'
-  },
-  {
-    id: 'CTR-2026-9903',
-    date: '2026-04-05',
-    amount: 25000,
-    currency: 'USD',
-    institution: 'CRYPTOTREASURES PSMD',
-    type: 'CTR' as const,
-    riskScore: 40,
-    status: 'TRIAGED' as const,
-    narrative: 'Asset-backed token transaction via cash primary.'
-  }
+  { id: 'STR-2026-SANCTIONS', date: '2026-03-14', amount: 3900000, currency: 'USD', institution: 'STANDARD COMMERCE', type: 'STR', riskScore: 92, status: 'LINKED' },
+  { id: 'STR-2026-9905', date: '2026-02-15', amount: 1400000, currency: 'USD', institution: 'CAYMAN OFFSHORE', type: 'STR', riskScore: 78, status: 'LINKED' },
+  { id: 'STR-2026-9912', date: '2026-03-22', amount: 2800000, currency: 'USD', institution: 'DBS BANK', type: 'STR', riskScore: 85, status: 'TRIAGED' },
+  { id: 'STR-2026-8801', date: '2026-04-01', amount: 540000, currency: 'USD', institution: 'VTB ESTONIA', type: 'STR', riskScore: 88, status: 'LINKED' },
+  { id: 'CTR-2026-9902', date: '2026-04-03', amount: 120000, currency: 'USD', institution: 'IMPERIAL GEMS', type: 'CTR', riskScore: 28, status: 'TRIAGED' },
+  { id: 'CTR-2026-9903', date: '2026-04-05', amount: 25000, currency: 'USD', institution: 'CRYPTOTREASURES', type: 'CTR', riskScore: 40, status: 'TRIAGED' },
+  { id: 'CMR-2026-4411', date: '2026-03-10', amount: 45000, currency: 'EUR', institution: 'BERLIN CUSTOMS', type: 'CMR', riskScore: 55, status: 'TRIAGED' },
+  { id: 'STR-2026-4422', date: '2026-03-12', amount: 890000, currency: 'GBP', institution: 'LLOYDS BANK', type: 'STR', riskScore: 72, status: 'TRIAGED' },
+  { id: 'CTR-2026-4433', date: '2026-03-15', amount: 150000, currency: 'USD', institution: 'ANTIQUE ARTS SG', type: 'CTR', riskScore: 35, status: 'TRIAGED' },
+  { id: 'STR-2026-4444', date: '2026-03-18', amount: 1200000, currency: 'USD', institution: 'CHASE MANHATTAN', type: 'STR', riskScore: 81, status: 'TRIAGED' },
+  { id: 'STR-2026-4455', date: '2026-03-20', amount: 650000, currency: 'USD', institution: 'SOCIETE GENERALE', type: 'STR', riskScore: 68, status: 'TRIAGED' },
+  { id: 'CTR-2026-4466', date: '2026-03-22', amount: 80000, currency: 'SGD', institution: 'UOB SINGAPORE', type: 'CTR', riskScore: 25, status: 'TRIAGED' },
+  { id: 'STR-2026-4477', date: '2026-03-25', amount: 2100000, currency: 'USD', institution: 'MORGAN STANLEY', type: 'STR', riskScore: 79, status: 'TRIAGED' },
+  { id: 'CMR-2026-4488', date: '2026-03-28', amount: 35000, currency: 'USD', institution: 'ZURICH AIRPORT', type: 'CMR', riskScore: 48, status: 'TRIAGED' },
+  { id: 'STR-2026-4499', date: '2026-03-30', amount: 4300000, currency: 'USD', institution: 'GOLDMAN SACHS', type: 'STR', riskScore: 90, status: 'TRIAGED' }
 ].filter((str, index, self) => 
   index === self.findIndex((t) => t.id === str.id)
 );
 
 export const MOCK_ENTITIES: PersonProfile[] = [
   TOBIAS_BLACK_PROFILE,
+  APEX_HOLDINGS_PROFILE,
+  IGOR_DIMITROV_PROFILE,
   MICHAEL_GREENE_PROFILE,
   LI_WEI_PROFILE,
   AHMED_MALIK_PROFILE,
-  SARAH_JENKINS_PROFILE,
-  IGOR_DIMITROV_PROFILE
+  SARAH_JENKINS_PROFILE
 ];

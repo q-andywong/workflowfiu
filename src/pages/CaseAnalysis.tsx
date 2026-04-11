@@ -6,7 +6,7 @@ import STRViewer from '../components/STRViewer';
 import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase } from 'lucide-react';
 
 const CaseAnalysis: React.FC = () => {
-    const { cases, allCases, selectedCase, setSelectedCase, assessEntity, view, previousView, setView, saveFindings, uploadAttachment, removeAttachment, requestModification, approveCase, rejectCase, processModification, updateCaseStatus } = useApp();
+    const { cases, allCases, selectedCase, setSelectedCase, assessEntity, view, previousView, setView, saveFindings, uploadAttachment, removeAttachment, requestModification, approveCase, rejectCase, processModification, updateCaseStatus, bulkUpdateCases } = useApp();
     const { user } = useAuth();
     const [showSTRViewer, setShowSTRViewer] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -17,7 +17,11 @@ const CaseAnalysis: React.FC = () => {
     const [isRejecting, setIsRejecting] = useState(false);
     const [rejectionReason, setRejectionReason] = useState('');
     
-    const activeCase = cases.find(c => c.id === selectedCase?.id);
+    // Escalation State
+    const [isEscalating, setIsEscalating] = useState(false);
+    const [newCaseTitle, setNewCaseTitle] = useState('');
+    
+    const activeCase = allCases.find(c => c.id === selectedCase?.id);
     
     if (!activeCase || !selectedCase) return null;
 
@@ -33,9 +37,22 @@ const CaseAnalysis: React.FC = () => {
         setView(previousView);
     };
 
-    const handleActionSubmit = () => {
+    const handleActionClick = () => {
         if (!selectedAction) return;
-        assessEntity(activeCase.id, selectedAction as 'ESCALATE' | 'HIBERNATE' | 'DISMISS');
+        if (selectedAction === 'ESCALATE') {
+            setNewCaseTitle(activeCase.title);
+            setIsEscalating(true);
+        } else {
+            assessEntity(activeCase.id, selectedAction as 'HIBERNATE' | 'DISMISS');
+        }
+    };
+
+    const handleConfirmEscalation = () => {
+        if (newCaseTitle && newCaseTitle !== activeCase.title) {
+            bulkUpdateCases([activeCase.id], { title: newCaseTitle });
+        }
+        assessEntity(activeCase.id, 'ESCALATE');
+        setIsEscalating(false);
     };
 
     const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -327,8 +344,13 @@ const CaseAnalysis: React.FC = () => {
                                                     <div>
                                                         <div className="text-[10px] font-black text-gray-900 uppercase tracking-wider">{rc.id}</div>
                                                         <div className="text-[9px] text-blue-600 font-bold uppercase truncate max-w-[150px]">{rc.title}</div>
-                                                        <div className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">
-                                                            Linked to: {matchingSubjects.map(s => s.name).join(', ')}
+                                                        <div className="flex flex-wrap items-center gap-1 mt-1.5">
+                                                            <span className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mr-1">Linked to:</span>
+                                                            {matchingSubjects.map(s => (
+                                                                <span key={s.id} className="text-[8px] font-black text-white bg-gradient-to-r from-blue-500 to-indigo-500 px-1.5 py-0.5 rounded shadow-sm shadow-blue-500/20 uppercase border border-blue-400/30">
+                                                                    {s.name}
+                                                                </span>
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -358,7 +380,7 @@ const CaseAnalysis: React.FC = () => {
                                             <div className="flex flex-col">
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-xs font-black text-gray-700 tracking-wider group-hover:text-blue-600">{str.id}</span>
-                                                    <span className="text-[8px] font-black text-blue-500 bg-blue-50 px-1.5 rounded uppercase border border-blue-100">{str.sourceEntity}</span>
+                                                    <span className="text-[8px] font-black text-white bg-gradient-to-r from-blue-500 to-indigo-500 px-2 py-0.5 rounded uppercase border border-blue-400/30 shadow-sm shadow-blue-500/20">{str.sourceEntity}</span>
                                                 </div>
                                                 <span className="text-[10px] text-gray-500 mt-1 font-black uppercase tracking-widest">{str.date}</span>
                                             </div>
@@ -468,7 +490,7 @@ const CaseAnalysis: React.FC = () => {
                                                 <option value="DISMISS">Dismiss Lead</option>
                                             </select>
                                             <button 
-                                                onClick={handleActionSubmit}
+                                                onClick={handleActionClick}
                                                 disabled={!selectedAction}
                                                 className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest shadow-md transition-all whitespace-nowrap ${
                                                     selectedAction 
@@ -485,6 +507,40 @@ const CaseAnalysis: React.FC = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Nested Escalation Modal Overlay */}
+                {isEscalating && (
+                    <div className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4">
+                        <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 transform transition-all animate-in zoom-in duration-200">
+                            <h3 className="text-lg font-black text-gray-900 mb-2">Configure Case Name</h3>
+                            <p className="text-xs text-gray-500 mb-6 font-bold uppercase tracking-widest">Formalizing intelligence operation</p>
+                            
+                            <input 
+                                type="text"
+                                value={newCaseTitle}
+                                onChange={(e) => setNewCaseTitle(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm font-bold rounded-xl focus:ring-2 focus:ring-blue-500 block p-4 shadow-sm mb-6"
+                                placeholder={"Enter formal case name..."}
+                            />
+                            
+                            <div className="flex gap-4">
+                                <button 
+                                    onClick={() => setIsEscalating(false)}
+                                    className="flex-1 py-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-black text-xs uppercase tracking-widest rounded-xl transition-all"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onClick={handleConfirmEscalation}
+                                    disabled={!newCaseTitle.trim()}
+                                    className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl shadow-blue-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Confirm Escalation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Nested Rejection Modal Overlay */}
                 {isRejecting && (

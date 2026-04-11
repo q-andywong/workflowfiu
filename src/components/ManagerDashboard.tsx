@@ -51,7 +51,7 @@ const ManagerDashboard: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
         <div>
           <h2 className="text-2xl font-black text-gray-900 tracking-tight">Intelligence Command</h2>
-          <p className="text-gray-500 text-sm mt-1 font-medium italic">High-level oversight of ingested SONAR reports and operational outputs</p>
+          <p className="text-gray-500 text-sm mt-1 font-medium italic">High-level oversight of ingested Q Platform reports and operational outputs</p>
         </div>
         <div className="flex gap-4">
           <button className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-all focus:ring-4 focus:ring-gray-100">

@@ -22,7 +22,7 @@ const Login: React.FC = () => {
         <div className="bg-gray-900 p-8 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(#374151_1px,transparent_1px)] [background-size:16px_16px] opacity-20"></div>
           <ShieldAlert className="w-12 h-12 text-blue-500 mx-auto mb-4 relative z-10" />
-          <h1 className="text-3xl font-extrabold text-white tracking-tight relative z-10">STRO STARS</h1>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight relative z-10">FIU STR analysis platform</h1>
           <p className="text-gray-400 mt-2 text-sm relative z-10">Restricted Case Management System</p>
         </div>
 
@@ -97,7 +97,7 @@ const Login: React.FC = () => {
 
           <div className="pt-6 border-t border-gray-100 flex items-center justify-center gap-2 text-xs text-gray-400 font-medium">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            Secure Connection verified to STRO SONAR
+            Secure Connection verified to FIU Q Platform
           </div>
         </div>
       </div>

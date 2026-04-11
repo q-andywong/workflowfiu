@@ -51,7 +51,7 @@ const initializeCases = (rawCases: any[]) => {
       status: status as IntelligenceCase['status'],
       attachments: c.attachments || [],
       priority: status === 'PRIORITY',
-      analyst: c.analyst || (Math.random() > 0.5 ? 'Director Shen' : 'Insp. Lim')
+      analyst: status === 'TRIAGE' ? undefined : (c.analyst || (status !== 'HIBERNATED' ? (Math.random() > 0.5 ? 'Director Shen' : 'Insp. Lim') : undefined))
     };
   });
 };
@@ -62,6 +62,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [selectedCase, setSelectedCase] = useState<IntelligenceCase | null>(null);
   const [view, _setView] = useState<AppContextType['view']>('DASHBOARD');
   const [previousView, setPreviousView] = useState<AppContextType['view']>('DASHBOARD');
+
+  // Reset view to dashboard on login
+  useEffect(() => {
+    if (user) {
+      _setView('DASHBOARD');
+    }
+  }, [user]);
 
   const setView = (v: AppContextType['view']) => {
     if (v !== 'ANALYSIS') {
@@ -80,13 +87,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, 0);
   const avgTime = resolvedCases.length > 0 ? Math.round(totalResolutionDays / resolvedCases.length * 10) / 10 : 0;
 
+  const filteredTriages = cases.filter(c => {
+    if (c.status !== 'TRIAGE') return false;
+    if (user?.role === 'INVESTIGATOR' && user.typology) {
+        const typs = (c.subjects || []).flatMap(s => s.crimeTypologies || []);
+        return typs.length === 0 || typs.includes(user.typology);
+    }
+    return true;
+  });
+
   const stats: DashboardStats = {
     totalIncoming: 1240,
     activeAnalyses: cases.filter(c => c.status === 'ANALYSIS' || c.status === 'PRIORITY').length,
     disseminatedTotal: 45,
     priorityAlerts: cases.filter(c => c.priority).length,
     successRate: 78,
-    triagesInQueue: cases.filter(c => c.status === 'TRIAGE').length,
+    triagesInQueue: filteredTriages.length,
     pendingApproval: cases.filter(c => c.status === 'PENDING_APPROVAL').length,
     casesClosed: cases.filter(c => c.status === 'CLOSED' || c.status === 'DISMISSED').length,
     avgResolutionTime: avgTime
@@ -136,7 +152,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (action === 'ESCALATE') nextStatus = 'PENDING_APPROVAL';
     else if (action === 'HIBERNATE') nextStatus = 'HIBERNATED';
     else if (action === 'DISMISS') nextStatus = 'DISMISSED';
-    setCases(prev => prev.map(c => c.id === id ? { ...c, status: nextStatus } : c));
+    setCases(prev => prev.map(c => {
+      if (c.id === id) {
+        let updatedAnalyst = c.analyst;
+        if (action === 'ESCALATE' && user) {
+          updatedAnalyst = user.name;
+        }
+        return { ...c, status: nextStatus, analyst: updatedAnalyst };
+      }
+      return c;
+    }));
     setSelectedCase(null);
   };
 
