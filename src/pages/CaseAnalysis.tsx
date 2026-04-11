@@ -3,7 +3,8 @@ import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
 import MitigationScorecard from '../components/MitigationScorecard';
 import STRViewer from '../components/STRViewer';
-import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase } from 'lucide-react';
+import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase, Plus, Search } from 'lucide-react';
+import { MOCK_ENTITIES, MOCK_STRS } from '../constants';
 
 const CaseAnalysis: React.FC = () => {
     const { cases, allCases, selectedCase, setSelectedCase, assessEntity, view, previousView, setView, saveFindings, uploadAttachment, removeAttachment, requestModification, approveCase, rejectCase, processModification, updateCaseStatus, bulkUpdateCases } = useApp();
@@ -20,6 +21,11 @@ const CaseAnalysis: React.FC = () => {
     // Escalation State
     const [isEscalating, setIsEscalating] = useState(false);
     const [newCaseTitle, setNewCaseTitle] = useState('');
+    
+    // Search & Add Modal State
+    const [searchModal, setSearchModal] = useState<{ open: boolean, type: 'ENTITY' | 'STR' }>({ open: false, type: 'ENTITY' });
+    const [searchQuery, setSearchQuery] = useState('');
+    const { addManualEntity, bulkLinkReports } = useApp();
     
     const activeCase = allCases.find(c => c.id === selectedCase?.id);
     
@@ -96,6 +102,20 @@ const CaseAnalysis: React.FC = () => {
         handleClose();
     };
 
+    const handleAddManual = (id: string) => {
+        if (searchModal.type === 'ENTITY') {
+            addManualEntity(activeCase.id, id);
+        } else {
+            bulkLinkReports(activeCase.id, [id]);
+        }
+        setSearchModal({ ...searchModal, open: false });
+        setSearchQuery('');
+    };
+
+    const searchResults = searchModal.type === 'ENTITY' 
+        ? MOCK_ENTITIES.filter(e => e.name.toLowerCase().includes(searchQuery.toLowerCase()) || e.id.toLowerCase().includes(searchQuery.toLowerCase()))
+        : MOCK_STRS.filter(s => s.id.toLowerCase().includes(searchQuery.toLowerCase()) || s.institution.toLowerCase().includes(searchQuery.toLowerCase()));
+
     return (
         <div className="fixed inset-0 z-[80] bg-black/40 backdrop-blur-md flex justify-center items-center p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="bg-gray-100 w-full max-w-7xl rounded-2xl shadow-2xl flex flex-col h-[95vh] transform transition-all animate-in zoom-in duration-300 overflow-hidden relative border border-gray-200">
@@ -134,6 +154,13 @@ const CaseAnalysis: React.FC = () => {
                                         </span>
                                     </div>
                                 )}
+                                <button 
+                                    onClick={() => setSearchModal({ open: true, type: 'ENTITY' })}
+                                    className="flex items-center gap-2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg border border-blue-500/30 transition-all text-[10px] font-black uppercase tracking-widest whitespace-nowrap ml-2"
+                                >
+                                    <Plus className="w-3.5 h-3.5" />
+                                    Link Subject
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -187,23 +214,26 @@ const CaseAnalysis: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Subject Switcher (Only if multi-entity) */}
-                        {activeCase.subjects.length > 1 && (
-                            <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
-                                {activeCase.subjects.map(s => (
-                                    <button
-                                        key={s.id}
-                                        onClick={() => setActiveSubjectId(s.id)}
-                                        className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2 ${
-                                            currentSubjectId === s.id 
-                                                ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-200' 
-                                                : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200 hover:text-blue-600'
-                                        }`}
-                                    >
-                                        {s.type === 'COMPANY' ? <Briefcase className="w-3 h-3" /> : <User className="w-3 h-3" />}
-                                        {s.name}
-                                    </button>
-                                ))}
+                        {/* Subject Switcher Row (Visible for single and multi-entity cases) */}
+                        {activeCase.subjects.length >= 1 && (
+                            <div className="flex flex-col gap-2">
+                                <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Active Investigation Subjects</div>
+                                <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                                    {activeCase.subjects.map(s => (
+                                        <button
+                                            key={s.id}
+                                            onClick={() => setActiveSubjectId(s.id)}
+                                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2 ${
+                                                currentSubjectId === s.id 
+                                                    ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-200' 
+                                                    : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200 hover:text-blue-600'
+                                            }`}
+                                        >
+                                            {s.type === 'COMPANY' ? <Briefcase className="w-3 h-3" /> : <User className="w-3 h-3" />}
+                                            {s.name}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         )}
 
@@ -281,6 +311,24 @@ const CaseAnalysis: React.FC = () => {
                                             )}
                                         </div>
                                     </div>
+                                    
+                                    {/* Quick Discovery Actions */}
+                                    <div className="pt-6 mt-2 border-t border-gray-100 flex flex-wrap gap-3">
+                                        <button 
+                                            onClick={() => setSearchModal({ open: true, type: 'ENTITY' })}
+                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl border border-indigo-100 transition-all text-[10px] font-black uppercase tracking-widest group"
+                                        >
+                                            <Users className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                                            Link Additional Subject
+                                        </button>
+                                        <button 
+                                            onClick={() => setSearchModal({ open: true, type: 'STR' })}
+                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-xl border border-amber-100 transition-all text-[10px] font-black uppercase tracking-widest group"
+                                        >
+                                            <ShieldAlert className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                                            Link Regulatory Report
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -292,7 +340,14 @@ const CaseAnalysis: React.FC = () => {
                                     <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
                                     <h3 className="text-xs font-black text-gray-900 uppercase tracking-[0.2em]">Vital Particulars & Target Identity</h3>
                                 </div>
-                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-md">Reg-Verified</div>
+                                {profile.addedManually ? (
+                                    <div className="flex flex-col items-end px-3">
+                                        <div className="text-[10px] font-black text-amber-600 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-md border border-amber-200">Manual Addition</div>
+                                        <div className="text-[8px] font-bold text-amber-500 uppercase mt-1 tracking-tighter">Tagged: {new Date(profile.addedAt || '').toLocaleString()}</div>
+                                    </div>
+                                ) : (
+                                    <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-md">Reg-Verified</div>
+                                )}
                             </div>
                             <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-16">
                                 <div className="space-y-2">
@@ -371,7 +426,16 @@ const CaseAnalysis: React.FC = () => {
                             </div>
 
                             <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                                <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 text-center">Linked Regulatory Reports</h4>
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-10"></div>
+                                    <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Linked Regulatory Reports</h4>
+                                    <button 
+                                        onClick={() => setSearchModal({ open: true, type: 'STR' })}
+                                        className="p-1.5 bg-blue-50 text-blue-600 rounded-lg border border-blue-100 hover:bg-blue-100 transition-colors"
+                                    >
+                                        <Plus className="w-3 h-3" />
+                                    </button>
+                                </div>
                                 <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
                                     {activeCase.subjects.flatMap(s => 
                                         (s.linkedSTRs || []).map(str => ({ ...str, sourceEntity: s.name }))
@@ -386,7 +450,12 @@ const CaseAnalysis: React.FC = () => {
                                             </div>
                                             <div className="flex flex-col items-end">
                                                 <span className="text-xs font-black text-gray-900">{str.amount}</span>
-                                                <span className="text-[10px] font-black text-amber-600 mt-1 bg-amber-50 px-2 py-0.5 rounded border border-amber-100 uppercase">{str.type}</span>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    {str.addedManually && (
+                                                        <span className="text-[8px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 uppercase tracking-tighter">Manual</span>
+                                                    )}
+                                                    <span className="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100 uppercase">{str.type}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -574,6 +643,79 @@ const CaseAnalysis: React.FC = () => {
                                 >
                                     Confirm Reject
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Search & Add Modal Overlay */}
+                {searchModal.open && (
+                    <div className="absolute inset-0 z-[110] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4">
+                        <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-8 transform transition-all animate-in zoom-in duration-200 flex flex-col max-h-[80vh]">
+                            <div className="flex items-center justify-between mb-6">
+                                <div>
+                                    <h3 className="text-lg font-black text-gray-900 mb-1">Search & Link {searchModal.type === 'ENTITY' ? 'Subject' : 'Regulatory Report'}</h3>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Global Master Registry Discovery</p>
+                                </div>
+                                <button onClick={() => { setSearchModal({ ...searchModal, open: false }); setSearchQuery(''); }} className="p-2 hover:bg-gray-100 rounded-xl transition-all">
+                                    <X className="w-5 h-5 text-gray-400" />
+                                </button>
+                            </div>
+
+                            <div className="relative mb-6">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <input 
+                                    type="text"
+                                    autoFocus
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder={searchModal.type === 'ENTITY' ? "Search by name or ID (e.g. Tobias, P-001)..." : "Search by Report ID or Institution..."}
+                                    className="w-full bg-gray-50 border border-gray-200 text-sm font-bold p-4 pl-12 rounded-2xl focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                                />
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3">
+                                {searchResults.length > 0 ? (
+                                    searchResults.map((res: any) => {
+                                        const alreadyLinked = searchModal.type === 'ENTITY' 
+                                            ? activeCase.subjects.some(s => s.id === res.id)
+                                            : activeCase.reports.some(r => r.id === res.id);
+
+                                        return (
+                                            <div 
+                                                key={res.id} 
+                                                className={`p-4 rounded-2xl border transition-all flex items-center justify-between ${
+                                                    alreadyLinked ? 'bg-gray-50 border-gray-100 opacity-60' : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow-md cursor-pointer'
+                                                }`}
+                                                onClick={() => !alreadyLinked && handleAddManual(res.id)}
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <div className={`p-2.5 rounded-xl ${searchModal.type === 'ENTITY' ? 'bg-indigo-50 text-indigo-600' : 'bg-amber-50 text-amber-600'}`}>
+                                                        {searchModal.type === 'ENTITY' ? (res.type === 'COMPANY' ? <Briefcase className="w-4 h-4" /> : <User className="w-4 h-4" />) : <FileText className="w-4 h-4" />}
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-sm font-black text-gray-900">{res.name || res.id}</div>
+                                                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                                            {searchModal.type === 'ENTITY' ? `${res.nationality} • ${res.id}` : `${res.institution} • ${res.type}`}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {alreadyLinked ? (
+                                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-lg border border-green-100 text-[10px] font-black uppercase">
+                                                        <BadgeCheck className="w-3 h-3" /> Linked
+                                                    </div>
+                                                ) : (
+                                                    <Plus className="w-5 h-5 text-blue-600" />
+                                                )}
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <div className="py-12 text-center">
+                                        <Search className="w-12 h-12 text-gray-200 mx-auto mb-4" />
+                                        <p className="text-xs font-black text-gray-400 uppercase tracking-widest">No matching results in registry</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

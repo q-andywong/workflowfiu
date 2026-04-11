@@ -2,7 +2,15 @@
 
 This document tracks major architectural deviations and deployments across the FIU STR analysis platform framework. Use this ledger as a reference if functional reversions are required.
 
-## [v2.5.1] - Multi-Entity Attribution & Stability (Current)
+## [v2.6.0] - Manual Intelligence Enrichment & Discovery
+ 
+### Added
+* **Manual Subject & STR Addition**: Analysts can now proactively search and append additional entities or regulatory reports to an active investigation.
+* **Audit Lineage**: Manually added subjects and reports are tagged with a "MANUAL" badge and a "Tagged" timestamp for robust audit tracking.
+* **Discovery Quick Actions**: Integrated "Link Additional Subject" and "Link Regulatory Report" triggers directly within the Investigation Analysis & Evidence panel to streamline the data enrichment workflow.
+* **Global Master Registry Search**: Implemented a global search modal that searches across all available mock entities and transaction reports.
+
+## [v2.5.1] - Multi-Entity Attribution & Stability
 
 ### Added
 * **Intelligence Attribution Hub**: Introduced visual indicators in Case Analysis to show which specific subject triggered a related case or regulatory report. Includes blue source tags (e.g., `LINKED TO: IGOR DIMITROV`) and attribution labels on historical cards.

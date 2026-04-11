@@ -59,6 +59,8 @@ export interface PersonProfile {
     sanctionsMatch: boolean;
   };
   investigationFindings?: string;
+  addedManually?: boolean;
+  addedAt?: string;
 }
 
 export interface SuspiciousTransactionReport {
@@ -73,6 +75,8 @@ export interface SuspiciousTransactionReport {
   crimeTypes?: string[];
   suspicionCategories?: string[];
   narrative?: string;
+  addedManually?: boolean;
+  addedAt?: string;
 }
 
 export interface IntelligenceCase {

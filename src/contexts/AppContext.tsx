@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { IntelligenceCase, DashboardStats, PersonProfile, Attachment, CaseModificationRequest } from '../types';
-import { MOCK_CASES, MOCK_STRS } from '../constants';
+import { MOCK_CASES, MOCK_STRS, MOCK_ENTITIES } from '../constants';
 import { useAuth } from './AuthContext';
 import { storage } from '../lib/firebase';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
@@ -19,6 +19,7 @@ interface AppContextType {
   bulkUpdateCases: (ids: string[], updates: Partial<IntelligenceCase>) => void;
   bulkLinkReports: (caseId: string, reportIds: string[]) => void;
   linkEntitiesToCase: (targetCaseId: string, sourceEntityIds: string[]) => void;
+  addManualEntity: (caseId: string, entityId: string) => void;
   uploadAttachment: (caseId: string, file: File) => Promise<void>;
   removeAttachment: (caseId: string, attachmentId: string) => Promise<void>;
   requestModification: (caseId: string, type: CaseModificationRequest['type'], details: any) => void;
@@ -250,14 +251,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setCases(prev => prev.map(c => {
       if (c.id === caseId) {
         const existingReportIds = new Set(c.reports.map(r => r.id));
-        const newReports = reportsToLink.filter((r: any) => !existingReportIds.has(r.id)).map((r: any) => ({ ...r, status: 'LINKED' as const }));
+        const now = new Date().toISOString();
+        const newReports = reportsToLink.filter((r: any) => !existingReportIds.has(r.id)).map((r: any) => ({ 
+          ...r, 
+          status: 'LINKED' as const,
+          addedManually: true,
+          addedAt: now
+        }));
         return { 
           ...c, 
           reports: [...c.reports, ...newReports], 
           subjects: c.subjects.map((s, idx) => idx === 0 ? {
             ...s,
-            linkedSTRs: [...(s.linkedSTRs || []), ...newReports.map(r => ({ id: r.id, date: r.date, amount: `${r.amount.toLocaleString()} ${r.currency}`, type: r.type }))]
+            linkedSTRs: [...(s.linkedSTRs || []), ...newReports.map(r => ({ 
+              id: r.id, 
+              date: r.date, 
+              amount: `${r.amount.toLocaleString()} ${r.currency}`, 
+              type: r.type,
+              addedManually: true,
+              addedAt: now
+            }))]
           } : s)
+        };
+      }
+      return c;
+    }));
+  };
+
+  const addManualEntity = (caseId: string, entityId: string) => {
+    const entityToAdd = MOCK_ENTITIES.find((e: any) => e.id === entityId);
+    if (!entityToAdd) return;
+
+    setCases(prev => prev.map(c => {
+      if (c.id === caseId) {
+        if (c.subjects.some(s => s.id === entityId)) return c;
+        const now = new Date().toISOString();
+        return {
+          ...c,
+          subjects: [...c.subjects, { ...entityToAdd, addedManually: true, addedAt: now }]
         };
       }
       return c;
@@ -333,7 +364,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   return (
     <AppContext.Provider value={{ 
-      cases: activeCases, allCases: cases, stats, selectedCase, setSelectedCase, updateCaseStatus, saveMitigation, saveFindings, addFeedback, assessEntity, approveCase, rejectCase, createCase, bulkUpdateCases, bulkLinkReports, linkEntitiesToCase, uploadAttachment, removeAttachment, requestModification, processModification, view, previousView, setView
+      cases: activeCases, allCases: cases, stats, selectedCase, setSelectedCase, updateCaseStatus, saveMitigation, saveFindings, addFeedback, assessEntity, approveCase, rejectCase, createCase, bulkUpdateCases, bulkLinkReports, linkEntitiesToCase, addManualEntity, uploadAttachment, removeAttachment, requestModification, processModification, view, previousView, setView
     }}>
       {children}
     </AppContext.Provider>
