@@ -154,13 +154,6 @@ const CaseAnalysis: React.FC = () => {
                                         </span>
                                     </div>
                                 )}
-                                <button 
-                                    onClick={() => setSearchModal({ open: true, type: 'ENTITY' })}
-                                    className="flex items-center gap-2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg border border-blue-500/30 transition-all text-[10px] font-black uppercase tracking-widest whitespace-nowrap ml-2"
-                                >
-                                    <Plus className="w-3.5 h-3.5" />
-                                    Link Subject
-                                </button>
                             </div>
                         </div>
                     </div>
