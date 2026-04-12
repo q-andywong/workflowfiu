@@ -3,7 +3,8 @@ import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
 import { CaseStatus } from '../types';
 import ManualCaseModal from '../components/ManualCaseModal';
-import { FolderGit2, ArrowRight, PlusCircle, ShieldAlert, ArrowUpDown, ArrowUp, ArrowDown, Search } from 'lucide-react';
+import { FolderGit2, ArrowRight, PlusCircle, ShieldAlert, ArrowUpDown, ArrowUp, ArrowDown, Search, UserMinus, UserCheck, X } from 'lucide-react';
+import { MOCK_INVESTIGATORS } from '../constants';
 
 const CaseDirectory: React.FC = () => {
     const { allCases, setSelectedCase, setView } = useApp();
@@ -13,6 +14,8 @@ const CaseDirectory: React.FC = () => {
     const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: 'asc' | 'desc' } | null>({ key: 'id', direction: 'desc' });
     const [statusFilter, setStatusFilter] = React.useState<string>('ALL');
     const [searchQuery, setSearchQuery] = React.useState<string>('');
+    const [reassigningId, setReassigningId] = React.useState<string | null>(null);
+    const { reassignCase } = useApp();
 
     // The Master Directory filters out Triage/Dismissed and enforces privacy for STAGING drafts
     const registry = React.useMemo(() => {
@@ -241,8 +244,46 @@ const CaseDirectory: React.FC = () => {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <div className="p-1.5 inline-block bg-gray-50 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-all text-gray-400">
-                                            <ArrowRight className="w-4 h-4" />
+                                        <div className="flex items-center justify-end gap-2">
+                                            {user?.role === 'MANAGER' && (
+                                                <div className="relative">
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); setReassigningId(reassigningId === c.id ? null : c.id); }}
+                                                        className={`p-1.5 rounded-lg transition-all ${reassigningId === c.id ? 'bg-amber-100 text-amber-700' : 'bg-gray-50 text-gray-400 hover:bg-amber-50 hover:text-amber-600'}`}
+                                                        title="Re-assign Analyst"
+                                                    >
+                                                        <UserMinus className="w-4 h-4" />
+                                                    </button>
+                                                    
+                                                    {reassigningId === c.id && (
+                                                        <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-[100] p-3 animate-in fade-in slide-in-from-top-2 duration-200" onClick={e => e.stopPropagation()}>
+                                                            <div className="flex items-center justify-between mb-2">
+                                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Select Analyst</span>
+                                                                <button onClick={() => setReassigningId(null)} className="text-gray-400 hover:text-gray-600"><X className="w-3 h-3" /></button>
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                {MOCK_INVESTIGATORS.map(inv => (
+                                                                    <button
+                                                                        key={inv.name}
+                                                                        onClick={() => { reassignCase(c.id, inv.name); setReassigningId(null); }}
+                                                                        className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-colors flex items-center justify-between group ${c.analyst === inv.name ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'}`}
+                                                                    >
+                                                                        <span>{inv.name}</span>
+                                                                        {c.analyst === inv.name && <UserCheck className="w-3 h-3" />}
+                                                                        {c.analyst !== inv.name && <div className="text-[8px] opacity-0 group-hover:opacity-100 uppercase tracking-tighter">Assign</div>}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                            <button 
+                                                onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
+                                                className="p-1.5 bg-gray-50 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-gray-400"
+                                            >
+                                                <ArrowRight className="w-4 h-4" />
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

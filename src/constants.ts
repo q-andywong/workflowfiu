@@ -459,6 +459,14 @@ const GENERATED_TASKS: IntelligenceCase[] = Array.from({ length: 15 }).map((_, i
   };
 });
 
+export const MOCK_INVESTIGATORS = [
+  { name: 'Insp. Lim', typology: 'Money Laundering' },
+  { name: 'Sgt. Wong', typology: 'Sanctions Evasion' },
+  { name: 'Insp. Kumar', typology: 'Terrorism Financing' },
+  { name: 'Sgt. Azizah', typology: 'Cybercrime' },
+  { name: 'Insp. Pei Shan', typology: 'Fraud' }
+];
+
 MOCK_CASES.push(...GENERATED_TASKS);
 
 export const MOCK_STRS: SuspiciousTransactionReport[] = [

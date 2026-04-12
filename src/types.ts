@@ -92,9 +92,22 @@ export interface IntelligenceCase {
   disseminations?: DisseminationRecord[];
   attachments?: Attachment[];
   findings?: string;
+  charts?: IntelligenceChart[];
   pendingModification?: CaseModificationRequest;
   createdAt: string;
   closedAt?: string;
+}
+
+export interface IntelligenceChart {
+  id: string;
+  title: string;
+  type: 'BAR' | 'LINE' | 'PIE';
+  dataConfig: {
+    xAxis: string;
+    yAxis: string;
+    label: string;
+  };
+  createdAt: string;
 }
 
 export interface Attachment {
@@ -111,7 +124,7 @@ export interface CaseModificationRequest {
   id: string;
   requestedBy: string;
   requestedAt: string;
-  type: 'STATUS_CHANGE' | 'DATA_CORRECTION' | 'DELETION';
+  type: 'STATUS_CHANGE' | 'DATA_CORRECTION' | 'DELETION' | 'DATA_EXPORT';
   details: {
     field?: string;
     oldValue?: any;

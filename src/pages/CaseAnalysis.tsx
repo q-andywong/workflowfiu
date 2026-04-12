@@ -3,16 +3,20 @@ import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
 import MitigationScorecard from '../components/MitigationScorecard';
 import STRViewer from '../components/STRViewer';
-import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase, Plus, Search } from 'lucide-react';
+import ChartComposer from '../components/ChartComposer';
+import ReportBuilder from '../components/ReportBuilder';
+import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase, Plus, Search, BarChart3, Package } from 'lucide-react';
 import { MOCK_ENTITIES, MOCK_STRS } from '../constants';
 
 const CaseAnalysis: React.FC = () => {
-    const { cases, allCases, selectedCase, setSelectedCase, assessEntity, view, previousView, setView, saveFindings, uploadAttachment, removeAttachment, requestModification, approveCase, rejectCase, processModification, updateCaseStatus, bulkUpdateCases } = useApp();
+    const { cases, allCases, selectedCase, setSelectedCase, assessEntity, view, previousView, setView, saveFindings, uploadAttachment, removeAttachment, requestModification, approveCase, rejectCase, processModification, updateCaseStatus, bulkUpdateCases, saveChart, removeChart, addFeedback } = useApp();
     const { user } = useAuth();
     const [showSTRViewer, setShowSTRViewer] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [selectedAction, setSelectedAction] = useState<string>('');
     const [activeSubjectId, setActiveSubjectId] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<'DETAILS' | 'EVIDENCE' | 'FINDINGS' | 'ANALYTICS'>('DETAILS');
+    const [showReportBuilder, setShowReportBuilder] = useState(false);
     
     // Manager Rejection State
     const [isRejecting, setIsRejecting] = useState(false);
@@ -335,9 +339,25 @@ const CaseAnalysis: React.FC = () => {
                                                             </div>
                                                         </div>
                                                         <div className="absolute top-1/2 -translate-y-1/2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <a href={att.url} target="_blank" rel="noreferrer" className="p-1 hover:bg-blue-50 text-blue-600 rounded">
+                                                            <button 
+                                                                onClick={(e) => { 
+                                                                    e.stopPropagation();
+                                                                    if (user?.role === 'MANAGER') {
+                                                                        window.open(att.url, '_blank');
+                                                                    } else {
+                                                                        requestModification(activeCase.id, 'DATA_EXPORT', { 
+                                                                            field: 'Attachment', 
+                                                                            reason: `Investigator requested download of ${att.name}`,
+                                                                            newValue: att.name
+                                                                        });
+                                                                        alert('GOVERNANCE: Export request submitted to Manager for approval.');
+                                                                    }
+                                                                }}
+                                                                className="p-1 hover:bg-blue-50 text-blue-600 rounded"
+                                                                title={user?.role === 'MANAGER' ? "Download File" : "Request Export Approval"}
+                                                            >
                                                                 <Download className="w-3 h-3" />
-                                                            </a>
+                                                            </button>
                                                             <button 
                                                                 onClick={(e) => { e.stopPropagation(); removeAttachment(activeCase.id, att.id); }}
                                                                 className="p-1 hover:bg-red-50 text-red-600 rounded"
@@ -471,7 +491,13 @@ const CaseAnalysis: React.FC = () => {
 
                             <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                                 <div className="flex items-center justify-between mb-4">
-                                    <div className="w-10"></div>
+                                    <button 
+                                        onClick={() => setActiveTab('ANALYTICS')}
+                                        className={`px-6 py-4 text-[10px] font-black uppercase tracking-widest border-b-2 transition-all flex items-center gap-2 ${activeTab === 'ANALYTICS' ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                                    >
+                                        <BarChart3 className="w-4 h-4" />
+                                        Advanced Analytics
+                                    </button>
                                     <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Linked Regulatory Reports</h4>
                                     <button 
                                         onClick={() => setSearchModal({ open: true, type: 'STR' })}
@@ -540,12 +566,27 @@ const CaseAnalysis: React.FC = () => {
                                             <Send className="w-4 h-4" />
                                             Submit for Case Creation Approval
                                         </button>
+                                        <button 
+                                            onClick={() => setShowReportBuilder(true)}
+                                            className="px-8 py-4 bg-[#100628] hover:bg-black text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl transition-all flex items-center gap-3 min-w-[280px] justify-center"
+                                        >
+                                            <Package className="w-4 h-4" />
+                                            Package for Dissemination
+                                        </button>
                                     </div>
                                     
                                     <div className="pt-4 border-t border-gray-100 flex items-center justify-center gap-2">
                                         <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
                                         <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Findings auto-saved to cloud storage</span>
                                     </div>
+                                </div>
+                            ) : activeTab === 'ANALYTICS' ? (
+                                <div className="w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                    <ChartComposer 
+                                        activeCase={activeCase} 
+                                        onSave={(chart) => saveChart(activeCase.id, chart)}
+                                        onRemove={(chartId) => removeChart(activeCase.id, chartId)}
+                                    />
                                 </div>
                             ) : activeCase.status === 'PENDING_APPROVAL' ? (
                                 <div className="w-full py-8 flex items-center justify-center bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">

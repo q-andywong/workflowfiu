@@ -145,12 +145,25 @@ const STRViewer: React.FC<STRViewerProps> = ({ onClose, strId }) => {
           <AlertCircle className="w-12 h-12 text-red-500" />
           <h2 className="text-xl font-bold">Report Not Found</h2>
           <p className="text-gray-500 text-sm font-medium"> The intelligence report <span className="text-red-600 font-bold bg-red-50 px-1 rounded">"{searchId}"</span> could not be retrieved from the current context pool. </p>
-          <div className="text-left w-full bg-gray-50 p-3 rounded-lg border border-gray-200">
-            <div className="text-[10px] font-bold text-gray-400 uppercase mb-2">Diagnostic Info:</div>
-            <div className="text-[10px] text-gray-500 line-clamp-3">
-              Context Pool Size: {allCases.length} cases<br/>
-              Available IDs (sample): {availableIds.join(', ') || 'NONE'}
+          <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shadow-xl shadow-blue-100">
+                <ExternalLink className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest">eSONAR External Gateway</h4>
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-0.5">Direct communication with filing institution</p>
+              </div>
             </div>
+            <button 
+              onClick={() => {
+                alert('INTEGRATION HOOK: Communication request dispatched to eSONAR Portal. Filer will be notified to provide supplementary narrative for ' + searchId);
+              }}
+              className="px-6 py-3 bg-white border border-blue-200 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-blue-50 transition-all flex items-center gap-2 shadow-sm"
+            >
+              <Send className="w-3.5 h-3.5" />
+              Request Filer Clarification
+            </button>
           </div>
           <button onClick={onClose} className="w-full py-2 bg-gray-900 text-white rounded-lg font-bold hover:bg-black transition-colors shadow-lg">Close</button>
         </div>

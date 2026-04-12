@@ -22,6 +22,9 @@ interface AppContextType {
   addManualEntity: (caseId: string, entityId: string) => void;
   uploadAttachment: (caseId: string, file: File) => Promise<void>;
   removeAttachment: (caseId: string, attachmentId: string) => Promise<void>;
+  saveChart: (caseId: string, chart: Partial<IntelligenceChart>) => Promise<void>;
+  removeChart: (caseId: string, chartId: string) => Promise<void>;
+  reassignCase: (id: string, newAnalyst: string) => void;
   requestModification: (caseId: string, type: CaseModificationRequest['type'], details: any) => void;
   processModification: (caseId: string, approved: boolean) => void;
   saveMitigation: (caseId: string, subjectId: string, factorId: string, category: string, notes: string) => void;
@@ -116,7 +119,35 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         requestModification(id, 'STATUS_CHANGE', { newValue: status, reason: `Analyst requested ${status.toLowerCase()} without dissemination record.` });
         return;
     }
-    setCases(prev => prev.map(c => c.id === id ? { ...c, status, closedAt: (status === 'CLOSED' || status === 'DISMISSED') ? new Date().toISOString() : undefined } : c));
+    setCases(prev => prev.map(c => c.id === id ? { ...c, status } : c));
+  };
+
+  const reassignCase = (id: string, newAnalyst: string) => {
+    setCases(prev => prev.map(c => c.id === id ? { ...c, analyst: newAnalyst } : c));
+  };
+
+  const saveChart = async (caseId: string, chart: Partial<IntelligenceChart>) => {
+    const newChart: IntelligenceChart = {
+      id: Math.random().toString(36).substr(2, 9),
+      title: chart.title || 'Untitled Chart',
+      type: chart.type || 'BAR',
+      dataConfig: chart.dataConfig || { xAxis: 'date', yAxis: 'amount', label: 'Transaction Trend' },
+      createdAt: new Date().toISOString()
+    };
+    
+    setCases(prev => prev.map(c => 
+      c.id === caseId 
+        ? { ...c, charts: [...(c.charts || []), newChart] } 
+        : c
+    ));
+  };
+
+  const removeChart = async (caseId: string, chartId: string) => {
+    setCases(prev => prev.map(c => 
+      c.id === caseId 
+        ? { ...c, charts: (c.charts || []).filter(ch => ch.id !== chartId) } 
+        : c
+    ));
   };
 
   const requestModification = (caseId: string, type: CaseModificationRequest['type'], details: any) => {
@@ -364,7 +395,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   return (
     <AppContext.Provider value={{ 
-      cases: activeCases, allCases: cases, stats, selectedCase, setSelectedCase, updateCaseStatus, saveMitigation, saveFindings, addFeedback, assessEntity, approveCase, rejectCase, createCase, bulkUpdateCases, bulkLinkReports, linkEntitiesToCase, addManualEntity, uploadAttachment, removeAttachment, requestModification, processModification, view, previousView, setView
+      cases: activeCases, allCases: cases, stats, selectedCase, setSelectedCase, updateCaseStatus, reassignCase, saveMitigation, saveFindings, addFeedback, assessEntity, approveCase, rejectCase, createCase, bulkUpdateCases, bulkLinkReports, linkEntitiesToCase, addManualEntity, uploadAttachment, removeAttachment, saveChart, removeChart, requestModification, processModification, view, previousView, setView
     }}>
       {children}
     </AppContext.Provider>
