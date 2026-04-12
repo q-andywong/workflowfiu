@@ -212,64 +212,70 @@ const CaseAnalysis: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Subject & Intelligence Discovery Row */}
+                        {/* Intelligence Multi-Tier Cluster */}
                         {(activeCase.subjects.length >= 1 || (activeCase.reports || []).length >= 1) && (
-                            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-                                <div className="flex flex-col gap-2 flex-grow overflow-hidden">
-                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Live Case Intelligence Cluster</div>
-                                    <div className="flex items-center gap-3 overflow-x-auto pb-2 custom-scrollbar">
-                                        {/* Subjects */}
-                                        {activeCase.subjects.map(s => (
-                                            <button
-                                                key={s.id}
-                                                onClick={() => setActiveSubjectId(s.id)}
-                                                className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2.5 ${
-                                                    currentSubjectId === s.id 
-                                                        ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-200' 
-                                                        : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200 hover:text-blue-600'
-                                                }`}
-                                            >
-                                                {s.type === 'COMPANY' ? <Briefcase className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
-                                                <span>{s.name}</span>
-                                                <span className={`ml-1 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm ${
-                                                    currentSubjectId === s.id 
-                                                        ? 'bg-white/20 text-white' 
-                                                        : 'bg-red-50 text-red-600 border border-red-100'
-                                                }`}>
-                                                    {s.riskProfile?.totalScore || 0}
-                                                </span>
-                                            </button>
-                                        ))}
-
-                                        {/* Separator if both exist */}
-                                        {activeCase.subjects.length > 0 && (activeCase.reports || []).length > 0 && (
-                                            <div className="h-8 w-px bg-gray-200 mx-1 shrink-0"></div>
-                                        )}
-
-                                        {/* Linked Regulatory Reports */}
-                                        {(activeCase.reports || []).map(r => (
-                                            <div
-                                                key={r.id}
-                                                className="px-4 py-2.5 rounded-xl bg-amber-50/50 border border-amber-200/60 text-amber-800 text-[10px] font-black uppercase tracking-widest whitespace-nowrap flex items-center gap-2.5 shadow-sm"
-                                            >
-                                                <ShieldAlert className="w-3.5 h-3.5 text-amber-500" />
-                                                <span>{r.id}</span>
-                                                <span className="bg-white border border-red-100 text-red-600 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
-                                                    {r.riskScore || 0}
-                                                </span>
+                            <div className="flex flex-col lg:flex-row gap-6">
+                                <div className="flex flex-col gap-6 flex-grow overflow-hidden">
+                                    {/* Row 1: Forensic Entities */}
+                                    {activeCase.subjects.length > 0 && (
+                                        <div className="flex flex-col gap-2">
+                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Forensic Entities & Subjects</div>
+                                            <div className="flex items-center gap-3 overflow-x-auto pb-1 custom-scrollbar">
+                                                {activeCase.subjects.map(s => (
+                                                    <button
+                                                        key={s.id}
+                                                        onClick={() => setActiveSubjectId(s.id)}
+                                                        className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2.5 ${
+                                                            currentSubjectId === s.id 
+                                                                ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-200' 
+                                                                : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200 hover:text-blue-600'
+                                                        }`}
+                                                    >
+                                                        {s.type === 'COMPANY' ? <Briefcase className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
+                                                        <span>{s.name}</span>
+                                                        <span className={`ml-1 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm ${
+                                                            currentSubjectId === s.id 
+                                                                ? 'bg-white/20 text-white' 
+                                                                : 'bg-red-50 text-red-600 border border-red-100'
+                                                        }`}>
+                                                            {s.riskProfile?.totalScore || 0}
+                                                        </span>
+                                                    </button>
+                                                ))}
                                             </div>
-                                        ))}
-                                    </div>
+                                        </div>
+                                    )}
+
+                                    {/* Row 2: Regulatory Intelligence */}
+                                    {(activeCase.reports || []).length > 0 && (
+                                        <div className="flex flex-col gap-2">
+                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Regulatory Intelligence (STR/CTR/CMR)</div>
+                                            <div className="flex items-center gap-3 overflow-x-auto pb-1 custom-scrollbar">
+                                                {(activeCase.reports || []).map(r => (
+                                                    <div
+                                                        key={r.id}
+                                                        className="px-4 py-2.5 rounded-xl bg-amber-50/50 border border-amber-200/60 text-amber-800 text-[10px] font-black uppercase tracking-widest whitespace-nowrap flex items-center gap-2.5 shadow-sm"
+                                                    >
+                                                        <ShieldAlert className="w-3.5 h-3.5 text-amber-500" />
+                                                        <span>{r.id}</span>
+                                                        <span className="bg-white border border-red-100 text-red-600 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
+                                                            {r.riskScore || 0}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Global Aggregate Metric */}
-                                <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm flex items-center gap-4 shrink-0 mb-2">
-                                    <div className="flex flex-col items-end">
-                                        <div className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Aggregate Case Risk</div>
-                                        <div className="text-[10px] font-bold text-red-600 uppercase mt-0.5">High Exposure Cluster</div>
+                                <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-center items-center gap-3 shrink-0 self-start lg:min-w-[200px] border-t-4 border-t-red-600">
+                                    <div className="flex flex-col items-center text-center">
+                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Aggregate Case Risk</div>
+                                        <div className="text-[10px] font-bold text-red-600 uppercase mt-1">High Exposure Cluster</div>
                                     </div>
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-50 to-rose-50 border border-red-100 flex items-center justify-center">
-                                        <span className="text-xl font-black text-red-600 leading-none">{totalCaseScore}</span>
+                                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-50 to-rose-50 border border-red-100 flex items-center justify-center shadow-inner">
+                                        <span className="text-2xl font-black text-red-600 leading-none">{totalCaseScore}</span>
                                     </div>
                                 </div>
                             </div>
