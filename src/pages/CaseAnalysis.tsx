@@ -31,6 +31,11 @@ const CaseAnalysis: React.FC = () => {
     
     if (!activeCase || !selectedCase) return null;
 
+    // Calculate Dynamic Case Score (Aggregate of all subjects + linked reports)
+    const subjectTotal = activeCase.subjects.reduce((acc, s) => acc + (s.riskProfile?.totalScore || 0), 0);
+    const reportTotal = (activeCase.reports || []).reduce((acc, r) => acc + (r.riskScore || 0), 0);
+    const totalCaseScore = subjectTotal + reportTotal;
+
     // Use selected subject or default to the first one
     const currentSubjectId = activeSubjectId || activeCase.subjects[0]?.id;
     const profile = activeCase.subjects.find(s => s.id === currentSubjectId) || activeCase.subjects[0];
@@ -139,6 +144,11 @@ const CaseAnalysis: React.FC = () => {
                                     </span>
                                 )}
                                 <span className="text-white/30 text-[10px] tracking-widest">OP-ID: {activeCase.id}</span>
+                                
+                                <div className="flex items-center gap-2 ml-4 px-3 py-1 bg-gradient-to-r from-red-600 to-rose-700 rounded-lg border border-red-400/30 shadow-lg shadow-red-900/20">
+                                    <span className="text-[8px] font-black text-red-100 uppercase tracking-widest opacity-80">Case Score</span>
+                                    <span className="text-sm font-black text-white">{totalCaseScore}</span>
+                                </div>
                             </div>
                             <h2 className="text-2xl font-black text-white tracking-tight leading-none">{activeCase.title}</h2>
                             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3">
