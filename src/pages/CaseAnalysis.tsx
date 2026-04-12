@@ -144,11 +144,6 @@ const CaseAnalysis: React.FC = () => {
                                     </span>
                                 )}
                                 <span className="text-white/30 text-[10px] tracking-widest">OP-ID: {activeCase.id}</span>
-                                
-                                <div className="flex items-center gap-2 ml-4 px-3 py-1 bg-gradient-to-r from-red-600 to-rose-700 rounded-lg border border-red-400/30 shadow-lg shadow-red-900/20">
-                                    <span className="text-[8px] font-black text-red-100 uppercase tracking-widest opacity-80">Case Score</span>
-                                    <span className="text-sm font-black text-white">{totalCaseScore}</span>
-                                </div>
                             </div>
                             <h2 className="text-2xl font-black text-white tracking-tight leading-none">{activeCase.title}</h2>
                             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3">
@@ -217,25 +212,45 @@ const CaseAnalysis: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Subject Switcher Row (Visible for single and multi-entity cases) */}
+                        {/* Subject Discovery & Global Metric Row */}
                         {activeCase.subjects.length >= 1 && (
-                            <div className="flex flex-col gap-2">
-                                <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Active Investigation Subjects</div>
-                                <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
-                                    {activeCase.subjects.map(s => (
-                                        <button
-                                            key={s.id}
-                                            onClick={() => setActiveSubjectId(s.id)}
-                                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2 ${
-                                                currentSubjectId === s.id 
-                                                    ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-200' 
-                                                    : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200 hover:text-blue-600'
-                                            }`}
-                                        >
-                                            {s.type === 'COMPANY' ? <Briefcase className="w-3 h-3" /> : <User className="w-3 h-3" />}
-                                            {s.name}
-                                        </button>
-                                    ))}
+                            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                                <div className="flex flex-col gap-2 flex-grow">
+                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Active Investigation Subjects</div>
+                                    <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                                        {activeCase.subjects.map(s => (
+                                            <button
+                                                key={s.id}
+                                                onClick={() => setActiveSubjectId(s.id)}
+                                                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2 ${
+                                                    currentSubjectId === s.id 
+                                                        ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-200' 
+                                                        : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200 hover:text-blue-600'
+                                                }`}
+                                            >
+                                                {s.type === 'COMPANY' ? <Briefcase className="w-3 h-3" /> : <User className="w-3 h-3" />}
+                                                <span>{s.name}</span>
+                                                <span className={`ml-1 text-[8px] font-black px-1.5 py-0.5 rounded ${
+                                                    currentSubjectId === s.id 
+                                                        ? 'bg-white/20 text-white' 
+                                                        : 'bg-red-50 text-red-600 border border-red-100'
+                                                }`}>
+                                                    {s.riskProfile?.totalScore || 0}
+                                                </span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Global Aggregate Metric */}
+                                <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm flex items-center gap-4 shrink-0 mb-2">
+                                    <div className="flex flex-col items-end">
+                                        <div className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Aggregate Case Risk</div>
+                                        <div className="text-[10px] font-bold text-red-600 uppercase mt-0.5">High Exposure Cluster</div>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-50 to-rose-50 border border-red-100 flex items-center justify-center">
+                                        <span className="text-xl font-black text-red-600 leading-none">{totalCaseScore}</span>
+                                    </div>
                                 </div>
                             </div>
                         )}
