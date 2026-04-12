@@ -5,8 +5,8 @@ import MitigationScorecard from '../components/MitigationScorecard';
 import STRViewer from '../components/STRViewer';
 import ChartComposer from '../components/ChartComposer';
 import ReportBuilder from '../components/ReportBuilder';
-import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase, Plus, Search, BarChart3, Package } from 'lucide-react';
-import { MOCK_ENTITIES, MOCK_STRS } from '../constants';
+import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase, Plus, Search, BarChart3, Package, UserPlus, ArrowRight } from 'lucide-react';
+import { MOCK_ENTITIES, MOCK_STRS, MOCK_INVESTIGATORS } from '../constants';
 
 const CaseAnalysis: React.FC = () => {
     const { cases, allCases, selectedCase, setSelectedCase, assessEntity, view, previousView, setView, saveFindings, uploadAttachment, removeAttachment, requestModification, approveCase, rejectCase, processModification, updateCaseStatus, bulkUpdateCases, saveChart, removeChart, addFeedback } = useApp();
@@ -17,6 +17,7 @@ const CaseAnalysis: React.FC = () => {
     const [activeSubjectId, setActiveSubjectId] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'DETAILS' | 'EVIDENCE' | 'FINDINGS' | 'ANALYTICS'>('DETAILS');
     const [showReportBuilder, setShowReportBuilder] = useState(false);
+    const [isReassigning, setIsReassigning] = useState(false);
     
     // Manager Rejection State
     const [isRejecting, setIsRejecting] = useState(false);
@@ -161,6 +162,46 @@ const CaseAnalysis: React.FC = () => {
                                         <span className="text-[10px] font-black text-white/80 uppercase tracking-widest">
                                             {[...new Set(activeCase.subjects.flatMap(s => s.crimeTypologies || []))].join(' • ')}
                                         </span>
+                                    </div>
+                                )}
+                                {user?.role === 'MANAGER' && (
+                                    <div className="relative">
+                                        <button 
+                                            onClick={() => setIsReassigning(!isReassigning)}
+                                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all text-[10px] font-black uppercase tracking-widest ${isReassigning ? 'bg-amber-100 border-amber-200 text-amber-700' : 'bg-white/10 border-white/10 text-white/60 hover:bg-white/20 hover:text-white'}`}
+                                        >
+                                            <UserPlus className="w-3.5 h-3.5" />
+                                            Re-assign Analyst
+                                        </button>
+
+                                        {isReassigning && (
+                                            <div className="absolute left-0 top-full mt-3 w-72 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-100 z-[110] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200" onClick={e => e.stopPropagation()}>
+                                                <div className="p-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
+                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Select Re-assignment Target</span>
+                                                    <button onClick={() => setIsReassigning(false)} className="p-1 hover:bg-gray-200 rounded-lg text-gray-400 transition-colors"><X className="w-3.5 h-3.5" /></button>
+                                                </div>
+                                                <div className="p-2 space-y-1 max-h-64 overflow-y-auto custom-scrollbar">
+                                                    {MOCK_INVESTIGATORS.map(inv => (
+                                                        <button
+                                                            key={inv.name}
+                                                            onClick={() => { reassignCase(activeCase.id, inv.name); setIsReassigning(false); }}
+                                                            className={`w-full text-left px-4 py-3 rounded-xl text-xs font-bold transition-all flex flex-col group relative ${activeCase.analyst === inv.name ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}
+                                                        >
+                                                            <div className="flex items-center justify-between w-full">
+                                                                <span className="font-black tracking-tight">{inv.name}</span>
+                                                                {activeCase.analyst === inv.name ? <UserCheck className="w-4 h-4" /> : <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />}
+                                                            </div>
+                                                            <div className={`text-[9px] font-bold uppercase tracking-widest mt-0.5 ${activeCase.analyst === inv.name ? 'text-blue-200' : 'text-gray-400 group-hover:text-blue-400'}`}>
+                                                                {inv.typology} Specialist
+                                                            </div>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <div className="p-3 bg-blue-50/30 border-t border-gray-50 text-[9px] text-blue-800/60 font-medium italic text-center">
+                                                    Ownership transfer will be logged.
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>

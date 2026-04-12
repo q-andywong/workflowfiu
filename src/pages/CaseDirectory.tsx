@@ -256,23 +256,30 @@ const CaseDirectory: React.FC = () => {
                                                     </button>
                                                     
                                                     {reassigningId === c.id && (
-                                                        <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-[100] p-3 animate-in fade-in slide-in-from-top-2 duration-200" onClick={e => e.stopPropagation()}>
-                                                            <div className="flex items-center justify-between mb-2">
-                                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Select Analyst</span>
-                                                                <button onClick={() => setReassigningId(null)} className="text-gray-400 hover:text-gray-600"><X className="w-3 h-3" /></button>
+                                                        <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200" onClick={e => e.stopPropagation()}>
+                                                            <div className="p-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
+                                                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Select Re-assignment Target</span>
+                                                                <button onClick={() => setReassigningId(null)} className="p-1 hover:bg-gray-200 rounded-lg text-gray-400 transition-colors"><X className="w-3.5 h-3.5" /></button>
                                                             </div>
-                                                            <div className="space-y-1">
+                                                            <div className="p-2 space-y-1 max-h-64 overflow-y-auto custom-scrollbar">
                                                                 {MOCK_INVESTIGATORS.map(inv => (
                                                                     <button
                                                                         key={inv.name}
                                                                         onClick={() => { reassignCase(c.id, inv.name); setReassigningId(null); }}
-                                                                        className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-colors flex items-center justify-between group ${c.analyst === inv.name ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'}`}
+                                                                        className={`w-full text-left px-4 py-3 rounded-xl text-xs font-bold transition-all flex flex-col group relative ${c.analyst === inv.name ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}
                                                                     >
-                                                                        <span>{inv.name}</span>
-                                                                        {c.analyst === inv.name && <UserCheck className="w-3 h-3" />}
-                                                                        {c.analyst !== inv.name && <div className="text-[8px] opacity-0 group-hover:opacity-100 uppercase tracking-tighter">Assign</div>}
+                                                                        <div className="flex items-center justify-between w-full">
+                                                                            <span className="font-black tracking-tight">{inv.name}</span>
+                                                                            {c.analyst === inv.name ? <UserCheck className="w-4 h-4" /> : <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />}
+                                                                        </div>
+                                                                        <div className={`text-[9px] font-bold uppercase tracking-widest mt-0.5 ${c.analyst === inv.name ? 'text-blue-200' : 'text-gray-400 group-hover:text-blue-400'}`}>
+                                                                            {inv.typology} Specialist
+                                                                        </div>
                                                                     </button>
                                                                 ))}
+                                                            </div>
+                                                            <div className="p-3 bg-blue-50/30 border-t border-gray-50">
+                                                                <p className="text-[9px] text-blue-800/60 font-medium italic text-center">Case history and audit trail will be preserved.</p>
                                                             </div>
                                                         </div>
                                                     )}
