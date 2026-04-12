@@ -175,30 +175,40 @@ const CaseAnalysis: React.FC = () => {
                                         </button>
 
                                         {isReassigning && (
-                                            <div className="absolute left-0 top-full mt-3 w-72 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-100 z-[110] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200" onClick={e => e.stopPropagation()}>
-                                                <div className="p-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
-                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Select Re-assignment Target</span>
-                                                    <button onClick={() => setIsReassigning(false)} className="p-1 hover:bg-gray-200 rounded-lg text-gray-400 transition-colors"><X className="w-3.5 h-3.5" /></button>
-                                                </div>
-                                                <div className="p-2 space-y-1 max-h-64 overflow-y-auto custom-scrollbar">
-                                                    {MOCK_INVESTIGATORS.map(inv => (
-                                                        <button
-                                                            key={inv.name}
-                                                            onClick={() => { reassignCase(activeCase.id, inv.name); setIsReassigning(false); }}
-                                                            className={`w-full text-left px-4 py-3 rounded-xl text-xs font-bold transition-all flex flex-col group relative ${activeCase.analyst === inv.name ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}
-                                                        >
-                                                            <div className="flex items-center justify-between w-full">
-                                                                <span className="font-black tracking-tight">{inv.name}</span>
-                                                                {activeCase.analyst === inv.name ? <UserCheck className="w-4 h-4" /> : <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />}
-                                                            </div>
-                                                            <div className={`text-[9px] font-bold uppercase tracking-widest mt-0.5 ${activeCase.analyst === inv.name ? 'text-blue-200' : 'text-gray-400 group-hover:text-blue-400'}`}>
-                                                                {inv.typology} Specialist
-                                                            </div>
+                                            <div className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4 animate-in fade-in duration-200" onClick={() => setIsReassigning(false)}>
+                                                <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.3)] border border-white/20 z-[120] overflow-hidden animate-in zoom-in duration-300 transform scale-100" onClick={e => e.stopPropagation()}>
+                                                    <div className="p-8 border-b border-gray-50 flex items-center justify-between bg-gradient-to-br from-gray-50 to-white">
+                                                        <div>
+                                                            <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] block mb-1">Governance Portal</span>
+                                                            <h3 className="text-lg font-black text-gray-900 tracking-tight">Re-assign Case</h3>
+                                                        </div>
+                                                        <button onClick={() => setIsReassigning(false)} className="p-2 border border-gray-100 hover:bg-gray-100 rounded-2xl text-gray-400 transition-all">
+                                                            <X className="w-5 h-5" />
                                                         </button>
-                                                    ))}
-                                                </div>
-                                                <div className="p-3 bg-blue-50/30 border-t border-gray-50 text-[9px] text-blue-800/60 font-medium italic text-center">
-                                                    Ownership transfer will be logged.
+                                                    </div>
+                                                    <div className="p-4 space-y-1.5 max-h-[400px] overflow-y-auto custom-scrollbar bg-gray-50/30">
+                                                        {MOCK_INVESTIGATORS.map(inv => (
+                                                            <button
+                                                                key={inv.name}
+                                                                onClick={() => { reassignCase(activeCase.id, inv.name); setIsReassigning(false); }}
+                                                                className={`w-full text-left px-5 py-4 rounded-2xl text-sm font-bold transition-all flex flex-col group relative ${activeCase.analyst === inv.name ? 'bg-blue-600 text-white shadow-xl shadow-blue-200' : 'bg-white border border-gray-100 text-gray-700 hover:border-blue-300 hover:shadow-lg'}`}
+                                                            >
+                                                                <div className="flex items-center justify-between w-full">
+                                                                    <span className="font-black text-base tracking-tight">{inv.name}</span>
+                                                                    {activeCase.analyst === inv.name ? <UserCheck className="w-5 h-5" /> : <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-blue-500" />}
+                                                                </div>
+                                                                <div className={`text-[10px] font-black uppercase tracking-widest mt-1 ${activeCase.analyst === inv.name ? 'text-blue-200' : 'text-gray-400 group-hover:text-blue-500/80'}`}>
+                                                                    {inv.typology} Specialist
+                                                                </div>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                    <div className="p-6 bg-blue-50/50 border-t border-gray-100 italic text-center">
+                                                        <div className="flex items-center justify-center gap-2 text-[10px] text-blue-800/60 font-black uppercase tracking-widest">
+                                                            <ShieldAlert className="w-3.5 h-3.5" />
+                                                            Audit Trail Guaranteed
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}
