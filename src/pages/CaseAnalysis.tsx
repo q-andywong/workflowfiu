@@ -212,25 +212,26 @@ const CaseAnalysis: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Subject Discovery & Global Metric Row */}
-                        {activeCase.subjects.length >= 1 && (
+                        {/* Subject & Intelligence Discovery Row */}
+                        {(activeCase.subjects.length >= 1 || (activeCase.reports || []).length >= 1) && (
                             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-                                <div className="flex flex-col gap-2 flex-grow">
-                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Active Investigation Subjects</div>
-                                    <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                                <div className="flex flex-col gap-2 flex-grow overflow-hidden">
+                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Live Case Intelligence Cluster</div>
+                                    <div className="flex items-center gap-3 overflow-x-auto pb-2 custom-scrollbar">
+                                        {/* Subjects */}
                                         {activeCase.subjects.map(s => (
                                             <button
                                                 key={s.id}
                                                 onClick={() => setActiveSubjectId(s.id)}
-                                                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2 ${
+                                                className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2.5 ${
                                                     currentSubjectId === s.id 
                                                         ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-200' 
                                                         : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200 hover:text-blue-600'
                                                 }`}
                                             >
-                                                {s.type === 'COMPANY' ? <Briefcase className="w-3 h-3" /> : <User className="w-3 h-3" />}
+                                                {s.type === 'COMPANY' ? <Briefcase className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
                                                 <span>{s.name}</span>
-                                                <span className={`ml-1 text-[8px] font-black px-1.5 py-0.5 rounded ${
+                                                <span className={`ml-1 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm ${
                                                     currentSubjectId === s.id 
                                                         ? 'bg-white/20 text-white' 
                                                         : 'bg-red-50 text-red-600 border border-red-100'
@@ -238,6 +239,25 @@ const CaseAnalysis: React.FC = () => {
                                                     {s.riskProfile?.totalScore || 0}
                                                 </span>
                                             </button>
+                                        ))}
+
+                                        {/* Separator if both exist */}
+                                        {activeCase.subjects.length > 0 && (activeCase.reports || []).length > 0 && (
+                                            <div className="h-8 w-px bg-gray-200 mx-1 shrink-0"></div>
+                                        )}
+
+                                        {/* Linked Regulatory Reports */}
+                                        {(activeCase.reports || []).map(r => (
+                                            <div
+                                                key={r.id}
+                                                className="px-4 py-2.5 rounded-xl bg-amber-50/50 border border-amber-200/60 text-amber-800 text-[10px] font-black uppercase tracking-widest whitespace-nowrap flex items-center gap-2.5 shadow-sm"
+                                            >
+                                                <ShieldAlert className="w-3.5 h-3.5 text-amber-500" />
+                                                <span>{r.id}</span>
+                                                <span className="bg-white border border-red-100 text-red-600 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
+                                                    {r.riskScore || 0}
+                                                </span>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
