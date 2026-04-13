@@ -405,6 +405,33 @@ export const MOCK_CASES: IntelligenceCase[] = [
     analyst: 'Insp. Lim',
     priority: false,
     createdAt: '2026-03-28T16:20:00Z'
+  },
+  {
+    id: 'CASE-2026-E2E',
+    title: 'Operation Emerald - Complex Laundering Network',
+    description: 'Ongoing investigation into a high-tier money laundering network involving offshore shell integrations and high-value domestic asset acquisitions.',
+    subjects: [TOBIAS_BLACK_PROFILE, APEX_HOLDINGS_PROFILE],
+    findings: 'Network analysis reveals a multi-layered placement strategy. Funds are being cycled through consultant-led trusts to obfuscate ultimate beneficial ownership of maritime assets.',
+    reports: [
+      {
+        id: 'STR-2026-EMERALD',
+        date: '2026-04-10',
+        amount: 2500000,
+        currency: 'USD',
+        institution: 'STANDARD CHARTERED SINGAPORE',
+        type: 'STR',
+        riskScore: 88,
+        status: 'LINKED',
+        narrative: 'Suspicious layering activity identified across multiple corporate accounts. High-frequency transfers inconsistent with stated business profiles.'
+      }
+    ],
+    status: 'ANALYSIS',
+    analyst: 'Insp. Lim',
+    priority: true,
+    attachments: [
+        { id: 'att-e2e-1', name: 'Laundering-Topology-Flow.pdf', url: '#', type: 'application/pdf', uploadedBy: 'Insp. Lim', uploadedAt: '2026-04-11' }
+    ],
+    createdAt: '2026-04-10T10:00:00Z'
   }
 ];
 
