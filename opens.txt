@@ -1,0 +1,184 @@
+160:            <div className="fixed inset-0 z-[80] bg-black/40 backdrop-blur-md flex justify-center items-center p-4 sm:p-6 lg:p-8 overflow-y-auto">
+161:                <div className="bg-gray-100 w-full max-w-7xl rounded-2xl shadow-2xl flex flex-col h-[95vh] transform transition-all animate-in zoom-in duration-300 overflow-hidden relative border border-gray-200">
+163:                <div className="bg-[#100628] p-6 lg:p-8 flex flex-col lg:flex-row justify-between lg:items-center gap-6 shadow-lg border-b border-white/10 shrink-0">
+164:                    <div className="flex items-center gap-5">
+165:                        <div className="bg-[#00D7BA]/10 p-3.5 rounded-2xl border border-[#00D7BA]/20 shadow-inner">
+168:                        <div>
+169:                            <div className="flex items-center gap-3 mb-1.5 font-black uppercase">
+184:                            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3">
+185:                                <div className="flex items-center gap-2">
+190:                                    <div className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-lg border border-white/5">
+198:                                    <div className="relative">
+208:                                            <div className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4 animate-in fade-in duration-200" onClick={() => setIsReassigning(false)}>
+209:                                                <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.3)] border border-white/20 z-[120] overflow-hidden animate-in zoom-in duration-300 transform scale-100" onClick={e => e.stopPropagation()}>
+210:                                                    <div className="p-8 border-b border-gray-50 flex items-center justify-between bg-gradient-to-br from-gray-50 to-white">
+211:                                                        <div>
+219:                                                    <div className="p-4 space-y-1.5 max-h-[400px] overflow-y-auto custom-scrollbar bg-gray-50/30">
+226:                                                                <div className="flex items-center justify-between w-full">
+230:                                                                <div className={`text-[10px] font-black uppercase tracking-widest mt-1 ${activeCase.analyst === inv.name ? 'text-blue-200' : 'text-gray-400 group-hover:text-blue-500/80'}`}>
+236:                                                    <div className="p-6 bg-blue-50/50 border-t border-gray-100 italic text-center">
+237:                                                        <div className="flex items-center justify-center gap-2 text-[10px] text-blue-800/60 font-black uppercase tracking-widest">
+268:                        <div className="flex items-center gap-4">
+270:                                <div className="flex items-center gap-3 pr-6 border-r border-white/10">
+297:                <div className="flex-1 overflow-y-auto custom-scrollbar bg-gray-100 p-6">
+298:                    <div className="space-y-6 max-w-6xl mx-auto">
+302:                            <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 shadow-sm flex items-center justify-between">
+303:                                <div className="flex items-center gap-4">
+304:                                    <div className="p-2 bg-white rounded-xl shadow-sm border border-amber-100">
+307:                                    <div>
+308:                                        <div className="text-xs font-black text-amber-900 uppercase tracking-widest">Draft Intelligence Mode</div>
+309:                                        <div className="text-[10px] font-bold text-amber-700 mt-0.5">This case is currently private. Managers cannot view this investigation until you submit it.</div>
+312:                                <div className="text-[10px] font-black text-amber-600 uppercase tracking-widest bg-white px-3 py-1.5 rounded-lg border border-amber-100">STG-2026-ALPHA</div>
+318:                            <div className="flex flex-col lg:flex-row gap-6">
+319:                                <div className="flex flex-col gap-6 flex-grow overflow-hidden">
+322:                                        <div className="flex flex-col gap-2">
+323:                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Forensic Entities & Subjects</div>
+324:                                            <div className="flex items-center gap-3 overflow-x-auto pb-1 custom-scrollbar">
+336:                                                        <div className="flex flex-col items-start gap-0.5">
+363:                                        <div className="flex flex-col gap-2">
+364:                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Regulatory Intelligence (STR/CTR/CMR)</div>
+365:                                            <div className="flex items-center gap-3 overflow-x-auto pb-1 custom-scrollbar">
+367:                                                    <div
+372:                                                        <div className="flex flex-col">
+393:                                <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-center items-center gap-3 shrink-0 self-start lg:min-w-[200px] border-t-4 border-t-red-600">
+394:                                    <div className="flex flex-col items-center text-center">
+395:                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Aggregate Case Risk</div>
+396:                                        <div className="text-[10px] font-bold text-red-600 uppercase mt-1">High Exposure Cluster</div>
+398:                                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-50 to-rose-50 border border-red-100 flex items-center justify-center shadow-inner">
+406:                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+412:                            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+413:                                <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+414:                                    <div className="flex items-center gap-3">
+415:                                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+425:                                <div className="p-8 space-y-8 flex-1 flex flex-col">
+427:                                    <div className="flex-grow flex flex-col">
+428:                                        <div className="flex items-center justify-between mb-3">
+441:                                    <div className="pt-4 border-t border-gray-100">
+443:                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+446:                                                    <div key={att.id} className="p-3 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all group relative">
+447:                                                        <div className="flex items-center gap-3">
+448:                                                            <div className="p-1.5 bg-gray-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors border border-gray-100">
+451:                                                            <div className="flex-1 min-w-0">
+452:                                                                <div className="text-[11px] font-black text-gray-900 truncate pr-6" title={att.name}>{att.name}</div>
+453:                                                                <div className="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">
+458:                                                        <div className="absolute top-1/2 -translate-y-1/2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+488:                                                <div className="col-span-full py-4 flex items-center justify-center gap-2 text-gray-400 opacity-60">
+497:                                    <div className="pt-6 mt-2 border-t border-gray-100 flex flex-wrap gap-3">
+518:                        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden border-t-4 border-t-emerald-600">
+519:                            <div className="bg-gray-50/50 px-8 py-5 border-b border-gray-100 flex items-center justify-between">
+520:                                <div className="flex items-center gap-3">
+521:                                    <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
+525:                                    <div className="flex flex-col items-end px-3">
+526:                                        <div className="text-[10px] font-black text-amber-600 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-md border border-amber-200">Manual Addition</div>
+527:                                        <div className="text-[8px] font-bold text-amber-500 uppercase mt-1 tracking-tighter">Tagged: {new Date(profile.addedAt || '').toLocaleString()}</div>
+530:                                    <div className="flex flex-col items-end px-3">
+531:                                        <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200">System Authored</div>
+532:                                        <div className="text-[8px] font-bold text-blue-400 uppercase mt-1 tracking-tighter">Matched: {activeCase.id} Ledger</div>
+536:                            <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-16">
+537:                                <div className="space-y-2">
+541:                                <div className="space-y-2">
+543:                                    <div className="flex items-center gap-2">
+544:                                         <div className="w-4 h-3 bg-gray-200 rounded-sm"></div> {/* Placeholder for flag */}
+548:                                <div className="space-y-2">
+552:                                <div className="space-y-2">
+556:                                <div className="space-y-2 md:col-span-2 lg:col-span-4 pt-6 border-t border-gray-50">
+558:                                    <div className="flex items-start gap-4">
+559:                                        <div className="p-2 bg-gray-50 rounded-lg border border-gray-100 italic font-medium">
+568:                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+569:                            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+571:                                <div className="space-y-4 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+578:                                            <div key={i} onClick={() => { setSelectedCase(rc); }} className="flex justify-between items-center p-3 bg-blue-50/30 hover:bg-blue-50 rounded-lg border border-blue-100/50 cursor-pointer transition-all">
+579:                                                <div className="flex items-center gap-3">
+580:                                                    <div className="w-6 h-6 rounded bg-blue-100 text-blue-600 flex items-center justify-center">
+583:                                                    <div>
+584:                                                        <div className="text-[10px] font-black text-gray-900 uppercase tracking-wider">{rc.id}</div>
+585:                                                        <div className="text-[9px] text-blue-600 font-bold uppercase truncate max-w-[150px]">{rc.title}</div>
+586:                                                        <div className="flex flex-wrap items-center gap-1 mt-1.5">
+596:                                                <div className="flex flex-col items-end">
+607:                                        <div className="text-center py-8 text-gray-400 text-[10px] font-bold uppercase">No related cross-entity cases found</div>
+612:                            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+613:                                <div className="flex items-center justify-between mb-4">
+629:                                <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+633:                                        <div key={i} onClick={() => setShowSTRViewer(str.id)} className="flex justify-between items-center p-3 bg-gray-50/50 hover:bg-gray-100 rounded-lg cursor-pointer transition-all border border-gray-200 group">
+634:                                            <div className="flex flex-col">
+635:                                                <div className="flex items-center gap-2">
+641:                                            <div className="flex flex-col items-end">
+643:                                                <div className="flex items-center gap-2 mt-1">
+657:                                        <div className="text-center py-8 text-gray-400 text-[10px] font-bold uppercase">No linked regulatory reports</div>
+664:                        <div className="bg-white rounded-2xl border border-gray-200 p-8 flex flex-col items-center gap-6 shadow-lg relative overflow-hidden group">
+665:                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+668:                                <div className="w-full space-y-6">
+669:                                    <div className="flex flex-col items-center text-center gap-2">
+670:                                        <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl border border-blue-100 mb-2">
+679:                                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+702:                                    <div className="pt-4 border-t border-gray-100 flex items-center justify-center gap-2">
+703:                                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+708:                                <div className="w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+716:                                <div className="w-full py-8 flex items-center justify-center bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+717:                                    <div className="flex flex-col items-center gap-3 text-gray-400">
+723:                                <div className="w-full space-y-6">
+724:                                    <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl border border-gray-200">
+725:                                        <div className="flex items-center gap-4">
+726:                                            <div className="p-3 bg-white text-blue-600 rounded-xl shadow-sm border border-blue-100">
+729:                                            <div className="space-y-1">
+734:                                        <div className="flex gap-4 items-center">
+768:                    <div className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4">
+769:                        <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 transform transition-all animate-in zoom-in duration-200">
+781:                            <div className="flex gap-4">
+801:                    <div className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4">
+802:                        <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 transform transition-all animate-in zoom-in duration-200">
+813:                            <div className="flex gap-4">
+838:                <div className="fixed inset-0 z-[200] bg-[#0c051a]/80 backdrop-blur-xl flex justify-center items-center p-4 animate-in fade-in duration-300">
+839:                    <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-[0_50px_120px_rgba(0,0,0,0.5)] border border-white/20 overflow-hidden flex flex-col md:flex-row animate-in zoom-in duration-300">
+841:                        <div className="md:w-5/12 bg-gradient-to-br from-[#100628] to-[#1a0b3e] p-10 text-white flex flex-col justify-between">
+842:                            <div>
+843:                                <div className="mb-8 p-3 bg-emerald-500/20 rounded-2xl border border-emerald-500/30 w-fit">
+849:                                <div className="space-y-4">
+850:                                    <div className="flex items-center gap-3 text-white/40">
+851:                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
+854:                                    <div className="flex items-center gap-3 text-white/40">
+855:                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
+858:                                    <div className="flex items-center gap-3 text-white/40">
+859:                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
+865:                            <div className="mt-12 pt-8 border-t border-white/5">
+866:                                <div className="flex items-center gap-2 opacity-40">
+874:                        <div className="flex-1 p-10 flex flex-col bg-gray-50/50">
+875:                            <div className="flex justify-between items-start mb-8">
+882:                            <div className="space-y-4 mb-8">
+883:                                <div 
+887:                                    <div className="flex items-center gap-4">
+888:                                        <div className={`p-3 rounded-2xl ${finalizeOutcome === 'DISSEMINATE' ? 'bg-emerald-500 text-white' : 'bg-gray-50 text-gray-400'}`}>
+891:                                        <div>
+892:                                            <div className="text-sm font-black text-gray-900">Disseminate & Refer</div>
+893:                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Share findings with agencies</div>
+896:                                    {finalizeOutcome === 'DISSEMINATE' && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />}
+900:                                    <div className="pl-4 animate-in slide-in-from-top-2">
+916:                                <div 
+920:                                    <div className="flex items-center gap-4">
+921:                                        <div className={`p-3 rounded-2xl ${finalizeOutcome === 'HIBERNATE' ? 'bg-amber-500 text-white' : 'bg-gray-50 text-gray-400'}`}>
+924:                                        <div>
+925:                                            <div className="text-sm font-black text-gray-900">Place in Hibernation</div>
+926:                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Ongoing Watchlist Monitoring</div>
+929:                                    {finalizeOutcome === 'HIBERNATE' && <div className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />}
+932:                                <div 
+936:                                    <div className="flex items-center gap-4">
+937:                                        <div className={`p-3 rounded-2xl ${finalizeOutcome === 'CLOSE' ? 'bg-blue-500 text-white' : 'bg-gray-50 text-gray-400'}`}>
+940:                                        <div>
+941:                                            <div className="text-sm font-black text-gray-900">Close Investigation</div>
+942:                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Administrative Archive (NFA)</div>
+945:                                    {finalizeOutcome === 'CLOSE' && <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />}
+949:                            <div className="flex-1">
+976:                <div className="absolute inset-0 z-[110] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4">
+977:                    <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-8 transform transition-all animate-in zoom-in duration-200 flex flex-col max-h-[80vh]">
+978:                        <div className="flex items-center justify-between mb-6">
+979:                            <div>
+988:                        <div className="relative mb-6">
+1000:                        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3">
+1008:                                        <div 
+1015:                                            <div className="flex items-center gap-4">
+1016:                                                <div className={`p-2.5 rounded-xl ${searchModal.type === 'ENTITY' ? 'bg-indigo-50 text-indigo-600' : 'bg-amber-50 text-amber-600'}`}>
+1019:                                                <div>
+1020:                                                    <div className="text-sm font-black text-gray-900">{res.name || res.id}</div>
+1021:                                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+1027:                                                <div className="flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-lg border border-green-100 text-[10px] font-black uppercase">
+1037:                                <div className="py-12 text-center">

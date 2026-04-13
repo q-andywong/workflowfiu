@@ -14,16 +14,18 @@ The workbench is engineered for investigating complex networks within a single o
 - **Subject-Switcher Infrastructure**: A dedicated entity pivot navigation allows investigators to switch between different subjects (Individuals or Companies) in real-time. Each subject maintains its own risk profile, typologies, and companies-associated map.
 - **Unified Operational Findings**: While mitigation notes are subject-specific, the final investigative conclusion is consolidated at the case level in the **Findings** narrative.
 
-### 3. Cross-Entity Discovery Engine
-The platform automatically scans the entire historical registry for connections involving any subjects in the current investigation.
+### 3. Cross-Entity Discovery Engine & Integration
+The platform automatically scans the entire historical registry for connections involving any subjects in the investigation.
 - **Related Cases Tracker**: Identifies historical investigations where subjects overlapped.
-- **Intelligence Attribution**: Cards now explicitly label the source of the hit (e.g., "Linked to: Michael Greene"), ensuring transparency in multi-subject investigations.
-- **Regulatory Report Mapping**: Aggregates all linked STRs/CTRs from across the subject pool into a single view, with clear entity-level tagging for source attribution.
+- **Intelligence Attribution**: Cards now explicitly label the source of the hit, ensuring transparency in multi-subject investigations.
+- **Regulatory Report Mapping**: Aggregates all linked STRs/CTRs. Clicking on any linked report immediately opens the high-fidelity `STRViewer` modal for direct context evaluation.
+- **Manual Discovery Triggers**: Investigators can manually attach existing entities and regulatory reports directly via primary action buttons located in the synopsis grid.
 
-### 4. Risk Mitigation & Scorecards
+### 4. Interactive Risk Mitigation & Exposure Governance
 A real-time evaluation framework for documenting mitigation factors against identified risk indicators.
-- **N-to-1 Mapping**: Mitigation logic maps deep into specific risk factors identified within the selected subject's profile.
-- **Automated Score Aggregation**: The Triage and Dashboard views display the **Maximum Risk Score** identified among all subjects in the case.
+- **Expandable Risk Workbench**: Investigators can drill down into specific risk factors within an interactive scorecard.
+- **Categorical Governance**: Offers formal drop-down selections (e.g., "RFI sent to bank") combined with a high-density narrative field for mitigation rationale.
+- **Visual Audit System**: Saves immediately collapse the active panel and grant an emerald "Mitigated" badge, establishing a clear visual progression state.
 
 ### 5. Evidence Locker (Firebase Cloud Storage)
 Integrates direct evidentiary asset management within the investigation flow.

@@ -74,6 +74,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [user]);
 
+  // Keep selectedCase synchronized with any updates to the cases master array
+  useEffect(() => {
+    if (selectedCase) {
+      const updated = cases.find(c => c.id === selectedCase.id);
+      if (updated && updated !== selectedCase) {
+        setSelectedCase(updated);
+      }
+    }
+  }, [cases]);
+
   const setView = (v: AppContextType['view']) => {
     if (v !== 'ANALYSIS') {
       setPreviousView(v);
@@ -160,7 +170,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       details,
       status: 'PENDING'
     };
-    setCases(prev => prev.map(c => c.id === caseId ? { ...c, pendingModification: request, status: (type === 'DELETION' || (type === 'STATUS_CHANGE' && details.newValue === 'CLOSED')) ? 'PENDING_APPROVAL' : c.status } : c));
+    setCases(prev => prev.map(c => c.id === caseId ? { ...c, pendingModification: request, status: (type === 'DELETION' || type === 'STATUS_CHANGE') ? 'PENDING_APPROVAL' : c.status } : c));
   };
 
   const addFeedback = (caseId: string, disseminationId: string, feedback: any) => {
@@ -357,7 +367,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             return { ...c, status: 'CLOSED', closedAt: new Date().toISOString(), pendingModification: undefined };
           }
           if (req.type === 'STATUS_CHANGE' && req.details.newValue) {
-            return { ...c, status: req.details.newValue, pendingModification: undefined };
+            const nextStatus = req.details.newValue;
+            let updatedDisseminations = c.disseminations || [];
+            
+            if (nextStatus === 'DISSEMINATED') {
+              const newRecord: DisseminationRecord = {
+                id: `DIS-${Date.now()}`,
+                agency: req.details.agency || 'CAD',
+                date: new Date().toISOString(),
+                intelligenceSummary: req.details.reason || 'Operational intelligence referral.'
+              };
+              updatedDisseminations = [...updatedDisseminations, newRecord];
+            }
+            
+            return { 
+              ...c, 
+              status: nextStatus, 
+              disseminations: updatedDisseminations,
+              pendingModification: undefined 
+            };
           }
         } else {
           if (req.type === 'DELETION' || (req.type === 'STATUS_CHANGE' && req.details.newValue === 'CLOSED')) {

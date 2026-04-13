@@ -1,24 +1,57 @@
-# Industrial User Story: The investigator Journey
+# Industrial User Story: The End-to-End Investigation Lifecycle
 
-This narrative outlines the modernized investigative lifecycle in the Multi-Entity Intelligence era (v2.5.1).
+This narrative outlines the modernized investigative lifecycle on the **FIU STR Analysis Platform** (v3.0.0). It serves as a comprehensive demo script for stakeholders.
 
-## 1. High-Volume Ingestion & Operational Domain Authentication
-An Investigator starts their day by logging into the **FIU STR analysis platform** portal. They declare their operational domain (e.g., *Cybercrime* or *Money Laundering*) and securely boot into the **Investigator Dashboard**.
+---
 
-Immediately glancing at their dynamic tracker, they notice the filtered **Triage Queue** count matches their assigned domain load. Drilling down into the queue, they immediately spot a multi-subject indicator (`+2 Entities`) on a high-risk task. The **Aggregated Max Risk** logic has bubbled this to the top because one of the subjects, Igor Dimitrov, has triggered a Sanctions hit.
+## 1. Operational Entry & Persona-Driven Triage
+**Persona: Investigator (e.g., Insp. Lim)**
 
-## 2. The 3-Step Inception Wizard
-Later, the investigator needs to start a proactive investigation based on external intelligence. They initiate the **3-Step Inception Wizard**:
-1. **Operational Intent**: They name the project "Operation Highland" and document the intelligence source.
-2. **Intelligence Discovery**: They search the **Master Registry**, linking Tobias Black and Apex Holdings LLC to the folder.
-3. **Verification**: They verify the entity bundle and launch the investigation dossier.
+*   **Login & Ingestion**: The investigator logs in and lands on their **Investigator Dashboard**. The "Triages in Queue" metric reflects live data ingested from the central registry, filtered automatically by the investigator's assigned typology (e.g., *Money Laundering*).
+*   **Intelligent Discovery**: The analyst navigates to the **Triage Queue**. They identify a high-risk lead (e.g., `TASK-2026-GEN00`) with an **Aggregated Max Risk** score of **82**. 
+*   **Case Inception**: After reviewing the initial "Risk Scorecard & Investigation Findings", the analyst determines the lead warrants a formal case. They click **Escalate Lead** and then **Submit for Approval**.
+*   **Governance Status**: The task's status transitions to `PENDING_APPROVAL`, locking the analyst view until a director provides sign-off.
 
-## 3. Multi-Entity Network Analysis
-Inside the **Case Analysis Workbench**, the investigator pivots between Tobias (Individual) and Apex Holdings (Company) using the **Subject Switcher**.
-- **Discovery Attribution**: The system's relationship engine finds a related case from 2024. The attribution marker confirms the hit is linked to Tobias Black.
-- **Evidence Locker**: Bank statements are uploaded and securely mapped via **Firebase Storage**, providing a unified evidence chain for all subjects in the folder.
+## 2. Managerial Oversight: Case Creation
+**Persona: Operations Manager (e.g., Director Shen)**
 
-## 4. Formal Escalation & Director Sign-Off
-Satisfied with the consolidated findings, the investigator submits the multi-entity bundle for **Director Approval**.
-- **Managerial Oversight**: The Operations Manager reviews the "Operation Highland" folder. They verify the links between subjects and the attached evidence before providing a **Digital Sign-Off**. 
-- **The Transition**: The inception task is formally promoted into the active Investigation Directory, unlocking Quantexa network exports and standardized reporting.
+*   **Approvals Pipeline**: The manager accesses the **Approvals Queue**. They see the new request from Insp. Lim.
+*   **Verification**: The manager clicks **Review Assessment** to inspect the analyst's findings inside the analytical workbench.
+*   **Promotion**: Satisfied with the evidence, the manager clicks **Approve Case Creation**. 
+*   **Digital Sign-Off**: The task is formally promoted into the **Case Directory** as a structured investigation (e.g., `CASE-2026-001`). The manager then uses the **Re-assign Analyst** tool to formally delegate ownership to Insp. Lim.
+
+## 3. Analytical Deep-Dive & Multi-Entity Linking
+**Persona: Investigator (Insp. Lim)**
+
+*   **Workbench Readiness**: insp. Lim opens the promoted case from the **Case Directory**. 
+*   **Entity Clustering**: To broaden the intelligence net, the analyst uses the **Search & Link Subject** tool to find and link related corporate entities (e.g., *Apex Holdings LLC*) to the primary subject. 
+*   **Evidence Chain**: The analyst reviews the **Linked Regulatory Reports** (STRs/CTRs) and uses the **Evidence Locker** to upload cross-border bank statements. The system maintains a unified evidence chain across all linked entities.
+*   **Intelligence Profiling**: The analyst pivots between subjects using the **Subject Switcher**, reviewing crime typologies and risk profile overrides.
+
+## 4. Governance Finalization & Referral
+**Persona: Investigator (Insp. Lim)**
+
+*   **Operation Finalization**: With a completed intelligence package, the analyst clicks the **Finalize Investigation** button in the header.
+*   **Pathway Selection**: They select **Disseminate & Refer** as the operational outcome.
+*   **Executive Rationale**: The analyst selects a target agency (e.g., **CAD - Commercial Affairs Dept**) and drafts a high-level **Dissemination Rationale**.
+*   **Governance Request**: Upon clicking **Finalize Operation**, the case enters the second governance gate: `PENDING_APPROVAL` (Dissemination Referral).
+
+## 5. Director Sign-off: Intelligence Impact
+**Persona: Operations Manager (Director Shen)**
+
+*   **Impact Authorization**: The manager returns to the **Approvals Queue**. They spot the new **Dissemination Referral** badge.
+*   **Executive Review**: The manager reviews the dissemination rationale and the specific agency referral details.
+*   **Authorize Dissemination**: The manager clicks **Authorize Dissemination**. The case's status formally transitions to `DISSEMINATED`.
+
+## 6. Intelligence Impact Tracking (The Feedback Loop)
+**Persona: Investigator / Manager**
+
+*   **Tracker Verification**: The case now appears in the **Dissemination Tracker**. 
+*   **Operational Connectivity**: The tracker identifies the specific agency (CAD) and the date of referral.
+*   **Intelligence Impact**: Months later, as feedback from Law Enforcement (LEA) arrives, the user clicks **View Intelligence** in the tracker to jump back into the workbench and record the outcome (e.g., **Asset Seizure** or **Conviction**).
+*   **Closing the Loop**: This success data is aggregated into the **Global Performance Stats** (e.g., *78.4% Intelligence Utility Rate*), completing the FIU lifecycle.
+
+---
+
+> [!IMPORTANT]
+> This workflow ensures that no intelligence leaves the FIU without executive authorization, maintaining strict audit trails and data integrity.

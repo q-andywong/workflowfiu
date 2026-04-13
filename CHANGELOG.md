@@ -2,6 +2,23 @@
 
 This document tracks major architectural deviations and deployments across the FIU STR analysis platform framework. Use this ledger as a reference if functional reversions are required.
 
+## [v2.6.1] - Interactive Risk Mitigation & UI Polishing
+
+### Added
+* **Interactive Risk Mitigation**: Transformed the static Risk Scorecard into an expandable workbench. Analysts can now drill down into specific risk factors to append formal categorical actions (e.g. "RFI sent to bank") and narrative descriptions.
+* **Direct STR/CTR Integration**: Clicking on linked regulatory intelligence tokens within the analytical grid now immediately deploys the high-fidelity `STRViewer` modal for instantaneous cross-referencing.
+
+### Changed
+* **Workbench Rebalancing**: Refactored the core investigation grid into a strict 50/50 horizontal split to ensure the new interactive Risk Scorecard is given adequate breathing room.
+* **Streamlined UI Focus**: Aggressively pruned redundant UI elements:
+    * Removed the heavy "Operational Integrity & Governance" bottom bar from the Case Analysis panel.
+    * Removed secondary manual linking buttons from the analysis area to force users toward the primary header-level "+" triggers.
+    * Polished header separators for a cleaner visual flow towards the "Reassign Case" command.
+
+### Fixed
+* **Data Context Synchronization**: Implemented an automated listener (`useEffect`) in `AppContext` that instantly forces the active case to refresh its display when a new entity or report is manually linked to the master registry, removing the need to restart the session.
+* **Search Context Stability**: Resolved a critical runtime `ReferenceError` during empty entity/report searches by restoring the `Info` lucide-react icon import.
+
 ## [v2.6.0] - Manual Intelligence Enrichment & Discovery
  
 ### Added

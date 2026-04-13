@@ -54,7 +54,9 @@ const ApprovalsQueue: React.FC = () => {
                                             {isLinkClose ? (
                                                 <span className="text-[10px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-200 shrink-0 uppercase font-black">Handshake Merge</span>
                                             ) : (c.pendingModification && !isDeletion && (
-                                                <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-200 shrink-0 uppercase font-black">Closure Approval</span>
+                                                <span className={`text-[10px] px-2 py-0.5 rounded border shrink-0 uppercase font-black ${c.pendingModification.details.newValue === 'DISSEMINATED' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-blue-50 text-blue-600 border-blue-200'}`}>
+                                                    {c.pendingModification.details.newValue === 'DISSEMINATED' ? 'Dissemination Referral' : 'Closure Approval'}
+                                                </span>
                                             ))}
                                         </h4>
                                         <div className="flex flex-wrap gap-4 mt-2">
@@ -103,6 +105,13 @@ const ApprovalsQueue: React.FC = () => {
                                                 <span>
                                                     <strong>{c.pendingModification?.requestedBy}</strong> is requesting to merge this lead into master investigation 
                                                     <code className="mx-1 px-1.5 py-0.5 bg-white border border-amber-200 rounded text-amber-700 font-bold">{c.pendingModification?.details?.targetCase}</code>.
+                                                </span>
+                                            </>
+                                        ) : c.pendingModification?.details?.newValue === 'DISSEMINATED' ? (
+                                            <>
+                                                <ArrowRight className="w-5 h-5 text-emerald-500 shrink-0" />
+                                                <span>
+                                                    <strong>{c.pendingModification?.requestedBy}</strong> is requesting to disseminate findings to <strong>{c.pendingModification?.details?.agency}</strong>. Please review the operational rationale.
                                                 </span>
                                             </>
                                         ) : (
@@ -160,7 +169,7 @@ const ApprovalsQueue: React.FC = () => {
                                                 className={`${(c.pendingModification || c.status === 'PENDING_DELETION') ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'} px-6 py-2 text-white text-sm font-bold rounded-lg shadow-sm transition-colors flex items-center gap-2`}
                                             >
                                                 <UserCheck className="w-4 h-4" /> 
-                                                {isDeletion ? 'CONFIRM DELETION' : isLinkClose ? 'AUTHORIZE MERGE' : c.pendingModification ? 'APPROVE CLOSURE' : 'SIGN-OFF & ESCALATE'}
+                                                {isDeletion ? 'CONFIRM DELETION' : isLinkClose ? 'AUTHORIZE MERGE' : c.pendingModification?.details?.newValue === 'DISSEMINATED' ? 'AUTHORIZE DISSEMINATION' : c.pendingModification ? 'APPROVE CLOSURE' : 'SIGN-OFF & ESCALATE'}
                                             </button>
                                         </>
                                     )}

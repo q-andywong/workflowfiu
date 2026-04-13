@@ -348,7 +348,20 @@ export const MOCK_CASES: IntelligenceCase[] = [
       { id: '1', name: 'Identity-Verification-ID-Shipping.pdf', url: '#', type: 'application/pdf', uploadedBy: 'Sgt. Wong', uploadedAt: '2026-03-15' },
       { id: '2', name: 'Logistics-Nexus-Chart.png', url: '#', type: 'image/png', uploadedBy: 'Sgt. Wong', uploadedAt: '2026-03-16' }
     ],
-    createdAt: '2026-03-15T09:00:00Z'
+    createdAt: '2026-03-15T09:00:00Z',
+    disseminations: [
+      {
+        id: 'DIS-2026-001',
+        agency: 'CAD',
+        date: '2026-04-05T14:30:00Z',
+        intelligenceSummary: 'Referral regarding cross-border high-value fund movements with suspected shell integration.',
+        feedback: {
+          receivedDate: '2026-04-12T10:00:00Z',
+          outcome: 'CONVICTION',
+          notes: 'Successful investigation led to the identification of an unlicensed money changer network.'
+        }
+      }
+    ]
   },
   {
     id: 'CASE-2024-001',

@@ -4,8 +4,8 @@ import { Send, FileCheck, HelpCircle, Archive, ClipboardCheck, AlertCircle, Tren
 import { FeedbackOutcome } from '../types';
 
 const Dissemination: React.FC = () => {
-  const { cases, addFeedback } = useApp();
-  const disseminatedCases = cases.filter(c => c.disseminations.length > 0);
+  const { cases, addFeedback, setSelectedCase, setView } = useApp();
+  const disseminatedCases = cases.filter(c => c.disseminations && c.disseminations.length > 0);
   const [activeTab, setActiveTab] = useState<'ACTIVE' | 'ARCHIVED'>('ACTIVE');
 
   const getOutcomeColor = (outcome: FeedbackOutcome) => {
@@ -88,13 +88,16 @@ const Dissemination: React.FC = () => {
                     <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
                        <FileCheck className="w-5 h-5 text-blue-600" />
                     </div>
-                    <div>
-                      <div className="text-sm font-bold text-gray-900">
-                        {c.subjects[0]?.name}
-                        {c.subjects.length > 1 && ` (+${c.subjects.length - 1} more)`}
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="bg-blue-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter">
+                          {c.id}
+                        </span>
+                        <div className="text-sm font-bold text-gray-900 truncate max-w-[150px]">
+                          {c.subjects[0]?.name}
+                          {c.subjects.length > 1 && ` (+${c.subjects.length - 1} more)`}
+                        </div>
                       </div>
-                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider truncate max-w-[200px] mt-0.5">{c.title}</div>
-                    </div>
+                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider truncate max-w-[200px]">{c.title}</div>
                   </div>
                 </div>
 
@@ -123,12 +126,13 @@ const Dissemination: React.FC = () => {
                   )}
                 </div>
 
-                <div className="w-full md:w-[20%] flex justify-end gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="p-2 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white border border-blue-100 hover:border-blue-600 rounded-lg transition-colors shadow-sm">
-                    <ClipboardCheck className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 border border-gray-200 bg-white hover:bg-gray-50 text-gray-500 rounded-lg transition-colors shadow-sm">
-                    <HelpCircle className="w-4 h-4" />
+                <div className="w-full md:w-[20%] flex justify-end gap-2">
+                  <button 
+                    onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
+                    className="flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-black text-white rounded-lg transition-all text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20"
+                  >
+                    View Intelligence
+                    <ExternalLink className="w-3 h-3" />
                   </button>
                 </div>
               </div>
