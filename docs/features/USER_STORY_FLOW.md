@@ -75,3 +75,11 @@ This comprehensive journey outlines how the **FIU STR Analysis Platform** bridge
 - **Always Synchronized**: Every decision point includes a 1s Kafka synchronization simulation to verify platform connectivity.
 - **Role-Awareness**: Managers have command-level dashboards; Analysts have high-volume triage workbenches.
 - **Contextual Continuity**: The system distinguishes between "Progress Saves" (Stay in Workbench) and "Status Decisions" (Return to Queue).
+
+## 🧩 Advanced Workflow: Proactive Inception
+**Persona: Lead Investigator**
+
+1.  **Manual Discovery**: The investigator identifies a related cluster of STRs in the **STR Master Directory** or identify a missing entity in the **Global Registry**.
+2.  **Cluster Inception**: They click **"Initiate Manual Case"** from the Case Directory.
+3.  **Governance & Sync**: Upon clicking **"Confirm Case Creation"**, the **Kafka Pulse-Sync** simulation triggers (topic: `case.event.manual_inception`).
+4.  **Instant Alignment**: Once the sync completes, the investigator clicks **"Continue to Investigation"** to begin their deep-dive analysis in the workbench with all entities pre-linked and synchronized.

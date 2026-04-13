@@ -10,6 +10,7 @@ This document tracks major architectural deviations and deployments across the F
     - Manager **Sign-off and Escalate** (Approvals).
     - Investigator **Save Changes** (Operational Narrative).
     - Investigator **Package & Disseminate** (Report Builder). [v3.0.1]
+    - Investigator **Manual Case Inception** (Modal Trigger). [v3.0.2]
     - Investigator **Confirm Finalization** (Disposal).
 *   **Managerial Command Center**: Overhauled the Triage Queue into an operational dashboard for Directors/Managers. Features a 4-grid executive summary (Pending Triage, Awaiting Sign-off, Priority Bypasses, Hibernated Registry).
 *   **Pending Approvals Workspace**: Dedicated listing for managers to perform direct, row-level sign-offs and escalations with integrated sync simulation.

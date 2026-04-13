@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { X, User, Briefcase, FileText, CheckCircle, Search, ArrowRight, ShieldAlert, BadgeCheck } from 'lucide-react';
+import { X, User, Briefcase, FileText, CheckCircle, Search, ArrowRight, ShieldAlert, BadgeCheck, Zap, Check } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { MOCK_STRS, MOCK_ENTITIES } from '../constants';
 import { PersonProfile } from '../types';
@@ -13,6 +13,31 @@ interface ManualCaseModalProps {
 const ManualCaseModal: React.FC<ManualCaseModalProps> = ({ onClose, onSuccess, preSelectedReportIds = [] }) => {
   const { createCase, allCases, setSelectedCase, setView } = useApp();
   const [step, setStep] = useState<1 | 2 | 3>(1);
+
+  // Kafka Sync Simulation
+  const [isSyncingKafka, setIsSyncingKafka] = useState(false);
+  const [kafkaSyncProgress, setKafkaSyncProgress] = useState(0);
+  const [isSyncComplete, setIsSyncComplete] = useState(false);
+
+  const handleCreateCaseTrigger = () => {
+    setIsSyncingKafka(true);
+    setKafkaSyncProgress(0);
+    setIsSyncComplete(false);
+
+    const duration = 1000; // 1s
+    const interval = 20;
+    let timer = 0;
+
+    const progressInterval = setInterval(() => {
+        timer += interval;
+        setKafkaSyncProgress(Math.min((timer / duration) * 100, 100));
+
+        if (timer >= duration) {
+            clearInterval(progressInterval);
+            setIsSyncComplete(true);
+        }
+    }, interval);
+  };
   
   // Step 1: Meta
   const [caseMeta, setCaseMeta] = useState({
@@ -100,7 +125,7 @@ const ManualCaseModal: React.FC<ManualCaseModalProps> = ({ onClose, onSuccess, p
     setNewSubject({ name: '', type: 'INDIVIDUAL', nationality: 'Singaporean', idNumber: '' });
   };
 
-  const handleCreateCase = () => {
+  const handleCreateCaseFinalize = () => {
     const newCase = createCase(
       selectedSubjects,
       caseMeta.description,
@@ -111,6 +136,8 @@ const ManualCaseModal: React.FC<ManualCaseModalProps> = ({ onClose, onSuccess, p
     setSelectedCase(newCase);
     setView('ANALYSIS');
     onSuccess();
+    setIsSyncingKafka(false);
+    setIsSyncComplete(false);
   };
 
   return (
@@ -394,7 +421,7 @@ const ManualCaseModal: React.FC<ManualCaseModalProps> = ({ onClose, onSuccess, p
                     Back
                   </button>
                   <button 
-                    onClick={handleCreateCase}
+                    onClick={handleCreateCaseTrigger}
                     className="flex-1 py-4 bg-blue-600 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
                   >
                     Incept Investigation <CheckCircle className="w-4 h-4" />
@@ -403,6 +430,58 @@ const ManualCaseModal: React.FC<ManualCaseModalProps> = ({ onClose, onSuccess, p
             </div>
           )}
         </div>
+
+        {/* Kafka Sync Simulation Modal */}
+        {isSyncingKafka && (
+          <div className="fixed inset-0 z-[300] bg-gray-900/90 backdrop-blur-md flex items-center justify-center p-6">
+              <div className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl p-10 relative overflow-hidden border border-gray-100">
+                  <div className="absolute inset-0 opacity-[0.05] pointer-events-none">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl -mr-32 -mt-32 animate-pulse"></div>
+                  </div>
+
+                  <div className="relative z-10 text-center">
+                      <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-8 transition-all duration-500 ${isSyncComplete ? 'bg-red-50 scale-110' : 'bg-blue-50'}`}>
+                          {!isSyncComplete ? (
+                              <Zap className="w-10 h-10 text-blue-600 animate-pulse" />
+                          ) : (
+                              <Check className="w-12 h-12 text-red-600" strokeWidth={4} />
+                          )}
+                      </div>
+
+                      <h3 className="text-lg font-black text-gray-900 mb-2 tracking-tight">
+                          {!isSyncComplete ? 'Broadcasting Manual Case Inception' : 'Case Synchronized Successfully'}
+                      </h3>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-8">
+                          {!isSyncComplete ? 'Broadcasting: case.event.manual_inception' : 'Ingestion status: COMPLETE (RED-TICK)'}
+                      </p>
+
+                      <div className="space-y-4">
+                          <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                              <div 
+                                  className={`h-full transition-all duration-75 ease-linear ${isSyncComplete ? 'bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.5)]' : 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)]'}`}
+                                  style={{ width: `${kafkaSyncProgress}%` }}
+                              ></div>
+                          </div>
+                          <div className="flex justify-between items-center px-1">
+                              <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${isSyncComplete ? 'text-red-600' : 'text-blue-600'}`}>
+                                  {isSyncComplete ? 'BROADCAST COMPLETE' : 'KAFKA TRANSMISSION'}
+                              </span>
+                              <span className="text-[8px] font-black text-gray-400">{Math.round(kafkaSyncProgress)}%</span>
+                          </div>
+                      </div>
+
+                      {isSyncComplete && (
+                          <button 
+                              onClick={handleCreateCaseFinalize}
+                              className="w-full mt-10 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-red-500/20 animate-in fade-in slide-in-from-bottom-2 duration-500"
+                          >
+                              Continue to Investigation
+                          </button>
+                      )}
+                  </div>
+              </div>
+          </div>
+        )}
       </div>
     </div>
   );
