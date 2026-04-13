@@ -5,7 +5,7 @@ import MitigationScorecard from '../components/MitigationScorecard';
 import STRViewer from '../components/STRViewer';
 import ChartComposer from '../components/ChartComposer';
 import ReportBuilder from '../components/ReportBuilder';
-import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase, Plus, Search, BarChart3, Package, UserPlus, ArrowRight } from 'lucide-react';
+import { Download, AlertTriangle, X, FileText, Paperclip, Trash2, Loader2, Save, UserCheck, XCircle, Send, ShieldAlert, CheckCircle, BadgeCheck, Users, User, Briefcase, Plus, Search, BarChart3, Package, UserPlus, ArrowRight, ShieldCheck, Share2, Eye, Box, CheckCircle2, Lock } from 'lucide-react';
 import { MOCK_ENTITIES, MOCK_STRS, MOCK_INVESTIGATORS } from '../constants';
 
 const CaseAnalysis: React.FC = () => {
@@ -18,6 +18,10 @@ const CaseAnalysis: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'DETAILS' | 'EVIDENCE' | 'FINDINGS' | 'ANALYTICS'>('DETAILS');
     const [showReportBuilder, setShowReportBuilder] = useState(false);
     const [isReassigning, setIsReassigning] = useState(false);
+    const [isFinalizing, setIsFinalizing] = useState(false);
+    const [finalizeOutcome, setFinalizeOutcome] = useState<'DISSEMINATE' | 'HIBERNATE' | 'CLOSE' | null>(null);
+    const [finalizeRationale, setFinalizeRationale] = useState('');
+    const [selectedAgency, setSelectedAgency] = useState<string>('');
     
     // Manager Rejection State
     const [isRejecting, setIsRejecting] = useState(false);
@@ -93,6 +97,31 @@ const CaseAnalysis: React.FC = () => {
             approveCase(activeCase.id);
         }
         handleClose();
+    };
+
+    const handleConfirmFinalization = () => {
+        if (!finalizeOutcome || !finalizeRationale.trim()) return;
+
+        if (finalizeOutcome === 'DISSEMINATE') {
+            if (!selectedAgency) return;
+            // In a real app, we'd add the dissemination record here
+            requestModification(activeCase.id, 'STATUS_CHANGE', { 
+                newValue: 'DISSEMINATED', 
+                reason: finalizeRationale,
+                agency: selectedAgency 
+            });
+        } else if (finalizeOutcome === 'HIBERNATE') {
+            assessEntity(activeCase.id, 'HIBERNATE');
+        } else {
+            // Standard Closure - might trigger approval if rules apply
+            updateCaseStatus(activeCase.id, 'CLOSED');
+        }
+
+        setIsFinalizing(false);
+        setFinalizeOutcome(null);
+        setFinalizeRationale('');
+        setSelectedAgency('');
+        setSelectedCase(null);
     };
 
     const handleConfirmReject = () => {
@@ -213,6 +242,15 @@ const CaseAnalysis: React.FC = () => {
                                             </div>
                                         )}
                                     </div>
+                                )}
+                                {(activeCase.status === 'ANALYSIS' || activeCase.status === 'PRIORITY') && (
+                                    <button 
+                                        onClick={() => setIsFinalizing(true)}
+                                        className="flex items-center gap-2 px-4 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/10"
+                                    >
+                                        <ShieldCheck className="w-4 h-4" />
+                                        Finalize Investigation
+                                    </button>
                                 )}
                             </div>
                         </div>
@@ -784,9 +822,144 @@ const CaseAnalysis: React.FC = () => {
                     </div>
                 )}
 
-                {/* Search & Add Modal Overlay */}
-                {searchModal.open && (
-                    <div className="absolute inset-0 z-[110] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4">
+                {/* Finalize Investigation Modal Overlay */}
+                {isFinalizing && (
+                    <div className="fixed inset-0 z-[200] bg-[#0c051a]/80 backdrop-blur-xl flex justify-center items-center p-4 animate-in fade-in duration-300">
+                        <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-[0_50px_120px_rgba(0,0,0,0.5)] border border-white/20 overflow-hidden flex flex-col md:flex-row animate-in zoom-in duration-300">
+                            {/* Left Side: Summary Panel */}
+                            <div className="md:w-5/12 bg-gradient-to-br from-[#100628] to-[#1a0b3e] p-10 text-white flex flex-col justify-between">
+                                <div>
+                                    <div className="mb-8 p-3 bg-emerald-500/20 rounded-2xl border border-emerald-500/30 w-fit">
+                                        <ShieldCheck className="w-8 h-8 text-emerald-400" />
+                                    </div>
+                                    <h3 className="text-3xl font-black tracking-tight mb-4 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">Finalize Operation</h3>
+                                    <p className="text-sm text-white/50 font-bold leading-relaxed mb-8">You are about to formalize clinical findings for <span className="text-emerald-400 font-black">{activeCase.id}</span>. This action is immutable and will be logged in the global governance audit trail.</p>
+                                    
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3 text-white/40">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Package Artifacts</span>
+                                        </div>
+                                        <div className="flex items-center gap-3 text-white/40">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Generate Intel Report</span>
+                                        </div>
+                                        <div className="flex items-center gap-3 text-white/40">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Notify Regulators</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-12 pt-8 border-t border-white/5">
+                                    <div className="flex items-center gap-2 opacity-40">
+                                        <Lock className="w-3 h-3" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Secured by Quantexa</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Side: Configuration Panel */}
+                            <div className="flex-1 p-10 flex flex-col bg-gray-50/50">
+                                <div className="flex justify-between items-start mb-8">
+                                    <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em]">Operational Outcome</span>
+                                    <button onClick={() => setIsFinalizing(false)} className="p-2 hover:bg-gray-100 rounded-2xl transition-all">
+                                        <X className="w-6 h-6 text-gray-300" />
+                                    </button>
+                                </div>
+
+                                <div className="space-y-4 mb-8">
+                                    <div 
+                                        onClick={() => setFinalizeOutcome('DISSEMINATE')}
+                                        className={`p-5 rounded-3xl border-2 cursor-pointer transition-all flex items-center justify-between ${finalizeOutcome === 'DISSEMINATE' ? 'bg-emerald-50 border-emerald-500 shadow-xl shadow-emerald-500/10' : 'bg-white border-gray-100 hover:border-emerald-200'}`}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={`p-3 rounded-2xl ${finalizeOutcome === 'DISSEMINATE' ? 'bg-emerald-500 text-white' : 'bg-gray-50 text-gray-400'}`}>
+                                                <Share2 className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <div className="text-sm font-black text-gray-900">Disseminate & Refer</div>
+                                                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Share findings with agencies</div>
+                                            </div>
+                                        </div>
+                                        {finalizeOutcome === 'DISSEMINATE' && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />}
+                                    </div>
+
+                                    {finalizeOutcome === 'DISSEMINATE' && (
+                                        <div className="pl-4 animate-in slide-in-from-top-2">
+                                            <select 
+                                                value={selectedAgency}
+                                                onChange={(e) => setSelectedAgency(e.target.value)}
+                                                className="w-full bg-white border border-emerald-200 p-4 rounded-2xl text-sm font-bold shadow-sm outline-none focus:ring-2 focus:ring-emerald-500/20"
+                                            >
+                                                <option value="">Select Target Agency...</option>
+                                                <option value="CAD">CAD (Commercial Affairs Dept)</option>
+                                                <option value="MAS">MAS (Monetary Authority)</option>
+                                                <option value="AGC">AGC (Attorney General)</option>
+                                                <option value="ICA">ICA (Immigration & Checkpoints)</option>
+                                                <option value="FOREIGN">Foreign FIU Partner</option>
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    <div 
+                                        onClick={() => setFinalizeOutcome('HIBERNATE')}
+                                        className={`p-5 rounded-3xl border-2 cursor-pointer transition-all flex items-center justify-between ${finalizeOutcome === 'HIBERNATE' ? 'bg-amber-50 border-amber-500 shadow-xl shadow-amber-500/10' : 'bg-white border-gray-100 hover:border-amber-200'}`}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={`p-3 rounded-2xl ${finalizeOutcome === 'HIBERNATE' ? 'bg-amber-500 text-white' : 'bg-gray-50 text-gray-400'}`}>
+                                                <Eye className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <div className="text-sm font-black text-gray-900">Place in Hibernation</div>
+                                                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Ongoing Watchlist Monitoring</div>
+                                            </div>
+                                        </div>
+                                        {finalizeOutcome === 'HIBERNATE' && <div className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />}
+                                    </div>
+
+                                    <div 
+                                        onClick={() => setFinalizeOutcome('CLOSE')}
+                                        className={`p-5 rounded-3xl border-2 cursor-pointer transition-all flex items-center justify-between ${finalizeOutcome === 'CLOSE' ? 'bg-blue-50 border-blue-500 shadow-xl shadow-blue-500/10' : 'bg-white border-gray-100 hover:border-blue-200'}`}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={`p-3 rounded-2xl ${finalizeOutcome === 'CLOSE' ? 'bg-blue-500 text-white' : 'bg-gray-50 text-gray-400'}`}>
+                                                <Box className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <div className="text-sm font-black text-gray-900">Close Investigation</div>
+                                                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Administrative Archive (NFA)</div>
+                                            </div>
+                                        </div>
+                                        {finalizeOutcome === 'CLOSE' && <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />}
+                                    </div>
+                                </div>
+
+                                <div className="flex-1">
+                                    <textarea 
+                                        value={finalizeRationale}
+                                        onChange={(e) => setFinalizeRationale(e.target.value)}
+                                        placeholder="Enter Executive Summary / Closure Rationale..."
+                                        className="w-full h-32 p-5 bg-white border border-gray-200 rounded-3xl text-sm font-bold text-gray-900 focus:ring-4 focus:ring-emerald-500/10 transition-all resize-none outline-none"
+                                    />
+                                </div>
+
+                                <button 
+                                    onClick={handleConfirmFinalization}
+                                    disabled={!finalizeOutcome || !finalizeRationale.trim() || (finalizeOutcome === 'DISSEMINATE' && !selectedAgency)}
+                                    className={`mt-6 w-full py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 ${
+                                        (finalizeOutcome && finalizeRationale.trim() && (finalizeOutcome !== 'DISSEMINATE' || selectedAgency))
+                                          ? 'bg-[#100628] text-white hover:bg-black shadow-2xl' 
+                                          : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                                    }`}
+                                >
+                                    <CheckCircle2 className="w-4 h-4" />
+                                    Finalize Operation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
                         <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-8 transform transition-all animate-in zoom-in duration-200 flex flex-col max-h-[80vh]">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
