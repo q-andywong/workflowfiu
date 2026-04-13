@@ -143,6 +143,10 @@ const STRDirectory: React.FC = () => {
                     case 'date':
                         const parseDate = (dStr: string) => {
                             if (!dStr) return 0;
+                            if (dStr.includes('-')) {
+                                const [y, m, d] = dStr.split('-').map(Number);
+                                return new Date(y, m - 1, d).getTime();
+                            }
                             const [d, m, y] = dStr.split('/').map(Number);
                             return new Date(y, m - 1, d).getTime();
                         };
@@ -296,8 +300,8 @@ const STRDirectory: React.FC = () => {
                                             </select>
                                         ) : (
                                             <input 
-                                                type={newRule.field === 'date' ? 'text' : (newRule.field === 'amount' || newRule.field === 'riskScore' ? 'number' : 'text')} 
-                                                placeholder={newRule.field === 'date' ? 'DD/MM/YYYY' : 'Enter value...'}
+                                                type={newRule.field === 'date' ? 'date' : (newRule.field === 'amount' || newRule.field === 'riskScore' ? 'number' : 'text')} 
+                                                placeholder={newRule.field === 'date' ? 'Select Date' : 'Enter value...'}
                                                 value={newRule.value || ''}
                                                 onChange={(e) => setNewRule({ ...newRule, value: e.target.value })}
                                                 className={`w-full ${newRule.field === 'amount' ? 'pl-9' : 'px-4'} py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all`}
@@ -310,8 +314,7 @@ const STRDirectory: React.FC = () => {
                                     <div>
                                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">End Date</label>
                                         <input 
-                                            type="text" 
-                                            placeholder="DD/MM/YYYY"
+                                            type="date" 
                                             value={newRule.valueEnd || ''}
                                             onChange={(e) => setNewRule({ ...newRule, valueEnd: e.target.value })}
                                             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"

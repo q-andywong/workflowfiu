@@ -2,6 +2,28 @@
 
 This document tracks major architectural deviations and deployments across the FIU STR analysis platform framework. Use this ledger as a reference if functional reversions are required.
 
+## [v3.0.0] - Industrialized Synchronization & Command Center
+
+### Added
+*   **Kafka Sync Simulation (Broadcasting)**: Implemented high-fidelity, 1s synchronization simulations across the entire lifecycle. Includes a backdrop-blurred progress modal and a "Red Tick" success confirmation for:
+    - Analyst **Sign-off and Escalate** (Triage).
+    - Manager **Sign-off and Escalate** (Approvals).
+    - Investigator **Save Changes** (Operational Narrative).
+    - Investigator **Package & Disseminate** (Report Builder). [v3.0.1]
+    - Investigator **Confirm Finalization** (Disposal).
+*   **Managerial Command Center**: Overhauled the Triage Queue into an operational dashboard for Directors/Managers. Features a 4-grid executive summary (Pending Triage, Awaiting Sign-off, Priority Bypasses, Hibernated Registry).
+*   **Pending Approvals Workspace**: Dedicated listing for managers to perform direct, row-level sign-offs and escalations with integrated sync simulation.
+*   **Quantexa Pulse-Sync Ingestion**: Added a multi-phase "Scan for latest tasks" simulation (Connecting → Retrieving → Triaging) to provide visual feedback for background data ingestion.
+
+### Changed
+*   **Intelligent Navigation Flow**:
+    - **Return to Queue**: Successful escalations and finalizations now automatically return the user to the list view for high-throughput processing.
+    - **Continue Analysis**: Saving findings now allows investigators to stay in the workbench, maintaining investigative continuity.
+*   **Conditional Finalization**: The "Finalize Case" button is now governed by strict requirements (Assigned status and Presence of operational narrative).
+
+### Fixed
+*   **Simulation Stability**: Resolved a structure-level JSX error that temporarily disabled the simulation modal during high-concurrency UI updates.
+
 ## [v2.6.1] - Interactive Risk Mitigation & UI Polishing
 
 ### Added

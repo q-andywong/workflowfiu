@@ -7,9 +7,10 @@ import { PersonProfile } from '../types';
 interface ManualCaseModalProps {
   onClose: () => void;
   onSuccess: () => void;
+  preSelectedReportIds?: string[];
 }
 
-const ManualCaseModal: React.FC<ManualCaseModalProps> = ({ onClose, onSuccess }) => {
+const ManualCaseModal: React.FC<ManualCaseModalProps> = ({ onClose, onSuccess, preSelectedReportIds = [] }) => {
   const { createCase, allCases, setSelectedCase, setView } = useApp();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   
@@ -103,7 +104,8 @@ const ManualCaseModal: React.FC<ManualCaseModalProps> = ({ onClose, onSuccess })
     const newCase = createCase(
       selectedSubjects,
       caseMeta.description,
-      caseMeta.title
+      caseMeta.title,
+      preSelectedReportIds
     );
     
     setSelectedCase(newCase);

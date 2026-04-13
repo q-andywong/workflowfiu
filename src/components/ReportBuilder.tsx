@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { IntelligenceCase, Attachment, IntelligenceChart } from '../types';
-import { FileText, Check, Package, Eye, ChevronRight, Image as ImageIcon, BarChart3, Clock, User, ShieldCheck, Download, ExternalLink } from 'lucide-react';
+import { FileText, Check, Package, Eye, ChevronRight, Image as ImageIcon, BarChart3, Clock, User, ShieldCheck, Download, ExternalLink, Trash2, Target, Plus, X } from 'lucide-react';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import ChartComposer from './ChartComposer';
+import { useApp as useAppContext } from '../contexts/AppContext';
+
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
 interface ReportBuilderProps {
   activeCase: IntelligenceCase;
@@ -13,6 +18,86 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ activeCase, onPackage, on
   const [selectedAttachments, setSelectedAttachments] = useState<string[]>(activeCase.attachments?.map(a => a.id) || []);
   const [selectedCharts, setSelectedCharts] = useState<string[]>(activeCase.charts?.map(c => c.id) || []);
   const [synopsis, setSynopsis] = useState(activeCase.findings || '');
+  const { saveChart, removeChart } = useAppContext();
+
+  // Kafka Sync Simulation
+  const [isSyncingKafka, setIsSyncingKafka] = useState(false);
+  const [kafkaSyncProgress, setKafkaSyncProgress] = useState(0);
+  const [isSyncComplete, setIsSyncComplete] = useState(false);
+
+  const handleFinalizeAndDisseminate = () => {
+    setIsSyncingKafka(true);
+    setKafkaSyncProgress(0);
+    setIsSyncComplete(false);
+
+    const duration = 1000; // 1s
+    const interval = 20;
+    let timer = 0;
+
+    const progressInterval = setInterval(() => {
+        timer += interval;
+        setKafkaSyncProgress(Math.min((timer / duration) * 100, 100));
+
+        if (timer >= duration) {
+            clearInterval(progressInterval);
+            setIsSyncComplete(true);
+        }
+    }, interval);
+  };
+
+  const handleCompleteDissemination = () => {
+    onPackage({ synopsis, selectedAttachments, selectedCharts });
+    setIsSyncingKafka(false);
+    setIsSyncComplete(false);
+  };
+
+  const chartData = useMemo(() => {
+    return (activeCase.reports || []).map(r => ({
+      date: r.date, amount: r.amount, risk: r.riskScore, id: r.id, type: r.type
+    })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }, [activeCase.reports]);
+
+  const pieData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    (activeCase.reports || []).forEach(r => { counts[r.type] = (counts[r.type] || 0) + 1; });
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [activeCase.reports]);
+
+  const renderVisualChart = (chart: IntelligenceChart) => {
+    const data = chart.type === 'PIE' ? pieData : chartData;
+    if (data.length === 0) return null;
+    return (
+      <div className="h-64 bg-white p-4 rounded-xl border border-gray-100 mt-4">
+        <ResponsiveContainer width="100%" height="100%">
+          {chart.type === 'BAR' ? (
+            <BarChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+              <XAxis dataKey="date" fontSize={10} fontWeight="bold" tick={{ fill: '#9CA3AF' }} axisLine={false} tickLine={false} dy={10} />
+              <YAxis fontSize={10} fontWeight="bold" tick={{ fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', background: '#100628', color: 'white' }} itemStyle={{ color: '#3b82f6', fontSize: '12px', fontWeight: 'bold' }} labelStyle={{ fontSize: '10px', color: '#9CA3AF', marginBottom: '4px' }} />
+              <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={24} />
+            </BarChart>
+          ) : chart.type === 'LINE' ? (
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+              <XAxis dataKey="date" fontSize={10} fontWeight="bold" tick={{ fill: '#9CA3AF' }} axisLine={false} tickLine={false} dy={10} />
+              <YAxis fontSize={10} fontWeight="bold" tick={{ fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', background: '#100628', color: 'white' }} itemStyle={{ color: '#3b82f6', fontSize: '12px', fontWeight: 'bold' }} labelStyle={{ fontSize: '10px', color: '#9CA3AF', marginBottom: '4px' }} />
+              <Line type="monotone" dataKey="risk" stroke="#ef4444" strokeWidth={3} dot={{ r: 4, fill: '#ef4444', strokeWidth: 2, stroke: '#fff' }} />
+            </LineChart>
+          ) : (
+            <PieChart>
+              <Pie data={data} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
+                {data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+              </Pie>
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', background: '#100628', color: 'white' }} itemStyle={{ color: '#3b82f6', fontSize: '12px', fontWeight: 'bold' }} />
+              <Legend verticalAlign="bottom" align="center" iconType="circle" payload={data.map((item, i) => ({ value: item.name, type: 'circle', id: item.name, color: COLORS[i % COLORS.length] }))} />
+            </PieChart>
+          )}
+        </ResponsiveContainer>
+      </div>
+    );
+  };
 
   const toggleAttachment = (id: string) => {
     setSelectedAttachments(prev => prev.includes(id) ? prev.filter(a => a !== id) : [...prev, id]);
@@ -99,9 +184,14 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ activeCase, onPackage, on
                         </section>
 
                         <section className="space-y-4">
-                            <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                                <BarChart3 className="w-3.5 h-3.5" /> Analytical Visualizations
-                            </h3>
+                            <div className="flex justify-between items-center">
+                                <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                                    <BarChart3 className="w-3.5 h-3.5" /> Analytical Visualizations
+                                </h3>
+                                <button onClick={() => setShowChartComposer(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-blue-100 transition-colors border border-blue-100">
+                                    <Plus className="w-3 h-3" /> Edit / Create
+                                </button>
+                            </div>
                             <div className="space-y-2">
                                 {(activeCase.charts || []).map(c => (
                                     <button 
@@ -189,16 +279,29 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ activeCase, onPackage, on
                                             </div>
                                         </div>
                                     ))}
-                                    {selectedChartsList.map(c => (
-                                        <div key={c.id} className="p-5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center gap-4">
-                                            <BarChart3 className="w-6 h-6 text-blue-500" />
-                                            <div>
-                                                <div className="text-[10px] font-black text-gray-900 uppercase tracking-tight">{c.title}</div>
-                                                <div className="text-[9px] text-gray-400 font-bold uppercase mt-1 tracking-widest">Analytical Model • High Fidelity</div>
-                                            </div>
-                                        </div>
-                                    ))}
                                 </div>
+                                
+                                {selectedChartsList.length > 0 && (
+                                    <div className="mt-8 space-y-6">
+                                        <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-4">Included Analytical Models</h3>
+                                        {selectedChartsList.map(c => (
+                                            <div key={c.id} className="p-8 bg-gray-50/50 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden">
+                                                <div className="flex items-center gap-3 mb-4 relative z-10">
+                                                    <div className="p-2 bg-white rounded-lg shadow-sm border border-gray-100">
+                                                        <BarChart3 className="w-4 h-4 text-blue-600" />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-sm font-black text-gray-900 uppercase tracking-tight">{c.title}</h3>
+                                                        <div className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{c.type} Visualization Model</div>
+                                                    </div>
+                                                </div>
+                                                <div className="relative z-10">
+                                                    {renderVisualChart(c)}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </section>
 
                             <div className="mt-20 pt-10 border-t border-gray-100 flex justify-between items-end">
@@ -228,7 +331,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ activeCase, onPackage, on
                             <ChevronRight className="w-4 h-4 rotate-180" /> Back to Edit
                         </button>
                         <button 
-                            onClick={() => onPackage({ synopsis, selectedAttachments, selectedCharts })}
+                            onClick={handleFinalizeAndDisseminate}
                             className="px-10 py-4 bg-[#100628] text-white text-xs font-black uppercase tracking-widest rounded-2xl shadow-2xl flex items-center gap-4 hover:translate-y-[-4px] hover:shadow-blue-200/50 transition-all"
                         >
                             <Download className="w-5 h-5" /> Finalize & Disseminate
@@ -238,6 +341,82 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ activeCase, onPackage, on
             )}
         </div>
       </div>
+
+      {showChartComposer && (
+        <div className="fixed inset-0 z-[130] bg-[#100628]/80 backdrop-blur-lg flex items-center justify-center p-6 animate-in fade-in duration-300">
+            <div className="bg-white w-full max-w-5xl max-h-[85vh] rounded-[2.5rem] shadow-2xl flex flex-col group relative overflow-hidden border border-white/20">
+                <div className="p-6 border-b border-gray-100 bg-gray-50/80 flex justify-between items-center backdrop-blur-md">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-200">
+                            <BarChart3 className="w-5 h-5 text-white" />
+                        </div>
+                        <h2 className="text-xl font-black text-gray-900 tracking-tight">Intelligence Modeler</h2>
+                    </div>
+                    <button onClick={() => setShowChartComposer(false)} className="p-2.5 text-gray-400 hover:text-gray-900 bg-white shadow-sm border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+                <div className="flex-1 overflow-y-auto p-10 bg-gray-50/30 custom-scrollbar">
+                    <ChartComposer 
+                        activeCase={activeCase} 
+                        onSave={(c) => saveChart(activeCase.id, c)} 
+                        onRemove={(id) => removeChart(activeCase.id, id)} 
+                    />
+                </div>
+            </div>
+        </div>
+      )}
+      {/* Kafka Sync Simulation Modal */}
+      {isSyncingKafka && (
+        <div className="fixed inset-0 z-[300] bg-gray-900/90 backdrop-blur-md flex items-center justify-center p-6">
+            <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 relative overflow-hidden border border-gray-100">
+                <div className="absolute inset-0 opacity-[0.05] pointer-events-none">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl -mr-32 -mt-32 animate-pulse"></div>
+                </div>
+
+                <div className="relative z-10 text-center">
+                    <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-10 transition-all duration-500 ${isSyncComplete ? 'bg-red-50 scale-110' : 'bg-blue-50'}`}>
+                        {!isSyncComplete ? (
+                            <Zap className="w-12 h-12 text-blue-600 animate-pulse" />
+                        ) : (
+                            <Check className="w-14 h-14 text-red-600" strokeWidth={4} />
+                        )}
+                    </div>
+
+                    <h3 className="text-xl font-black text-gray-900 mb-2 tracking-tight">
+                        {!isSyncComplete ? 'Broadcasting Intelligence Package' : 'Package Synchronized Successfully'}
+                    </h3>
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-10">
+                        {!isSyncComplete ? 'Broadcasting: report.event.disseminate' : 'Ingestion status: COMPLETE (RED-TICK)'}
+                    </p>
+
+                    <div className="space-y-4">
+                        <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                            <div 
+                                className={`h-full transition-all duration-75 ease-linear ${isSyncComplete ? 'bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.5)]' : 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)]'}`}
+                                style={{ width: `${kafkaSyncProgress}%` }}
+                            ></div>
+                        </div>
+                        <div className="flex justify-between items-center px-1">
+                            <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${isSyncComplete ? 'text-red-600' : 'text-blue-600'}`}>
+                                {isSyncComplete ? 'BROADCAST COMPLETE' : 'KAFKA TRANSMISSION'}
+                            </span>
+                            <span className="text-[9px] font-black text-gray-400">{Math.round(kafkaSyncProgress)}%</span>
+                        </div>
+                    </div>
+
+                    {isSyncComplete && (
+                        <button 
+                            onClick={handleCompleteDissemination}
+                            className="w-full mt-10 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-red-500/20 animate-in fade-in slide-in-from-bottom-2 duration-500"
+                        >
+                            Complete Dissemination
+                        </button>
+                    )}
+                </div>
+            </div>
+        </div>
+      )}
     </div>
   );
 };

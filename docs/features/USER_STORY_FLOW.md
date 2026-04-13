@@ -1,57 +1,77 @@
-# Industrial User Story: The End-to-End Investigation Lifecycle
+# Industrial User Story: The End-to-End Investigative Lifecycle (v3.0.0)
 
-This narrative outlines the modernized investigative lifecycle on the **FIU STR Analysis Platform** (v3.0.0). It serves as a comprehensive demo script for stakeholders.
+This comprehensive journey outlines how the **FIU STR Analysis Platform** bridges the gap between raw financial intelligence and actionable law enforcement referrals through industry-standard synchronization and managerial governance.
 
 ---
 
-## 1. Operational Entry & Persona-Driven Triage
-**Persona: Investigator (e.g., Insp. Lim)**
-
-*   **Login & Ingestion**: The investigator logs in and lands on their **Investigator Dashboard**. The "Triages in Queue" metric reflects live data ingested from the central registry, filtered automatically by the investigator's assigned typology (e.g., *Money Laundering*).
-*   **Intelligent Discovery**: The analyst navigates to the **Triage Queue**. They identify a high-risk lead (e.g., `TASK-2026-GEN00`) with an **Aggregated Max Risk** score of **82**. 
-*   **Case Inception**: After reviewing the initial "Risk Scorecard & Investigation Findings", the analyst determines the lead warrants a formal case. They click **Escalate Lead** and then **Submit for Approval**.
-*   **Governance Status**: The task's status transitions to `PENDING_APPROVAL`, locking the analyst view until a director provides sign-off.
-
-## 2. Managerial Oversight: Case Creation
+## 🟢 Phase 1: Operational Inception & Platform Sync
 **Persona: Operations Manager (e.g., Director Shen)**
 
-*   **Approvals Pipeline**: The manager accesses the **Approvals Queue**. They see the new request from Insp. Lim.
-*   **Verification**: The manager clicks **Review Assessment** to inspect the analyst's findings inside the analytical workbench.
-*   **Promotion**: Satisfied with the evidence, the manager clicks **Approve Case Creation**. 
-*   **Digital Sign-Off**: The task is formally promoted into the **Case Directory** as a structured investigation (e.g., `CASE-2026-001`). The manager then uses the **Re-assign Analyst** tool to formally delegate ownership to Insp. Lim.
-
-## 3. Analytical Deep-Dive & Multi-Entity Linking
-**Persona: Investigator (Insp. Lim)**
-
-*   **Workbench Readiness**: insp. Lim opens the promoted case from the **Case Directory**. 
-*   **Entity Clustering**: To broaden the intelligence net, the analyst uses the **Search & Link Subject** tool to find and link related corporate entities (e.g., *Apex Holdings LLC*) to the primary subject. 
-*   **Evidence Chain**: The analyst reviews the **Linked Regulatory Reports** (STRs/CTRs) and uses the **Evidence Locker** to upload cross-border bank statements. The system maintains a unified evidence chain across all linked entities.
-*   **Intelligence Profiling**: The analyst pivots between subjects using the **Subject Switcher**, reviewing crime typologies and risk profile overrides.
-
-## 4. Governance Finalization & Referral
-**Persona: Investigator (Insp. Lim)**
-
-*   **Operation Finalization**: With a completed intelligence package, the analyst clicks the **Finalize Investigation** button in the header.
-*   **Pathway Selection**: They select **Disseminate & Refer** as the operational outcome.
-*   **Executive Rationale**: The analyst selects a target agency (e.g., **CAD - Commercial Affairs Dept**) and drafts a high-level **Dissemination Rationale**.
-*   **Governance Request**: Upon clicking **Finalize Operation**, the case enters the second governance gate: `PENDING_APPROVAL` (Dissemination Referral).
-
-## 5. Director Sign-off: Intelligence Impact
-**Persona: Operations Manager (Director Shen)**
-
-*   **Impact Authorization**: The manager returns to the **Approvals Queue**. They spot the new **Dissemination Referral** badge.
-*   **Executive Review**: The manager reviews the dissemination rationale and the specific agency referral details.
-*   **Authorize Dissemination**: The manager clicks **Authorize Dissemination**. The case's status formally transitions to `DISSEMINATED`.
-
-## 6. Intelligence Impact Tracking (The Feedback Loop)
-**Persona: Investigator / Manager**
-
-*   **Tracker Verification**: The case now appears in the **Dissemination Tracker**. 
-*   **Operational Connectivity**: The tracker identifies the specific agency (CAD) and the date of referral.
-*   **Intelligence Impact**: Months later, as feedback from Law Enforcement (LEA) arrives, the user clicks **View Intelligence** in the tracker to jump back into the workbench and record the outcome (e.g., **Asset Seizure** or **Conviction**).
-*   **Closing the Loop**: This success data is aggregated into the **Global Performance Stats** (e.g., *78.4% Intelligence Utility Rate*), completing the FIU lifecycle.
+1.  **Command Center Oversight**: The Manager logs in and lands on the **Managerial Command Center**. They observe a 4-grid executive summary:
+    - **Pending Triage**: New leads from ingestion pipelines.
+    - **Awaiting Sign-off**: Case escalations requiring executive review.
+    - **Priority Bypasses**: Critical alerts identified by the Quantexa Risk Engine.
+    - **Hibernated Registry**: Entities moved to background monitoring.
+2.  **Quantexa Pulse-Sync**: To ensure the morning's latest intelligence is available, the Manager clicks **"Scan for latest tasks"**.
+3.  **Simulation Feedback**: A high-fidelity progress modal plays:
+    - Establishing a secure handshake with the **Quantexa Platform**.
+    - Retrieving graph-triangulated tasks from the master registry.
+    - Distributing tasks into analyst specialization buckets based on crime typologies.
+4.  **Operational Readiness**: The sync completes, and the Manager confirms the ingestion count is up-to-date.
 
 ---
 
-> [!IMPORTANT]
-> This workflow ensures that no intelligence leaves the FIU without executive authorization, maintaining strict audit trails and data integrity.
+## 🔵 Phase 2: Investigative Triage & Evidence Building
+**Persona: FIU Analyst (e.g., Insp. Lim)**
+
+1.  **Specialized Intake**: The Analyst navigates to the **Triage Queue**. The system automatically filters for **'Fraud'** tasks to match their specialization.
+2.  **Workbench Engagement**: The Analyst opens a lead (e.g., `IGOR DIMITROV`). They enter the **Case Analysis Workbench**.
+3.  **Analytical Mitigation**:
+    - The Analyst reviews the **Interactive Risk Scorecard**.
+    - They mitigation the *"High Transaction Velocity"* risk indicator by recording a formal action: *"RFI sent to bank for source of wealth validation"*.
+    - They click **Save Changes**. The **Kafka Sync Modal** triggers with the specific status: *"Syncing Analysis to Quantexa Platform"* follows by a **Red-Tick** success state.
+    - The Analyst clicks **"Continue Analysis"** and remains in the workbench to record their final narrative.
+4.  **Escalation Broadcast**:
+    - Once the **Operational Narrative** is complete, the Analyst clicks **"Sign-off and Escalate"**.
+    - The simulation broadcasts the `decision.event.triage` topic.
+    - The Analyst clicks **"Return to Queue"**, and the task disappears from their triage list.
+
+---
+
+## 🟡 Phase 3: Executive Review & Case Promotion
+**Persona: Operations Manager (Director Shen)**
+
+1.  **Approvals Registry**: The Manager sees the new escalation in the **Awaiting Sign-off** tile.
+2.  **High-Velocity Review**:
+    - The Manager views the **Pending Approvals** list.
+    - For lower-complexity tasks, they click **"Sign-off and Escalate"** directly in the table row.
+    - The system plays the Kafka Sync simulation, confirming the decision has been synchronized with the platform.
+3.  **Investigation Instantiation**: The subject is officially promoted to an active **Case** and assigned a unique Investigation ID (e.g., `CASE-2026-001`).
+
+---
+
+## 🔴 Phase 4: Full Field Investigation & Retrieval
+**Persona: Lead Investigator (Insp. Lim)**
+
+1.  **Deep-Dive Analysis**: The Investigator opens the case in the **Case Directory**.
+2.  **Industrial Data Enrichment**:
+    - They use the **Global Discovery Registry** to manually link related subjects identified during the deep-dive.
+    - They link several high-value **STR Regulatory Reports** from the master directory to bridge disparate data points.
+3.  **Intelligence Modeling & Packaging**:
+    - The Investigator opens the **Dissemination Report Compiler**.
+    - They instantiate **Intelligence Models** (Bar/Line charts) to visualize complex transaction patterns.
+    - They click **"Finalize & Disseminate"**. The **Kafka Sync Modal** triggers (topic: `report.event.disseminate`), verifying the package is synchronized with the platform records.
+    - They click **"Complete Dissemination"** to finalize the briefing package.
+4.  **Administrative Disposal**:
+    - Once the brief is disseminated, the Investigator clicks **"Finalize Case"**.
+    - In the **Finalize Modal**, they select a disposal outcome (e.g., *Disseminate to Law Enforcement*).
+    - They click **"Confirm Finalization"**.
+    - The final Kafka Sync modal plays: *"Broadcasting Final Disposal to Platform"* (topic: `update.event.disposal`).
+5.  **Archival Handshake**: The Investigator clicks **"Return to Queue"**. The case is transitioned out of the active directory and securely archived in the **Administrative Registry**.
+
+---
+
+## 🏁 Summary of Governing Logic
+- **Always Synchronized**: Every decision point includes a 1s Kafka synchronization simulation to verify platform connectivity.
+- **Role-Awareness**: Managers have command-level dashboards; Analysts have high-volume triage workbenches.
+- **Contextual Continuity**: The system distinguishes between "Progress Saves" (Stay in Workbench) and "Status Decisions" (Return to Queue).

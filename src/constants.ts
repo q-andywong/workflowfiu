@@ -413,7 +413,19 @@ export const MOCK_CASES: IntelligenceCase[] = [
     id: 'CASE-2026-005',
     title: 'Operation Mirage - Low Risk Monitoring',
     subjects: [SARAH_JENKINS_PROFILE],
-    reports: [],
+    reports: [
+        {
+          id: 'STR-2026-MIRAGE',
+          date: '2026-03-25',
+          amount: 15000,
+          currency: 'USD',
+          institution: 'REVOLUT LTD',
+          type: 'STR',
+          riskScore: 25,
+          status: 'TRIAGED',
+          narrative: 'Low-value transfers via neo-bank infrastructure. Dormant profile match.'
+        }
+    ],
     status: 'HIBERNATED',
     analyst: 'Insp. Lim',
     priority: false,
@@ -492,7 +504,19 @@ const GENERATED_TASKS: IntelligenceCase[] = Array.from({ length: 15 }).map((_, i
       crimeTypologies: assignedCrimes,
       linkedSTRs: []
     }],
-    reports: [],
+    reports: [
+      {
+        id: `STR-2026-GEN-${i}`,
+        date: new Date(new Date('2026-04-10T00:00:00Z').getTime() - (i * 86400000)).toISOString().split('T')[0],
+        amount: Math.floor(Math.random() * 500000) + 10000,
+        currency: 'USD',
+        institution: ['OCBC BANK', 'DBS BANK', 'UOB SINGAPORE', 'HSBC', 'CITIBANK'][i % 5],
+        type: i % 3 === 0 ? 'CTR' : i % 3 === 1 ? 'CMR' : 'STR',
+        riskScore: 30 + (i * 3),
+        status: 'TRIAGED',
+        narrative: `Automated flag based on ${assignedCrimes[0]} typology pattern detection.`
+      }
+    ],
     status: 'TRIAGE',
     priority: false,
     createdAt: new Date(new Date('2026-04-09T00:00:00Z').getTime() - (i * 86400000)).toISOString()

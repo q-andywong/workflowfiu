@@ -32,6 +32,22 @@ Integrates direct evidentiary asset management within the investigation flow.
 - **Capabilities**: Direct file upload, secure cloud URL mapping, and attachment removal.
 - **Evidence Association**: Every asset is stamped with the analytical context and Case ID.
 
+## 6. Industrialized Synchronization (Kafka Simulation) [v3.0]
+
+The platform now features a high-fidelity **Kafka Sync Simulation** layer that replaces generic confirmations with industry-standard "broadcasting" feedback loops. This builds user trust by visually demonstrating data propagation to the Quantexa Platform.
+
+### Pulse-Sync Integration Points:
+- **Preservation of Findings**: Triggered when clicking "Save Changes" on the Operational Narrative. Simulates `update.event.narrative` broadcasting. Investigators remain in the workbench to continue their analysis.
+- **Sign-off and Escalate**: Triggered when an Analyst escalates a lead or a Manager approves a case. Simulates `decision.event.triage` broadcasting. Returns the user to the queue upon completion.
+- **Administrative Disposal**: Triggered during the "Confirm Finalization" handshake. Simulates `update.event.disposal` broadcasting. Marks the Case as archived and returns the user to the queue.
+
+### Broadcast UI Components:
+- **1s Synchronization Modal**: A premium backdrop-blurred overlay featuring an animated progress bar.
+- **The "Red Tick" Confirmation**: A high-contrast success state ("Case Doc updated Successfully") that persists until manually dismissed.
+- **Contextual Navigation**: 
+    - Decisions: Offers a **"Return to Queue"** action.
+    - Progress Saves: Offers a **"Continue Analysis"** action.
+
 ## Layout & Design Specifications
 - **Modal Architecture**: A full-screen backdrop-blur (`backdrop-blur-md`) modal design to focus the investigator's visual attention.
 - **Header Aesthetics**: Dark-mode header (`bg-[#100628]`) with high-contrast text and pulsing status indicators.

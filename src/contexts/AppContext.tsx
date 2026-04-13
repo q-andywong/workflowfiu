@@ -29,7 +29,7 @@ interface AppContextType {
   processModification: (caseId: string, approved: boolean) => void;
   saveMitigation: (caseId: string, subjectId: string, factorId: string, category: string, notes: string) => void;
   saveFindings: (caseId: string, findings: string) => void;
-  createCase: (subjects: PersonProfile[], description: string, title?: string) => IntelligenceCase;
+  createCase: (subjects: PersonProfile[], description: string, title?: string, reportIds?: string[]) => IntelligenceCase;
   view: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY';
   previousView: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY';
   setView: (v: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY') => void;
@@ -204,7 +204,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
       return c;
     }));
-    setSelectedCase(null);
   };
 
   const approveCase = (id: string) => {
@@ -215,7 +214,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
       return c;
     }));
-    setSelectedCase(null);
   };
 
   const rejectCase = (id: string, reason: string) => {
@@ -398,8 +396,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }));
   };
 
-  const createCase = (subjects: PersonProfile[], description: string, title?: string) => {
+  const createCase = (subjects: PersonProfile[], description: string, title?: string, reportIds?: string[]) => {
     const newCaseId = `CASE-2026-${String(cases.length + 1).padStart(3, '0')}`;
+    const selectedReports = (reportIds || []).map(id => {
+        // Find from MOCK_STRS or existing cases
+        const mockSTR = MOCK_STRS.find((s: any) => s.id === id);
+        if (mockSTR) return mockSTR;
+        // Fallback search across all cases if needed, but MOCK_STRS should cover it
+        return null;
+    }).filter(Boolean);
+
     const newCase: IntelligenceCase = {
       id: newCaseId,
       title: title || `Investigation: ${subjects.map(s => s.name).join(', ')}`,
@@ -409,7 +415,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         id: s.id || `P-NEW-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
         riskProfile: s.riskProfile || { totalScore: 0, status: 'GRAY PENDING', factors: [] }
       })),
-      reports: [], // Initially empty, will be linked from the Analysis/Locker
+      reports: selectedReports,
       status: 'STAGING',
       priority: false,
       disseminations: [],

@@ -5,11 +5,13 @@ import {
     Zap, Users, Briefcase, User, Hash, ShieldPlus, ShieldCheck,
     Scale, Plus, FileCheck2, CheckCircle2, Share2, Eye, Box,
     Lock, ExternalLink, Search, BadgeCheck, ShieldAlert, Info,
-    ChevronDown, ChevronUp, Check
+    ChevronDown, ChevronUp, Check, Trash2
 } from 'lucide-react';
 import { useApp as useAppContext } from '../contexts/AppContext';
+import { useAuth } from '../contexts/AuthContext';
 import { MOCK_STRS as STR_DIRECTORY, MOCK_ENTITIES } from '../constants';
 import STRViewer from '../components/STRViewer';
+import ReportBuilder from '../components/ReportBuilder';
 
 const CaseAnalysis = () => {
     const { 
@@ -21,13 +23,21 @@ const CaseAnalysis = () => {
         approveCase,
         addManualEntity,
         bulkLinkReports,
-        bulkUpdateCases
+        bulkUpdateCases,
+        saveFindings,
+        assessEntity
     } = useAppContext();
+    const { user } = useAuth();
+    const isInvestigator = user?.role === 'INVESTIGATOR';
 
     const [isEscalating, setIsEscalating] = useState(false);
     const [isRejecting, setIsRejecting] = useState(false);
     const [newCaseTitle, setNewCaseTitle] = useState('');
     const [rejectionReason, setRejectionReason] = useState('');
+    
+    // Findings / Narrative State
+    const [isEditingFindings, setIsEditingFindings] = useState(false);
+    const [localFindings, setLocalFindings] = useState(activeCase?.findings || '');
     
     // Switcher State
     const [selectedSubjectId, setSelectedSubjectId] = useState<string>(activeCase?.subjects[0]?.id || '');
@@ -42,6 +52,7 @@ const CaseAnalysis = () => {
     const [searchModal, setSearchModal] = useState<{ open: boolean, type: 'ENTITY' | 'REPORT' }>({ open: false, type: 'ENTITY' });
     const [searchQuery, setSearchQuery] = useState('');
     const [showSTRViewer, setShowSTRViewer] = useState<string | null>(null);
+    const [showReportBuilder, setShowReportBuilder] = useState(false);
 
     // Reassignment State
     const [isReassigning, setIsReassigning] = useState(false);
@@ -51,6 +62,64 @@ const CaseAnalysis = () => {
     const [expandedFactorId, setExpandedFactorId] = useState<string | null>(null);
     const [mitigationInputs, setMitigationInputs] = useState<Record<string, { category: string, notes: string }>>({});
     const [savedMitigations, setSavedMitigations] = useState<Record<string, boolean>>({});
+
+    // Kafka Sync Simulation Case
+    const [isSyncingKafka, setIsSyncingKafka] = useState(false);
+    const [kafkaSyncProgress, setKafkaSyncProgress] = useState(0);
+    const [isSyncComplete, setIsSyncComplete] = useState(false);
+    const [syncAction, setSyncAction] = useState<'ESCALATE' | 'HIBERNATE' | 'DISMISS' | 'APPROVE' | 'SAVE' | 'FINALIZE' | null>(null);
+
+    const handleSignOffAndEscalate = (entityId: string, action: 'ESCALATE' | 'HIBERNATE' | 'DISMISS' | 'APPROVE' | 'SAVE' | 'FINALIZE') => {
+        setSyncAction(action);
+        setIsSyncingKafka(true);
+        setKafkaSyncProgress(0);
+        setIsSyncComplete(false);
+
+        const duration = 1000; // 1s
+        const interval = 20;
+        let timer = 0;
+
+        const progressInterval = setInterval(() => {
+            timer += interval;
+            setKafkaSyncProgress(Math.min((timer / duration) * 100, 100));
+
+            if (timer >= duration) {
+                clearInterval(progressInterval);
+                setIsSyncComplete(true);
+                
+                // Finalize status immediately in the background
+                if (action === 'APPROVE') {
+                    approveCase(entityId);
+                } else if (action === 'SAVE') {
+                    saveFindings(entityId, localFindings);
+                    setIsEditingFindings(false);
+                } else if (action === 'FINALIZE') {
+                    let finalStatus = 'CLOSED';
+                    if (finalizeOutcome === 'DISSEMINATE') finalStatus = 'DISSEMINATED';
+                    if (finalizeOutcome === 'HIBERNATE') finalStatus = 'HIBERNATED';
+
+                    bulkUpdateCases([entityId], { 
+                        status: finalStatus as any, 
+                        lastUpdated: new Date().toLocaleDateString(), 
+                        outcomeRationale: finalizeRationale, 
+                        targetAgency: selectedAgency 
+                    });
+                    setIsFinalizing(false);
+                } else {
+                    assessEntity(entityId, action as any);
+                }
+            }
+        }, interval);
+    };
+
+    const handleCloseSyncModal = () => {
+        setIsSyncingKafka(false);
+        setIsSyncComplete(false);
+        if (syncAction !== 'SAVE') {
+            setActiveCase(null);
+        }
+        setSyncAction(null);
+    };
 
     const MITIGATION_CATEGORIES = [
         'RFI sent to bank for more information',
@@ -83,17 +152,7 @@ const CaseAnalysis = () => {
     };
 
     const handleConfirmFinalization = () => {
-        let finalStatus = 'CLOSED';
-        if (finalizeOutcome === 'DISSEMINATE') finalStatus = 'DISSEMINATED';
-        if (finalizeOutcome === 'HIBERNATE') finalStatus = 'HIBERNATED';
-
-        bulkUpdateCases([activeCase.id], { 
-            status: finalStatus as any, 
-            lastUpdated: new Date().toLocaleDateString(), 
-            outcomeRationale: finalizeRationale, 
-            targetAgency: selectedAgency 
-        });
-        setActiveCase(null);
+        handleSignOffAndEscalate(activeCase.id, 'FINALIZE');
     };
 
     const handleConfirmReassignment = () => {
@@ -174,10 +233,64 @@ const CaseAnalysis = () => {
                         </div>
 
                         <div className="flex items-center gap-6">
-                            <button onClick={() => setIsFinalizing(true)} className="px-8 py-4 bg-[#00D7BA]/10 hover:bg-[#00D7BA]/20 rounded-2xl transition-all text-[#00D7BA] border border-[#00D7BA]/20 group shadow-[0_0_20px_rgba(0,215,186,0.1)] flex items-center gap-4">
-                                <CheckCircle2 className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Finalize Case</span>
-                            </button>
+                            {/* Conditional Actions Based on Approval Workflow */}
+                            {activeCase.status === 'STAGING' ? (
+                                <button 
+                                    onClick={() => {
+                                        setIsEscalating(true);
+                                        setNewCaseTitle(activeCase.title);
+                                    }} 
+                                    className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl transition-all text-white shadow-xl shadow-blue-500/20 flex items-center gap-4 group"
+                                >
+                                    <ShieldPlus className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Request Inception Approval</span>
+                                </button>
+                            ) : activeCase.status === 'PENDING_APPROVAL' ? (
+                                isInvestigator ? (
+                                    <div className="px-8 py-4 bg-amber-500/10 rounded-2xl text-amber-500 border border-amber-500/20 flex items-center gap-4 opacity-80 shadow-sm shadow-amber-500/10">
+                                        <Clock className="w-6 h-6 animate-pulse" />
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Awaiting Inception Sign-off</span>
+                                    </div>
+                                ) : (
+                                    <button 
+                                        onClick={() => handleSignOffAndEscalate(activeCase.id, 'APPROVE')}
+                                        className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 rounded-2xl transition-all text-white shadow-xl shadow-emerald-500/20 flex items-center gap-4 group"
+                                    >
+                                        <ShieldCheck className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Sign-off and Escalate</span>
+                                    </button>
+                                )
+                            ) : activeCase.status === 'TRIAGE' ? (
+                                <div className="flex items-center gap-3">
+                                    <button 
+                                        onClick={() => handleSignOffAndEscalate(activeCase.id, 'ESCALATE')}
+                                        className="px-6 py-4 bg-emerald-600 hover:bg-emerald-700 rounded-2xl transition-all text-white shadow-xl shadow-emerald-500/20 flex items-center gap-3 group"
+                                    >
+                                        <ShieldPlus className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Sign-off and Escalate</span>
+                                    </button>
+                                    <button 
+                                        onClick={() => assessEntity(activeCase.id, 'HIBERNATE')}
+                                        className="px-6 py-4 bg-amber-500/10 hover:bg-amber-500/20 rounded-2xl transition-all text-amber-500 border border-amber-500/20 flex items-center gap-3 group"
+                                    >
+                                        <Clock className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Hibernate</span>
+                                    </button>
+                                    <button 
+                                        onClick={() => assessEntity(activeCase.id, 'DISMISS')}
+                                        className="px-6 py-4 bg-red-500/10 hover:bg-red-500/20 rounded-2xl transition-all text-red-500 border border-red-500/20 flex items-center gap-3 group"
+                                    >
+                                        <Trash2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Dismiss</span>
+                                    </button>
+                                </div>
+                            ) : activeCase.status === 'ANALYSIS' && activeCase.findings ? (
+                                <button onClick={() => setIsFinalizing(true)} className="px-8 py-4 bg-[#00D7BA]/10 hover:bg-[#00D7BA]/20 rounded-2xl transition-all text-[#00D7BA] border border-[#00D7BA]/20 group shadow-[0_0_20px_rgba(0,215,186,0.1)] flex items-center gap-4">
+                                    <CheckCircle2 className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Finalize Case</span>
+                                </button>
+                            ) : null}
+
                             <button onClick={handleClose} className="w-14 h-14 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-2xl transition-all text-white/20 hover:text-white border border-white/5 group">
                                 <X className="w-8 h-8 group-hover:rotate-90 transition-transform duration-300" />
                             </button>
@@ -404,10 +517,51 @@ const CaseAnalysis = () => {
                                             <div>
                                                 <div className="flex justify-between items-center mb-4">
                                                     <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Operational Narrative</span>
-                                                    <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-lg text-[8px] font-black uppercase tracking-widest border border-blue-100">Auto-Saving Enabled</span>
+                                                    {!isEditingFindings ? (
+                                                        <button 
+                                                            onClick={() => {
+                                                                setLocalFindings(activeCase.findings || '');
+                                                                setIsEditingFindings(true);
+                                                            }}
+                                                            className="text-[9px] font-black text-blue-600 uppercase tracking-widest hover:underline"
+                                                        >
+                                                            Edit Findings
+                                                        </button>
+                                                    ) : (
+                                                        <div className="flex gap-3">
+                                                            <button 
+                                                                onClick={() => setIsEditingFindings(false)}
+                                                                className="text-[9px] font-black text-gray-400 uppercase tracking-widest hover:text-gray-600"
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => {
+                                                                    handleSignOffAndEscalate(activeCase.id, 'SAVE');
+                                                                }}
+                                                                className="text-[9px] font-black text-blue-600 uppercase tracking-widest hover:text-blue-700"
+                                                            >
+                                                                Save Changes
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <div className="bg-gray-50/50 rounded-2xl p-6 border border-gray-100 min-h-[160px] text-sm text-gray-700 font-medium leading-relaxed">
-                                                    {activeCase.findings || "Initial evaluation confirms cross-border high-value fund movements with suspected shell integration."}
+                                                <div className={`bg-gray-50/50 rounded-2xl border border-gray-100 min-h-[160px] transition-all ${isEditingFindings ? 'ring-2 ring-blue-500 bg-white' : ''}`}>
+                                                    {isEditingFindings ? (
+                                                        <textarea 
+                                                            value={localFindings}
+                                                            onChange={(e) => setLocalFindings(e.target.value)}
+                                                            className="w-full h-full min-h-[160px] p-6 text-sm text-gray-700 font-medium leading-relaxed bg-transparent outline-none resize-none"
+                                                            placeholder="Document investigative progress, suspected typologies, and rationale for finalization..."
+                                                            autoFocus
+                                                        />
+                                                    ) : (
+                                                        <div className="p-6 text-sm text-gray-700 font-medium leading-relaxed">
+                                                            {activeCase.findings || (
+                                                                <span className="text-gray-400 italic">No operational narrative recorded yet. This field must be populated to enable case finalization.</span>
+                                                            )}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -489,13 +643,13 @@ const CaseAnalysis = () => {
 
                             {/* Bottom Discovery Grid */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                                <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40 p-8 flex flex-col">
-                                    <div className="flex items-center justify-center gap-4 mb-8">
-                                        <div className="h-px bg-gray-100 flex-1" />
-                                        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Cross-Entity Related Cases</h3>
-                                        <div className="h-px bg-gray-100 flex-1" />
+                                <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40 overflow-hidden flex flex-col">
+                                    <div className="flex border-b border-gray-50">
+                                        <div className="flex-1 px-8 py-5 text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] bg-gray-50/50 flex items-center justify-between relative">
+                                            Cross-Entity Related Cases
+                                        </div>
                                     </div>
-                                    <div className="space-y-4 flex-1">
+                                    <div className="p-8 space-y-4 max-h-[300px] overflow-y-auto custom-scrollbar flex-1">
                                         {activeCase.subjects.length > 1 && (
                                             <div className="p-6 bg-gray-50/50 border border-gray-100 rounded-3xl group hover:border-blue-200 transition-all cursor-pointer">
                                                 <div className="flex justify-between items-start mb-4">
@@ -520,11 +674,9 @@ const CaseAnalysis = () => {
 
                                 <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40 overflow-hidden flex flex-col">
                                     <div className="flex border-b border-gray-50">
-                                        <button className="flex-1 px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-r border-gray-50 flex items-center justify-center gap-3"><Activity className="w-4 h-4" /> Advanced Analytics</button>
-                                        <button className="flex-1 px-8 py-5 text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] bg-gray-50/50 flex items-center justify-center gap-3 border-l-4 border-blue-500 relative">
+                                        <div className="flex-1 px-8 py-5 text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] bg-gray-50/50 flex items-center justify-between relative">
                                             Linked Regulatory Reports
-                                            <div className="absolute top-1/2 -translate-y-1/2 right-6 p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><Plus className="w-3 h-3" /></div>
-                                        </button>
+                                        </div>
                                     </div>
                                     <div className="p-8 space-y-4 max-h-[300px] overflow-y-auto custom-scrollbar">
                                         {activeCase.reports.map(r => (
@@ -547,6 +699,11 @@ const CaseAnalysis = () => {
                                                 </div>
                                             </div>
                                         ))}
+                                    </div>
+                                    <div className="p-5 border-t border-gray-50 bg-[#fcfdfe]">
+                                        <button onClick={() => setShowReportBuilder(true)} className="w-full py-4 text-[10px] font-black text-gray-500 hover:text-blue-600 uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-colors bg-white border border-gray-200 rounded-xl hover:border-blue-300 shadow-sm group">
+                                            <Activity className="w-4 h-4 group-hover:scale-110 transition-transform" /> Advanced Analytics
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -675,6 +832,75 @@ const CaseAnalysis = () => {
                 </div>
             )}
 
+            {/* Kafka Sync Simulation Modal */}
+            {isSyncingKafka && (
+                <div className="fixed inset-0 z-[300] bg-gray-900/90 backdrop-blur-md flex items-center justify-center p-6">
+                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 relative overflow-hidden border border-gray-100">
+                        {/* Animated Mesh Gradient Background (Subtle) */}
+                        <div className="absolute inset-0 opacity-[0.05] pointer-events-none">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-red-500 rounded-full blur-3xl -mr-32 -mt-32 animate-pulse"></div>
+                        </div>
+
+                        <div className="relative z-10 text-center">
+                            <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-10 transition-all duration-500 ${isSyncComplete ? 'bg-red-50 scale-110' : 'bg-blue-50'}`}>
+                                {!isSyncComplete ? (
+                                    <Zap className="w-12 h-12 text-blue-600 animate-pulse" />
+                                ) : (
+                                    <Check className="w-14 h-14 text-red-600" strokeWidth={4} />
+                                )}
+                            </div>
+
+                            <h3 className="text-xl font-black text-gray-900 mb-2 tracking-tight">
+                                {!isSyncComplete ? (
+                                    syncAction === 'SAVE' ? 'Syncing Analysis to Quantexa Platform' : 
+                                    syncAction === 'FINALIZE' ? 'Broadcasting Final Disposal to Platform' :
+                                    'Sending Kafka Topic to Quantexa Platform'
+                                ) : (
+                                    syncAction === 'SAVE' ? 'Analysis Narrative Saved' : 
+                                    syncAction === 'FINALIZE' ? 'Operation Finalized Successfully' :
+                                    'Case Doc updated Successfully'
+                                )}
+                            </h3>
+                            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-10">
+                                {!isSyncComplete ? (
+                                    syncAction === 'SAVE' ? 'Broadcasting: update.event.narrative' : 
+                                    syncAction === 'FINALIZE' ? 'Broadcasting: update.event.disposal' :
+                                    'Broadcasting Decision decision.event.triage'
+                                ) : 'Ingestion status: COMPLETE (RED-TICK)'}
+                            </p>
+
+                            <div className="space-y-4">
+                                <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                                    <div 
+                                        className={`h-full transition-all duration-75 ease-linear ${isSyncComplete ? 'bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.5)]' : 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)]'}`}
+                                        style={{ width: `${kafkaSyncProgress}%` }}
+                                    ></div>
+                                </div>
+                                <div className="flex justify-between items-center px-1">
+                                    <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${isSyncComplete ? 'text-red-600' : 'text-blue-600'}`}>
+                                        {isSyncComplete ? 'BROADCAST COMPLETE' : (
+                                            syncAction === 'SAVE' ? 'NARRATIVE TRANSMISSION' : 
+                                            syncAction === 'FINALIZE' ? 'DISPOSAL TRANSMISSION' :
+                                            'KAFKA TRANSMISSION'
+                                        )}
+                                    </span>
+                                    <span className="text-[9px] font-black text-gray-400">{Math.round(kafkaSyncProgress)}%</span>
+                                </div>
+                            </div>
+
+                            {isSyncComplete && (
+                                <button 
+                                    onClick={handleCloseSyncModal}
+                                    className="w-full mt-10 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-red-500/20 animate-in fade-in slide-in-from-bottom-2 duration-500"
+                                >
+                                    {syncAction === 'SAVE' ? 'Continue Analysis' : 'Return to Queue'}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {isReassigning && (
                 <div className="fixed inset-0 z-[250] bg-[#0c051a]/60 backdrop-blur-md flex justify-center items-center p-4">
                     <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-8 animate-in zoom-in duration-200 border border-gray-100">
@@ -701,6 +927,10 @@ const CaseAnalysis = () => {
 
             {showSTRViewer && (
                 <STRViewer strId={showSTRViewer} onClose={() => setShowSTRViewer(null)} />
+            )}
+
+            {showReportBuilder && (
+                <ReportBuilder activeCase={activeCase} onPackage={(data) => { console.log(data); setShowReportBuilder(false); }} onClose={() => setShowReportBuilder(false)} />
             )}
         </>
     );

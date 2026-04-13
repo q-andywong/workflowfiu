@@ -12,10 +12,27 @@ The Investigator view is optimized for high-speed intake, featuring a full-width
 - **Priority Bypass Registry**: A high-fidelity section for critical hits that bypassed standard triage logic.
 - **Hibernation Registry Footer**: Integrated link to the **Hibernation List** for subjects moved to baseline monitoring.
 
-### 2. Director View (Managerial Intelligence)
-The Director view provides high-level telemetry on operational volume and throughput.
-- **Operational Summary Blocks**: Interactive tiles for **Pending Triage**, **Priority Bypasses**, and **Auto-Hibernated** registries.
-- **Traffic Intelligence**: Real-time breakdown of ingestion pipelines (STRs vs CTRs) and average time-to-triage.
+### 2. Managerial Command Center [v3.0]
+
+The Manager view has been refactored into a high-level operational command center for FIU leadership, featuring a 4-grid executive summary:
+
+- **Pending Triage**: Standard ingestion items awaiting initial analyst assessment.
+- **Awaiting Sign-off (Approvals)**: Professional escalations requiring managerial review.
+- **Priority Bypasses**: Critical alerts (Risk > 150) that bypassed standard protocols.
+- **Hibernated Registry**: Oversight of entities moved to background monitoring.
+
+## 3. Operations & Ingestion Simulations [v3.0]
+
+### Quantexa Pulse-Sync (Scan Simulation)
+Managers can proactively synchronize with the Quantexa Platform via the **"Scan for latest tasks"** trigger. This simulates a modern data ingestion pipeline:
+- **Phase 1: Connecting (1.5s)**: Establishing secure handshake with Quantexa microservices.
+- **Phase 2: Retrieving (1.0s)**: Pulling the latest graph-triangulated tasks.
+- **Phase 3: Automated Triaging (1.0s)**: Distributing tasks to analyst specialization buckets.
+
+### Direct Row-Level Sign-off
+Managers can now perform "Sign-off and Escalate" actions directly from the **Pending Approvals** listing.
+- **Simulation**: Triggers the same **Kafka Sync Simulation** as the Case Analysis panel.
+- **Benefit**: Enables high-velocity processing of the investigation backlog without entering individual case work-folders.
 
 ## Layout & Design Specifications
 - **Palette**: Clean Light Enterprise (`bg-gray-50`) with high-contrast type.

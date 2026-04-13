@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Inbox, Filter, ShieldAlert, ArrowRight, UserPlus, FileSearch, AlertTriangle, CheckCircle, Clock, Trash2, X, Link as LinkIcon, ChevronRight } from 'lucide-react';
+import { Inbox, Filter, ShieldAlert, ArrowRight, UserPlus, FileSearch, AlertTriangle, CheckCircle, Clock, Trash2, X, Link as LinkIcon, ChevronRight, RefreshCw, Database, Network } from 'lucide-react';
 import BulkActionToolbar from '../components/BulkActionToolbar';
 
 const TriageQueue: React.FC = () => {
-    const { cases, allCases, stats, setView, setSelectedCase, bulkUpdateCases, linkEntitiesToCase } = useApp();
+    const { cases, allCases, stats, setView, setSelectedCase, bulkUpdateCases, linkEntitiesToCase, assessEntity, approveCase } = useApp();
     const { user } = useAuth();
     
     const isInvestigator = user?.role === 'INVESTIGATOR';
@@ -29,13 +29,109 @@ const TriageQueue: React.FC = () => {
     const triageEntities = filterBySpecialization(cases.filter(c => c.status === 'TRIAGE'));
     const priorityCases = filterBySpecialization(allCases.filter(c => c.status === 'PRIORITY'));
     const hibernatedEntities = filterBySpecialization(allCases.filter(c => c.status === 'HIBERNATED'));
+    const pendingApprovals = filterBySpecialization(allCases.filter(c => c.status === 'PENDING_APPROVAL'));
     const hibernationCount = hibernatedEntities.length;
 
     // View States
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isLinking, setIsLinking] = useState(false);
     const [targetCaseId, setTargetCaseId] = useState('');
-    const [managerView, setManagerView] = useState<'SUMMARY' | 'TRIAGE' | 'PRIORITY' | 'HIBERNATED'>('SUMMARY');
+    const [managerView, setManagerView] = useState<'SUMMARY' | 'TRIAGE' | 'PRIORITY' | 'HIBERNATED' | 'APPROVALS'>('SUMMARY');
+
+    // Scanning Simulation State
+    const [isScanning, setIsScanning] = useState(false);
+    const [scanStep, setScanStep] = useState(0); // 0: Connect, 1: Retrieve, 2: Triage
+    const [scanProgress, setScanProgress] = useState(0);
+
+    const handleStartScan = () => {
+        setIsScanning(true);
+        setScanStep(0);
+        setScanProgress(0);
+
+        // Phase 1: Connecting (1.5s)
+        const phase1Duration = 1500;
+        const interval = 30; // ms
+        let timer = 0;
+
+        const progressInterval = setInterval(() => {
+            timer += interval;
+            setScanProgress(Math.min((timer / phase1Duration) * 100, 100));
+
+            if (timer >= phase1Duration) {
+                clearInterval(progressInterval);
+                setTimeout(() => {
+                    // Phase 2: Retrieving (1s)
+                    setScanStep(1);
+                    setScanProgress(0);
+                    let timer2 = 0;
+                    const phase2Duration = 1000;
+                    const progressInterval2 = setInterval(() => {
+                        timer2 += interval;
+                        setScanProgress(Math.min((timer2 / phase2Duration) * 100, 100));
+                        if (timer2 >= phase2Duration) {
+                            clearInterval(progressInterval2);
+                            setTimeout(() => {
+                                // Phase 3: Triaging (1s)
+                                setScanStep(2);
+                                setScanProgress(0);
+                                let timer3 = 0;
+                                const phase3Duration = 1000;
+                                const progressInterval3 = setInterval(() => {
+                                    timer3 += interval;
+                                    setScanProgress(Math.min((timer3 / phase3Duration) * 100, 100));
+                                    if (timer3 >= phase3Duration) {
+                                        clearInterval(progressInterval3);
+                                        setTimeout(() => {
+                                            setIsScanning(false);
+                                            setScanStep(0);
+                                            setScanProgress(0);
+                                        }, 500);
+                                    }
+                                }, interval);
+                            }, 200);
+                        }
+                    }, interval);
+                }, 200);
+            }
+        }, interval);
+    };
+    
+    // Kafka Sync Simulation Logic
+    const [isSyncingKafka, setIsSyncingKafka] = useState(false);
+    const [kafkaSyncProgress, setKafkaSyncProgress] = useState(0);
+    const [isSyncComplete, setIsSyncComplete] = useState(false);
+
+    const handleSignOffAndEscalate = (entityId: string, action: 'ESCALATE' | 'HIBERNATE' | 'DISMISS' | 'APPROVE') => {
+        setIsSyncingKafka(true);
+        setKafkaSyncProgress(0);
+        setIsSyncComplete(false);
+
+        const duration = 1000; // 1s
+        const interval = 20;
+        let timer = 0;
+
+        const progressInterval = setInterval(() => {
+            timer += interval;
+            setKafkaSyncProgress(Math.min((timer / duration) * 100, 100));
+
+            if (timer >= duration) {
+                clearInterval(progressInterval);
+                setIsSyncComplete(true);
+                
+                // Finalize status immediately in the background
+                if (action === 'APPROVE') {
+                    approveCase(entityId);
+                } else {
+                    assessEntity(entityId, action as any);
+                }
+            }
+        }, interval);
+    };
+
+    const handleCloseSyncModal = () => {
+        setIsSyncingKafka(false);
+        setIsSyncComplete(false);
+    };
 
     const toggleSelectAll = () => {
         if (selectedIds.length === triageEntities.length) {
@@ -100,49 +196,69 @@ const TriageQueue: React.FC = () => {
                         </p>
                     </div>
                 </div>
+
+                {!isInvestigator && managerView === 'SUMMARY' && (
+                    <button 
+                        onClick={handleStartScan}
+                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-blue-500/20 flex items-center gap-3 transition-all hover:-translate-y-0.5"
+                    >
+                        <RefreshCw className="w-5 h-5 animate-spin-slow" />
+                        Scan for latest tasks
+                    </button>
+                )}
             </div>
 
             {/* Manager Dashboard (Summary Tiles) */}
             {!isInvestigator && managerView === 'SUMMARY' && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {/* Triage Bucket */}
-                    <div onClick={() => setManagerView('TRIAGE')} className="bg-white p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all cursor-pointer group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+                    <div onClick={() => setManagerView('TRIAGE')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all cursor-pointer group relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
                         <div className="relative z-10">
-                            <div className="p-4 bg-blue-50 text-blue-600 rounded-2xl w-fit mb-6"><Inbox className="w-6 h-6" /></div>
-                            <div className="text-4xl font-black text-gray-900">{triageEntities.length}</div>
-                            <div className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">Pending Analyst Triage</div>
-                            <p className="text-xs text-gray-400 mt-4 font-medium italic">Standard ingestion items awaiting analyst assessment.</p>
-                            <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between text-blue-600 text-xs font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
-                                Expand Details <ChevronRight className="w-4 h-4" />
+                            <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl w-fit mb-4"><Inbox className="w-5 h-5" /></div>
+                            <div className="text-3xl font-black text-gray-900">{triageEntities.length}</div>
+                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Pending Triage</div>
+                            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                                Expand Details <ChevronRight className="w-3 h-3" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Pending Approvals Bucket */}
+                    <div onClick={() => setManagerView('APPROVALS')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-emerald-200 transition-all cursor-pointer group relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
+                        <div className="relative z-10">
+                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl w-fit mb-4"><CheckCircle className="w-5 h-5" /></div>
+                            <div className="text-3xl font-black text-gray-900">{pendingApprovals.length}</div>
+                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Awaiting Sign-off</div>
+                            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-emerald-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                                Review Approvals <ChevronRight className="w-3 h-3" />
                             </div>
                         </div>
                     </div>
 
                     {/* Priority Bucket */}
-                    <div onClick={() => setManagerView('PRIORITY')} className="bg-white p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-red-200 transition-all cursor-pointer group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+                    <div onClick={() => setManagerView('PRIORITY')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-red-200 transition-all cursor-pointer group relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
                         <div className="relative z-10">
-                            <div className="p-4 bg-red-50 text-red-600 rounded-2xl w-fit mb-6"><ShieldAlert className="w-6 h-6" /></div>
-                            <div className="text-4xl font-black text-gray-900">{priorityCases.length}</div>
-                            <div className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">Priority Bypass Hits</div>
-                            <p className="text-xs text-gray-400 mt-4 font-medium italic">Critical alerts that bypassed standard triage protocols.</p>
-                            <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between text-red-600 text-xs font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
-                                Review Bypasses <ChevronRight className="w-4 h-4" />
+                            <div className="p-3 bg-red-50 text-red-600 rounded-2xl w-fit mb-4"><ShieldAlert className="w-5 h-5" /></div>
+                            <div className="text-3xl font-black text-gray-900">{priorityCases.length}</div>
+                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Priority Bypasses</div>
+                            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-red-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                                Access List <ChevronRight className="w-3 h-3" />
                             </div>
                         </div>
                     </div>
 
                     {/* Hibernation Bucket */}
-                    <div onClick={() => setManagerView('HIBERNATED')} className="bg-white p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-green-200 transition-all cursor-pointer group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+                    <div onClick={() => setManagerView('HIBERNATED')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-green-200 transition-all cursor-pointer group relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
                         <div className="relative z-10">
-                            <div className="p-4 bg-green-50 text-green-600 rounded-2xl w-fit mb-6"><Clock className="w-6 h-6" /></div>
-                            <div className="text-4xl font-black text-gray-900">{hibernationCount}</div>
-                            <div className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">Auto-Hibernated Entities</div>
-                            <p className="text-xs text-gray-400 mt-4 font-medium italic">Low-risk entities moved to baseline monitoring.</p>
-                            <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between text-green-600 text-xs font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
-                                Access List <ChevronRight className="w-4 h-4" />
+                            <div className="p-3 bg-green-50 text-green-600 rounded-2xl w-fit mb-4"><Clock className="w-5 h-5" /></div>
+                            <div className="text-3xl font-black text-gray-900">{hibernationCount}</div>
+                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Hibernated</div>
+                            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-green-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                                Access List <ChevronRight className="w-3 h-3" />
                             </div>
                         </div>
                     </div>
@@ -172,7 +288,8 @@ const TriageQueue: React.FC = () => {
                                                     </th>
                                                     <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Task ID & Target Entities</th>
                                                     <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Risk Score</th>
-                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Access</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Operational Decisions</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Review Details</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-100 italic font-medium">
@@ -200,6 +317,19 @@ const TriageQueue: React.FC = () => {
                                                                     </div>
                                                                     <div className="flex items-center gap-2 mt-0.5">
                                                                         <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.id}</div>
+                                                                        
+                                                                        {c.reports && c.reports.length > 0 && (
+                                                                            <>
+                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                                                                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/5 border border-blue-500/10 rounded-lg shadow-sm">
+                                                                                    <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">{c.reports[0].type}: {c.reports[0].id}</span>
+                                                                                    {c.reports.length > 1 && (
+                                                                                        <span className="text-[8px] font-black text-blue-400">+{c.reports.length - 1} more</span>
+                                                                                    )}
+                                                                                </div>
+                                                                            </>
+                                                                        )}
+
                                                                         {Array.from(new Set(c.subjects.flatMap(s => s.crimeTypologies || []))).length > 0 ? (
                                                                             Array.from(new Set(c.subjects.flatMap(s => s.crimeTypologies || []))).map((typ, idx) => (
                                                                                 <React.Fragment key={idx}>
@@ -226,6 +356,31 @@ const TriageQueue: React.FC = () => {
                                                             <span className="font-black px-2.5 py-1 rounded shadow-sm text-xs border text-blue-600 bg-blue-50 border-blue-100">
                                                                 {Math.max(...c.subjects.map(s => s.riskProfile.totalScore))}
                                                             </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-center">
+                                                            <div className="flex items-center justify-center gap-2">
+                                                                <button 
+                                                                    onClick={(e) => { e.stopPropagation(); assessEntity(c.id, 'ESCALATE'); }}
+                                                                    title="Escalate to Case"
+                                                                    className="p-2 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
+                                                                >
+                                                                    <ShieldAlert className="w-4 h-4" />
+                                                                </button>
+                                                                <button 
+                                                                    onClick={(e) => { e.stopPropagation(); assessEntity(c.id, 'HIBERNATE'); }}
+                                                                    title="Hibernate Entity"
+                                                                    className="p-2 bg-amber-50 text-amber-600 border border-amber-100 rounded-lg hover:bg-amber-600 hover:text-white transition-all shadow-sm"
+                                                                >
+                                                                    <Clock className="w-4 h-4" />
+                                                                </button>
+                                                                <button 
+                                                                    onClick={(e) => { e.stopPropagation(); assessEntity(c.id, 'DISMISS'); }}
+                                                                    title="Dismiss Lead"
+                                                                    className="p-2 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                                                                >
+                                                                    <Trash2 className="w-4 h-4" />
+                                                                </button>
+                                                            </div>
                                                         </td>
                                                         <td className="px-6 py-4 text-right cursor-pointer" onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}>
                                                             <div className="p-1.5 inline-block bg-gray-50 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-all text-gray-400">
@@ -272,6 +427,11 @@ const TriageQueue: React.FC = () => {
                                                                     {pc.title}
                                                                 </div>
                                                                 <div className="flex flex-wrap items-center gap-1 mt-1.5">
+                                                                    {pc.reports && pc.reports.length > 0 && (
+                                                                        <span className="text-[8px] font-black text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-200 uppercase tracking-tighter">
+                                                                            Source: {pc.reports[0].id}
+                                                                        </span>
+                                                                    )}
                                                                     {pc.subjects.map(s => (
                                                                         <span key={s.id} className="text-[8px] font-black text-white bg-gradient-to-r from-red-500 to-orange-500 px-1.5 py-0.5 rounded shadow-sm shadow-red-500/20 uppercase border border-red-400/30">
                                                                             {s.name}
@@ -348,10 +508,14 @@ const TriageQueue: React.FC = () => {
                                                                     </div>
                                                                     <div className="flex items-center gap-2 mt-0.5">
                                                                         <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{hc.id}</div>
-                                                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                                        <div className="text-[9px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-100">
-                                                                            Low Risk / Hibernated
-                                                                        </div>
+                                                                        {hc.reports && hc.reports.length > 0 && (
+                                                                            <>
+                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                                                                <div className="text-[9px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-100">
+                                                                                    {hc.reports[0].type}: {hc.reports[0].id}
+                                                                                </div>
+                                                                            </>
+                                                                        )}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -406,6 +570,11 @@ const TriageQueue: React.FC = () => {
                                                                     {pc.title}
                                                                 </div>
                                                                 <div className="flex flex-wrap items-center gap-1 mt-1.5">
+                                                                    {pc.reports && pc.reports.length > 0 && (
+                                                                        <span className="text-[8px] font-black text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-200 uppercase tracking-tighter">
+                                                                            Source: {pc.reports[0].id}
+                                                                        </span>
+                                                                    )}
                                                                     {pc.subjects.map(s => (
                                                                         <span key={s.id} className="text-[8px] font-black text-white bg-gradient-to-r from-red-500 to-orange-500 px-1.5 py-0.5 rounded shadow-sm shadow-red-500/20 uppercase border border-red-400/30">
                                                                             {s.name}
@@ -487,6 +656,162 @@ const TriageQueue: React.FC = () => {
                             ))}
                         </div>
                         <button onClick={handleConfirmLink} disabled={!targetCaseId} className="w-full py-4 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 transition-all shadow-lg">Confirm Merge & Link</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Pending Approvals Detail View */}
+            {!isInvestigator && managerView === 'APPROVALS' && (
+                <div className="space-y-4">
+                    <h3 className="text-lg font-black text-gray-900 flex items-center gap-3 mb-2"><CheckCircle className="w-6 h-6 text-emerald-600" /> Pending Managerial Review</h3>
+                    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-gray-50 border-b border-gray-200">
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Case ID</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Investigation Title</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Analyst Rationale</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Score</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Sign-off Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 italic font-medium">
+                                {pendingApprovals.map(pc => (
+                                    <tr key={pc.id} className="hover:bg-emerald-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-emerald-600">
+                                        <td className="px-6 py-4" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
+                                            <span className="text-sm font-black text-gray-900 tracking-tight">{pc.id}</span>
+                                        </td>
+                                        <td className="px-6 py-4" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
+                                            <div>
+                                                <div className="text-sm font-black text-gray-900 group-hover:text-emerald-600 transition-colors uppercase">
+                                                    {pc.title}
+                                                </div>
+                                                <div className="flex items-center gap-2 mt-1.5 font-black text-[9px] text-gray-400 uppercase tracking-widest">
+                                                    Owner: <span className="text-gray-600">{pc.analyst || 'Unassigned'}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
+                                            <div className="text-[10px] font-bold text-gray-500 max-w-md line-clamp-2 italic">Awaiting final verification of evidence registry and STR bonding.</div>
+                                        </td>
+                                        <td className="px-6 py-4 text-center" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
+                                            <span className="font-black px-2.5 py-1 rounded shadow-sm text-xs border text-emerald-600 bg-emerald-50 border-emerald-100">
+                                                {pc.subjects.reduce((max, s) => Math.max(max, s.riskProfile.totalScore), 0)}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <button 
+                                                onClick={(e) => { e.stopPropagation(); handleSignOffAndEscalate(pc.id, 'APPROVE'); }}
+                                                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-black text-[9px] uppercase tracking-widest shadow-lg shadow-emerald-500/10 flex items-center gap-2 ml-auto transition-all hover:-translate-y-0.5"
+                                            >
+                                                <CheckCircle className="w-3.5 h-3.5" />
+                                                Sign-off & Escalate
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {pendingApprovals.length === 0 && (
+                            <div className="p-12 text-center text-gray-400 font-bold italic w-full">
+                                No cases awaiting sign-off.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Scanning Simulation Modal */}
+            {isScanning && (
+                <div className="fixed inset-0 z-[200] bg-gray-900/90 backdrop-blur-md flex items-center justify-center p-6">
+                    <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-10 relative overflow-hidden">
+                        {/* Animated Grid Background */}
+                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+                        
+                        <div className="relative z-10 text-center">
+                            <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-8 relative">
+                                {scanStep === 0 && <Network className="w-10 h-10 text-blue-600 animate-pulse" />}
+                                {scanStep === 1 && <Database className="w-10 h-10 text-blue-600 animate-bounce" />}
+                                {scanStep === 2 && <RefreshCw className="w-10 h-10 text-blue-600 animate-spin" />}
+                                
+                                <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-4 border-white">
+                                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></div>
+                                </div>
+                            </div>
+
+                            <h3 className="text-xl font-black text-gray-900 mb-2 tracking-tight">
+                                {scanStep === 0 && "Connecting to Quantexa Platform"}
+                                {scanStep === 1 && "Retrieving Tasks"}
+                                {scanStep === 2 && "Automated Triaging"}
+                            </h3>
+                            <p className="text-sm font-medium text-gray-400 mb-10">Please wait while we synchronize ingestion pipelines...</p>
+
+                            <div className="space-y-4">
+                                <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden p-0.5 border border-gray-100">
+                                    <div 
+                                        className="h-full bg-blue-600 rounded-full transition-all duration-75 ease-linear shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+                                        style={{ width: `${scanProgress}%` }}
+                                    ></div>
+                                </div>
+                                <div className="flex justify-between items-center px-1">
+                                    <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">System Sync in Progress</span>
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{Math.round(scanProgress)}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Kafka Sync Simulation Modal */}
+            {isSyncingKafka && (
+                <div className="fixed inset-0 z-[300] bg-gray-900/90 backdrop-blur-md flex items-center justify-center p-6">
+                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 relative overflow-hidden border border-gray-100">
+                        {/* Animated Mesh Gradient Background (Subtle) */}
+                        <div className="absolute inset-0 opacity-[0.05] pointer-events-none">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-red-500 rounded-full blur-3xl -mr-32 -mt-32 animate-pulse"></div>
+                        </div>
+
+                        <div className="relative z-10 text-center">
+                            <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-10 transition-all duration-500 ${isSyncComplete ? 'bg-red-50 scale-110' : 'bg-blue-50'}`}>
+                                {!isSyncComplete ? (
+                                    <Network className="w-12 h-12 text-blue-600 animate-pulse" />
+                                ) : (
+                                    <CheckCircle className="w-14 h-14 text-red-600" />
+                                )}
+                            </div>
+
+                            <h3 className="text-xl font-black text-gray-900 mb-2 tracking-tight">
+                                {!isSyncComplete ? "Sending Kafka Topic to Quantexa Platform" : "Case Doc updated Successfully"}
+                            </h3>
+                            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-10">
+                                {!isSyncComplete ? "Broadcasting Decision decision.event.triage" : "Ingestion status: COMPLETE (RED-TICK)"}
+                            </p>
+
+                            <div className="space-y-4">
+                                <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                                    <div 
+                                        className={`h-full transition-all duration-75 ease-linear ${isSyncComplete ? 'bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.5)]' : 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)]'}`}
+                                        style={{ width: `${kafkaSyncProgress}%` }}
+                                    ></div>
+                                </div>
+                                <div className="flex justify-between items-center px-1">
+                                    <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${isSyncComplete ? 'text-red-600' : 'text-blue-600'}`}>
+                                        {isSyncComplete ? 'BROADCAST COMPLETE' : 'KAFKA TRANSMISSION'}
+                                    </span>
+                                    <span className="text-[9px] font-black text-gray-400">{Math.round(kafkaSyncProgress)}%</span>
+                                </div>
+                            </div>
+
+                            {isSyncComplete && (
+                                <button 
+                                    onClick={handleCloseSyncModal}
+                                    className="w-full mt-10 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-red-500/20 animate-in fade-in slide-in-from-bottom-2 duration-500"
+                                >
+                                    Return to Queue
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
