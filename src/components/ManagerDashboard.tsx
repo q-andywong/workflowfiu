@@ -147,14 +147,14 @@ const ManagerDashboard: React.FC = () => {
             <CheckSquare className="w-6 h-6" />
           </div>
           <div>
-            <h4 className="font-black text-sm text-amber-900 uppercase tracking-widest cursor-pointer hover:text-amber-900 transition-colors" onClick={() => setView('APPROVALS')}>
+            <h4 className="font-black text-sm text-amber-900 uppercase tracking-widest cursor-pointer hover:text-amber-900 transition-colors" onClick={() => setView('TRIAGE', 'APPROVALS')}>
               {cases.filter(c => c.status === 'PENDING_APPROVAL').length} Escalations Pending Sign-off
             </h4>
             <p className="text-sm text-amber-700 mt-1 font-medium">Analysts are awaiting formal authorization to convert escalated Tasks into active Investigation Cases.</p>
           </div>
         </div>
         <button 
-          onClick={() => setView('APPROVALS')}
+          onClick={() => setView('TRIAGE', 'APPROVALS')}
           className="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-amber-100 transition-all focus:ring-4 focus:ring-amber-100 w-full sm:w-auto uppercase tracking-wider"
         >
           Review Pipeline

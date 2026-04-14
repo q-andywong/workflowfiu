@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Inbox, Filter, ShieldAlert, ArrowRight, UserPlus, FileSearch, AlertTriangle, CheckCircle, Clock, Trash2, X, Link as LinkIcon, ChevronRight, RefreshCw, Database, Network } from 'lucide-react';
+import { Inbox, Filter, ShieldAlert, ArrowRight, UserPlus, FileSearch, AlertTriangle, CheckCircle, Clock, Trash2, X, Link as LinkIcon, ChevronRight, RefreshCw, Database, Network, ShieldCheck, UserCheck, XCircle } from 'lucide-react';
 import BulkActionToolbar from '../components/BulkActionToolbar';
 
 const TriageQueue: React.FC = () => {
@@ -29,14 +29,29 @@ const TriageQueue: React.FC = () => {
     const triageEntities = filterBySpecialization(cases.filter(c => c.status === 'TRIAGE'));
     const priorityCases = filterBySpecialization(allCases.filter(c => c.status === 'PRIORITY'));
     const hibernatedEntities = filterBySpecialization(allCases.filter(c => c.status === 'HIBERNATED'));
-    const pendingApprovals = filterBySpecialization(allCases.filter(c => c.status === 'PENDING_APPROVAL'));
+    const pendingApprovals = filterBySpecialization(allCases.filter(c => 
+        c.status === 'PENDING_APPROVAL' || 
+        c.status === 'PENDING_DELETION' || 
+        c.pendingModification
+    ));
     const hibernationCount = hibernatedEntities.length;
 
     // View States
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isLinking, setIsLinking] = useState(false);
     const [targetCaseId, setTargetCaseId] = useState('');
-    const [managerView, setManagerView] = useState<'SUMMARY' | 'TRIAGE' | 'PRIORITY' | 'HIBERNATED' | 'APPROVALS'>('SUMMARY');
+    const { triageSubView: managerView, setTriageSubView: setManagerView, processModification, rejectCase } = useApp();
+    
+    // Approval specific tracking
+    const [rejectionNotes, setRejectionNotes] = useState<Record<string, string>>({});
+    const [activeRejectId, setActiveRejectId] = useState<string | null>(null);
+
+    const handleReject = (id: string) => {
+        const note = rejectionNotes[id];
+        if (!note || note.length < 5) return;
+        rejectCase(id, note);
+        setActiveRejectId(null);
+    };
 
     // Scanning Simulation State
     const [isScanning, setIsScanning] = useState(false);
@@ -664,62 +679,167 @@ const TriageQueue: React.FC = () => {
             {!isInvestigator && managerView === 'APPROVALS' && (
                 <div className="space-y-4">
                     <h3 className="text-lg font-black text-gray-900 flex items-center gap-3 mb-2"><CheckCircle className="w-6 h-6 text-emerald-600" /> Pending Managerial Review</h3>
-                    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-gray-50 border-b border-gray-200">
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Case ID</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Investigation Title</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Analyst Rationale</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Score</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Sign-off Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100 italic font-medium">
-                                {pendingApprovals.map(pc => (
-                                    <tr key={pc.id} className="hover:bg-emerald-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-emerald-600">
-                                        <td className="px-6 py-4" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
-                                            <span className="text-sm font-black text-gray-900 tracking-tight">{pc.id}</span>
-                                        </td>
-                                        <td className="px-6 py-4" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
-                                            <div>
-                                                <div className="text-sm font-black text-gray-900 group-hover:text-emerald-600 transition-colors uppercase">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="p-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Awaiting Submissions</h3>
+                            <div className="px-3 py-1 bg-amber-50 text-amber-700 text-[10px] font-black rounded-lg border border-amber-200 uppercase tracking-[0.2em]">
+                                {pendingApprovals.length} PENDING
+                            </div>
+                        </div>
+
+                        <div className="divide-y divide-gray-100 italic font-medium">
+                            {pendingApprovals.map(pc => {
+                                const isLinkClose = pc.pendingModification?.details?.targetCase;
+                                const isDeletion = pc.status === 'PENDING_DELETION';
+
+                                return (
+                                    <div key={pc.id} className="p-6 transition-colors hover:bg-emerald-50/10 flex flex-col gap-4 border-l-4 border-l-transparent hover:border-l-emerald-600">
+                                        <div className="flex justify-between items-start">
+                                            <div className="cursor-pointer" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
+                                                <h4 className="text-lg font-black text-gray-900 flex items-center gap-2 group transition-colors hover:text-emerald-600">
                                                     {pc.title}
-                                                </div>
-                                                <div className="flex items-center gap-2 mt-1.5 font-black text-[9px] text-gray-400 uppercase tracking-widest">
-                                                    Owner: <span className="text-gray-600">{pc.analyst || 'Unassigned'}</span>
+                                                    {isDeletion && (
+                                                        <span className="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded border border-red-200 shrink-0 uppercase font-black tracking-widest">Deletion Request</span>
+                                                    )}
+                                                    {isLinkClose ? (
+                                                        <span className="text-[10px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-200 shrink-0 uppercase font-black tracking-widest">Handshake Merge</span>
+                                                    ) : (pc.pendingModification && !isDeletion && (
+                                                        <span className={`text-[10px] px-2 py-0.5 rounded border shrink-0 uppercase font-black tracking-widest ${pc.pendingModification.details.newValue === 'DISSEMINATED' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-blue-50 text-blue-600 border-blue-200'}`}>
+                                                            {pc.pendingModification.details.newValue === 'DISSEMINATED' ? 'Dissemination Referral' : 'Closure Approval'}
+                                                        </span>
+                                                    ))}
+                                                </h4>
+                                                <div className="flex flex-wrap gap-4 mt-2">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Target Entity</span>
+                                                        <span className="text-sm font-bold text-gray-700">
+                                                            {(pc.subjects || [])[0]?.name || 'Unknown Entity'}
+                                                            {(pc.subjects || []).length > 1 && ` (+${(pc.subjects || []).length - 1} more)`}
+                                                        </span>
+                                                    </div>
+
+                                                    {isLinkClose ? (
+                                                        <>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[8px] font-black text-amber-500 uppercase tracking-[0.2em]">Requestor</span>
+                                                                <span className="text-sm font-black text-gray-900">{pc.pendingModification?.requestedBy}</span>
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Original Owner</span>
+                                                                <span className="text-sm font-bold text-gray-700">{pc.pendingModification?.details?.originalOwner}</span>
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Submitting Analyst</span>
+                                                            <span className="text-sm font-bold text-gray-700">{pc.analyst || 'Unassigned'}</span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td className="px-6 py-4" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
-                                            <div className="text-[10px] font-bold text-gray-500 max-w-md line-clamp-2 italic">Awaiting final verification of evidence registry and STR bonding.</div>
-                                        </td>
-                                        <td className="px-6 py-4 text-center" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
-                                            <span className="font-black px-2.5 py-1 rounded shadow-sm text-xs border text-emerald-600 bg-emerald-50 border-emerald-100">
-                                                {pc.subjects.reduce((max, s) => Math.max(max, s.riskProfile.totalScore), 0)}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
+                                            <div className="text-right">
+                                                <h4 className="text-3xl font-black text-red-600 tracking-tighter">
+                                                    {(pc.subjects || []).length > 0 
+                                                        ? Math.max(...(pc.subjects || []).map(s => s?.riskProfile?.totalScore || 0)) 
+                                                        : 0}
+                                                </h4>
+                                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Risk Score</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className={`p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 ${isLinkClose ? 'bg-amber-50 border border-amber-100 shadow-sm' : 'bg-gray-50'}`}>
+                                            <div className="text-xs text-gray-500 font-bold flex items-center gap-3">
+                                                {isLinkClose ? (
+                                                    <>
+                                                        <LinkIcon className="w-5 h-5 text-amber-500 shrink-0" />
+                                                        <span>
+                                                            <strong>{pc.pendingModification?.requestedBy}</strong> is requesting to merge this lead into master investigation 
+                                                            <code className="mx-1 px-1.5 py-0.5 bg-white border border-amber-200 rounded text-amber-700 font-black">{pc.pendingModification?.details?.targetCase}</code>.
+                                                        </span>
+                                                    </>
+                                                ) : pc.pendingModification?.details?.newValue === 'DISSEMINATED' ? (
+                                                    <>
+                                                        <ArrowRight className="w-5 h-5 text-emerald-500 shrink-0" />
+                                                        <span>
+                                                            <strong>{pc.pendingModification?.requestedBy}</strong> is requesting to disseminate findings to <strong>{pc.pendingModification?.details?.agency}</strong>. Please review the operational rationale.
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    "Please verify the Analyst's mitigation overrides and evidence rationale before signing off on the Case creation pipeline."
+                                                )}
+                                            </div>
                                             <button 
-                                                onClick={(e) => { e.stopPropagation(); handleSignOffAndEscalate(pc.id, 'APPROVE'); }}
-                                                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-black text-[9px] uppercase tracking-widest shadow-lg shadow-emerald-500/10 flex items-center gap-2 ml-auto transition-all hover:-translate-y-0.5"
+                                                onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}
+                                                className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-blue-600 hover:text-blue-800 shadow-sm transition-all flex items-center gap-2 shrink-0 uppercase tracking-widest"
                                             >
-                                                <CheckCircle className="w-3.5 h-3.5" />
-                                                Sign-off & Escalate
+                                                Review Assessment <ArrowRight className="w-4 h-4" />
                                             </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        {pendingApprovals.length === 0 && (
-                            <div className="p-12 text-center text-gray-400 font-bold italic w-full">
-                                No cases awaiting sign-off.
-                            </div>
-                        )}
+                                        </div>
+
+                                        <div className="flex justify-end gap-3 mt-4 border-t border-gray-100 pt-4">
+                                            {activeRejectId === pc.id ? (
+                                                <div className="flex flex-1 items-center gap-3 animate-in slide-in-from-left-2 duration-300">
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="Enter rejection reason to push back to triage..." 
+                                                        className="flex-1 px-4 py-3 text-xs font-bold border border-gray-200 rounded-xl shadow-inner focus:ring-4 focus:ring-red-50 focus:border-red-200 outline-none"
+                                                        value={rejectionNotes[pc.id] || ''}
+                                                        onChange={(e) => setRejectionNotes({ ...rejectionNotes, [pc.id]: e.target.value })}
+                                                    />
+                                                    <button onClick={() => setActiveRejectId(null)} className="px-4 py-2 text-[10px] uppercase tracking-widest font-black text-gray-400 hover:text-gray-600">Cancel</button>
+                                                    <button 
+                                                        onClick={() => handleReject(pc.id)}
+                                                        className="px-6 py-3 bg-red-600 text-white text-[10px] uppercase tracking-widest font-black rounded-xl shadow-lg shadow-red-100 hover:bg-red-700 transition-all"
+                                                    >
+                                                        Confirm Reject
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <button 
+                                                        onClick={() => {
+                                                            if (pc.pendingModification || pc.status === 'PENDING_DELETION') {
+                                                                processModification(pc.id, false);
+                                                            } else {
+                                                                setActiveRejectId(pc.id);
+                                                            }
+                                                        }} 
+                                                        className="px-6 py-3 bg-white border border-red-100 text-red-600 hover:bg-red-50 text-[10px] uppercase tracking-[0.2em] font-black rounded-xl shadow-sm transition-all flex items-center gap-2"
+                                                    >
+                                                        <XCircle className="w-4 h-4" /> REJECT
+                                                    </button>
+                                                    <button 
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (pc.pendingModification || pc.status === 'PENDING_DELETION') {
+                                                                processModification(pc.id, true);
+                                                            } else {
+                                                                handleSignOffAndEscalate(pc.id, 'APPROVE');
+                                                            }
+                                                        }} 
+                                                        className={`${(pc.pendingModification || pc.status === 'PENDING_DELETION') ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-100' : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-100'} px-6 py-3 text-white text-[10px] uppercase tracking-[0.2em] font-black rounded-xl shadow-lg transition-all flex items-center gap-2 hover:-translate-y-0.5`}
+                                                    >
+                                                        <UserCheck className="w-4 h-4" /> 
+                                                        {isDeletion ? 'CONFIRM DELETION' : isLinkClose ? 'AUTHORIZE MERGE' : pc.pendingModification?.details?.newValue === 'DISSEMINATED' ? 'AUTHORIZE DISSEMINATION' : pc.pendingModification ? 'APPROVE CLOSURE' : 'SIGN-OFF & ESCALATE'}
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+
+                            {pendingApprovals.length === 0 && (
+                                <div className="p-20 text-center opacity-50 italic">
+                                    <ShieldCheck className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                                    <h4 className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Escalations Pending Review</h4>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
+
 
             {/* Scanning Simulation Modal */}
             {isScanning && (

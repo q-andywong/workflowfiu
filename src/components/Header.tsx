@@ -43,18 +43,7 @@ const Header: React.FC = () => {
           >
             Dashboard
           </button>
-          {user?.role !== 'INVESTIGATOR' && (
-            <button
-              onClick={() => setView('APPROVALS')}
-              className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${
-                view === 'APPROVALS'
-                  ? 'border-b-2 border-amber-400 text-gray-900'
-                  : 'text-gray-500 hover:text-gray-900'
-              }`}
-            >
-              Approvals Queue
-            </button>
-          )}
+
           <button
             onClick={() => setView('TRIAGE')}
             className={`px-4 py-2 text-sm font-semibold transition-colors focus:outline-none whitespace-nowrap ${

@@ -32,7 +32,9 @@ interface AppContextType {
   createCase: (subjects: PersonProfile[], description: string, title?: string, reportIds?: string[]) => IntelligenceCase;
   view: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY';
   previousView: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY';
-  setView: (v: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY') => void;
+  triageSubView: 'SUMMARY' | 'TRIAGE' | 'PRIORITY' | 'HIBERNATED' | 'APPROVALS';
+  setView: (v: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY', subView?: 'SUMMARY' | 'TRIAGE' | 'PRIORITY' | 'HIBERNATED' | 'APPROVALS') => void;
+  setTriageSubView: (v: 'SUMMARY' | 'TRIAGE' | 'PRIORITY' | 'HIBERNATED' | 'APPROVALS') => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -66,6 +68,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [selectedCase, setSelectedCase] = useState<IntelligenceCase | null>(null);
   const [view, _setView] = useState<AppContextType['view']>('DASHBOARD');
   const [previousView, setPreviousView] = useState<AppContextType['view']>('DASHBOARD');
+  const [triageSubView, setTriageSubView] = useState<AppContextType['triageSubView']>('SUMMARY');
 
   // Reset view to dashboard on login
   useEffect(() => {
@@ -84,9 +87,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [cases]);
 
-  const setView = (v: AppContextType['view']) => {
+  const setView = (v: AppContextType['view'], subView?: AppContextType['triageSubView']) => {
     if (v !== 'ANALYSIS') {
       setPreviousView(v);
+    }
+    if (subView) {
+      setTriageSubView(subView);
     }
     _setView(v);
   };
@@ -429,7 +435,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   return (
     <AppContext.Provider value={{ 
-      cases: activeCases, allCases: cases, stats, selectedCase, setSelectedCase, updateCaseStatus, reassignCase, saveMitigation, saveFindings, addFeedback, assessEntity, approveCase, rejectCase, createCase, bulkUpdateCases, bulkLinkReports, linkEntitiesToCase, addManualEntity, uploadAttachment, removeAttachment, saveChart, removeChart, requestModification, processModification, view, previousView, setView
+      cases: activeCases, allCases: cases, stats, selectedCase, setSelectedCase, updateCaseStatus, reassignCase, saveMitigation, saveFindings, addFeedback, assessEntity, approveCase, rejectCase, createCase, bulkUpdateCases, bulkLinkReports, linkEntitiesToCase, addManualEntity, uploadAttachment, removeAttachment, saveChart, removeChart, requestModification, processModification, view, previousView, setView, triageSubView, setTriageSubView
     }}>
       {children}
     </AppContext.Provider>

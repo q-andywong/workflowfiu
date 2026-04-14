@@ -9,7 +9,6 @@ import HibernatedList from './pages/HibernatedList';
 import STRDirectory from './pages/STRDirectory';
 import CaseAnalysis from './pages/CaseAnalysis';
 import Dissemination from './pages/Dissemination';
-import ApprovalsQueue from './pages/ApprovalsQueue';
 import CaseDirectory from './pages/CaseDirectory';
 import Login from './pages/Login';
 import './styles/index.css';
@@ -25,7 +24,6 @@ const AppContent: React.FC = () => {
       case 'HIBERNATED': return <HibernatedList />;
       case 'PRIORITY': return <PriorityWorkbench />;
       case 'DISSEMINATION': return <Dissemination />;
-      case 'APPROVALS': return <ApprovalsQueue />;
       case 'DIRECTORY': return <CaseDirectory />;
       case 'STR_DIRECTORY': return <STRDirectory />;
       default: return <Dashboard />;
