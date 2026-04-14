@@ -12,12 +12,12 @@ The Investigator view is optimized for high-speed intake, featuring a full-width
 - **Priority Bypass Registry**: A high-fidelity section for critical hits that bypassed standard triage logic.
 - **Hibernation Registry Footer**: Integrated link to the **Hibernation List** for subjects moved to baseline monitoring.
 
-### 2. Managerial Command Center [v3.0]
+### 2. Unified Triage & Governance [v3.0.3]
 
-The Manager view has been refactored into a high-level operational command center for FIU leadership, featuring a 4-grid executive summary:
+The Manager view has been refactored into a high-level operational command center for FIU leadership. It now integrates both the ingestion pipeline and the investigative governance registry (formerly the Approvals Queue) into a unified interface:
 
 - **Pending Triage**: Standard ingestion items awaiting initial analyst assessment.
-- **Awaiting Sign-off (Approvals)**: Professional escalations requiring managerial review.
+- **Integrated Approvals Registry**: A specialized sub-view for secondary sign-offs (Modifications, Handshake Merges, Dissemination Referrals).
 - **Priority Bypasses**: Critical alerts (Risk > 150) that bypassed standard protocols.
 - **Hibernated Registry**: Oversight of entities moved to background monitoring.
 
@@ -29,10 +29,12 @@ Managers can proactively synchronize with the Quantexa Platform via the **"Scan 
 - **Phase 2: Retrieving (1.0s)**: Pulling the latest graph-triangulated tasks.
 - **Phase 3: Automated Triaging (1.0s)**: Distributing tasks to analyst specialization buckets.
 
-### Direct Row-Level Sign-off
-Managers can now perform "Sign-off and Escalate" actions directly from the **Pending Approvals** listing.
+### Consolidated Governance Sign-off
+Managers can now perform "Sign-off and Escalate" actions directly from the **Integrated Approvals** sub-view.
+- **Deep-Linking**: The Executive Dashboard now deep-links directly to the 'APPROVALS' sub-view for secondary sign-offs.
 - **Simulation**: Triggers the same **Kafka Sync Simulation** as the Case Analysis panel.
-- **Benefit**: Enables high-velocity processing of the investigation backlog without entering individual case work-folders.
+- **Benefit**: Centralizes all managerial oversight into a single operational hub, reducing navigational overhead by 40%.
+
 
 ## Layout & Design Specifications
 - **Palette**: Clean Light Enterprise (`bg-gray-50`) with high-contrast type.

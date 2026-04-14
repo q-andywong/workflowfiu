@@ -28,8 +28,8 @@ This comprehensive journey outlines how the **FIU STR Analysis Platform** bridge
 2.  **Workbench Engagement**: The Analyst opens a lead (e.g., `IGOR DIMITROV`). They enter the **Case Analysis Workbench**.
 3.  **Analytical Mitigation**:
     - The Analyst reviews the **Interactive Risk Scorecard**.
-    - They mitigation the *"High Transaction Velocity"* risk indicator by recording a formal action: *"RFI sent to bank for source of wealth validation"*.
-    - They click **Save Changes**. The **Kafka Sync Modal** triggers with the specific status: *"Syncing Analysis to Quantexa Platform"* follows by a **Red-Tick** success state.
+    - They mitigate the *"High Transaction Velocity"* risk indicator by recording a formal action: *"RFI sent to bank for source of wealth validation"*.
+    - They click **Save Changes**. The **Kafka Sync Modal** triggers with the specific status: *"Syncing Analysis to Quantexa Platform"* followed by a **Red-Tick** success state.
     - The Analyst clicks **"Continue Analysis"** and remains in the workbench to record their final narrative.
 4.  **Escalation Broadcast**:
     - Once the **Operational Narrative** is complete, the Analyst clicks **"Sign-off and Escalate"**.
@@ -68,6 +68,19 @@ This comprehensive journey outlines how the **FIU STR Analysis Platform** bridge
     - They click **"Confirm Finalization"**.
     - The final Kafka Sync modal plays: *"Broadcasting Final Disposal to Platform"* (topic: `update.event.disposal`).
 5.  **Archival Handshake**: The Investigator clicks **"Return to Queue"**. The case is transitioned out of the active directory and securely archived in the **Administrative Registry**.
+
+---
+
+## 🏛️ Unified Governance: Pulse-Sync Trigger Points
+
+For audit transparency, every critical state transition in the FIU lifecycle triggers a **Pulse-Sync** Kafka broadcast:
+
+- **Manual Case Inception**: Triggered upon clicking *"Confirm Case Creation"* in the manual wizard (`case.event.manual_inception`).
+- **Investigative Progress Save**: Triggered when clicking *"Save Changes"* in the analysis workspace (`update.event.narrative`).
+- **Managerial Final Sign-off**: Triggered when a Director authorizes a task from the triage or approvals registry (`decision.event.triage`).
+- **Dissemination Package Broadcast**: Triggered during the briefing packaging phase of the Dissemination Report Compiler (`report.event.disseminate`).
+- **Operational Disposal/Closure**: Triggered when confirming the final outcome of an investigation (`update.event.disposal`).
+- **Lead Assessment (Hibernate/Dismiss)**: Triggered when taking direct action on an individual lead in the Triage workbench (`decision.event.triage`).
 
 ---
 

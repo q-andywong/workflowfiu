@@ -1,5 +1,6 @@
-* **Industrialized Synchronization (Kafka Simulation):** [v3.0] High-fidelity 1s synchronization simulations across the entire lifecycle, providing visual confirmation for escalations, saves, and finalizations with "Red-Tick" accuracy.
-* **Managerial Command Center Dashboard:** [v3.0] An operational oversight hub with a 4-grid summary (Triage, Approvals, Bypasses, Hibernated) for real-time traffic monitoring.
+* **Managerial Command Center Dashboard:** [v3.0.3] A unified operational oversight hub integrating Triage, Governance (Approvals), Bypasses, and Hibernated registries for real-time traffic monitoring.
+* **Consolidated Governance Workflow:** [v3.0.3] Investigative sign-offs and modification requests have been successfully ported into the Triage Command Center, reducing navigational complexity.
+* **Industrialized Synchronization (Kafka Simulation):** [v3.0.3] High-fidelity 1s synchronization simulations integrated across all critical gates, including Manual Inceptions, Operational Saves, and Final Disposals.
 * **Quantexa Pulse-Sync Ingestion:** [v3.0] Multi-phase progress simulation for manual data ingestion scans (Establishing Link → Data Retrieval → Specialization Triage).
 * **Direct Side-car Signing:** [v3.0] Rapid managerial sign-off from listing views without entering the full workbench.
 * **Multi-Entity Intelligence Framework:** A robust data model standardizing investigations on N-to-N relationships between cases and subjects. Supports complex networks involving both **Individuals** and **Companies**.
@@ -15,6 +16,7 @@
 FIU STR analysis platform is an enterprise-grade, downstream intelligence analysis and case management platform. It acts as the operational endpoint for analysts digesting intelligence ingested upstream by FIU Q Platform. 
 
 ## Core Capabilities
+* **Integrated Governance Hub:** Consolidated all sign-off pipelines into the Triage Command Center. 
 * **Multi-Entity Intelligence Framework:** A robust data model standardizing investigations on N-to-N relationships between cases and subjects. Supports complex networks involving both **Individuals** and **Companies**.
 * **Industrialized Case Inception:** A professional 3-step wizard for initiating investigations. Features operational metadata definition, multi-entity intelligence discovery (seeding from master lists), and operational review.
 * **Investigator-Centric Triage:** A streamlined, full-width ingestion stack designed for high-speed evidence assessment. Features **Aggregated Max Risk** indicators and **Multi-Entity Indicators (+X)**.
@@ -40,14 +42,14 @@ For extensive modular documentation regarding features and layout designs, pleas
 3. [Priority Workbench](./docs/features/PriorityWorkbench.md) - [NEW]
 4. [Case Analysis & Navigation](./docs/features/CaseAnalysis.md) - [UPDATED]
 5. [Master Case Directory](./docs/features/CaseDirectory.md)
-6. [Approvals Queue](./docs/features/ApprovalsQueue.md) - [NEW]
-7. [Hibernated Registry](./docs/features/HibernatedList.md) - [NEW]
-8. [STR & CTR Master Directory](./docs/features/STRDirectory.md) - [NEW]
-9. [Manual Case Creation](./docs/features/ManualCaseCreation.md)
-10. [Data Architecture](./docs/features/DataArchitecture.md)
-11. [Login & RBAC Paths](./docs/features/Login.md)
-12. [Quantexa Integration](./docs/features/Quantexa.md)
-13. [Report Compiler & Modeling](./docs/features/ReportBuilder.md) [NEW]
+6. [Hibernated Registry](./docs/features/HibernatedList.md) - [NEW]
+7. [STR & CTR Master Directory](./docs/features/STRDirectory.md) - [NEW]
+8. [Manual Case Creation](./docs/features/ManualCaseCreation.md)
+9. [Data Architecture](./docs/features/DataArchitecture.md)
+10. [Login & RBAC Paths](./docs/features/Login.md)
+11. [Quantexa Integration](./docs/features/Quantexa.md)
+12. [Report Compiler & Modeling](./docs/features/ReportBuilder.md) [NEW]
+
 
 ## Deployment Run
 ```bash

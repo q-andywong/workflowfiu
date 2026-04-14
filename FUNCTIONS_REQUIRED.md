@@ -10,12 +10,12 @@ This document serves as the implementation roadmap for the FIU STR analysis plat
 
 ## Phase 2: Bulk Operations & Permissions
 - [x] **Bulk Link/Update** (S/N 8, 12): Implement multi-select functionality in Triage and Case Directory for batch status updates or bulk report linking.
-- [ ] **Case Re-assignment** (S/N 13): Allow Managers to re-assign cases to different analysts.
+- [x] **Case Re-assignment** (S/N 13): Allow Managers to re-assign cases to different analysts.
 - [x] **RBAC Enforcement** (S/N 14): Implement strict permissions so only assigned analysts or Managers can edit specific cases, including role-based UI branching.
 
 ## Phase 3: Advanced Analysis & Reporting
-- [ ] **User-Generated Charts** (S/N 15): Enable investigators to generate and embed bar charts or time-series data within their case analysis.
-- [ ] **Dissemination Report Builder** (S/N 16-17): Create a "Packaging" interface to compile synopses, long text, images, and network diagrams into a shareable report.
+- [x] **User-Generated Charts** (S/N 15): Enable investigators to generate and embed bar charts or time-series data within their case analysis.
+- [x] **Dissemination Report Builder** (S/N 16-17): Create a "Packaging" interface to compile synopses, long text, images, and network diagrams into a shareable report.
 
 ## Phase 4: External Connectivity
 - [ ] **eSONAR Integration Hook** (S/N 10): Implement a functional request button to communicate with filers of reports via the eSONAR external system portal.

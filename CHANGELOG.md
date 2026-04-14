@@ -2,8 +2,22 @@
 
 This document tracks major architectural deviations and deployments across the FIU STR analysis platform framework. Use this ledger as a reference if functional reversions are required.
 
-## [v3.0.0] - Industrialized Synchronization & Command Center
+## [v3.0.4] - Unified Governance & Documentation
+### Added
+*   **Comprehensive Story Documentation**: Created a detailed End-to-End User Story Flow documenting every operational gate, including the **Unified Governance Pulse-Sync** points.
+*   **Audit-Ready Roadmap**: Audited and checked off core functional requirements (Manual inception, Reporting, Reassignment) in the project framework.
 
+## [v3.0.3] - Managerial Approvals Consolidation
+### Added
+*   **Integrated Governance Registry**: Fully consolidated the "Approvals Queue" into a specialized sub-view within the **Triage Command Center**. Managers can now handle Triage, Priority Bypasses, and Intelligence Sign-offs from a single, context-aware dashboard.
+*   **Deep-Linked Sign-offs**: Redesigned the Executive Dashboard to deep-link directly into the 'APPROVALS' sub-view, enabling instantaneous access to pending escalations.
+*   **Advanced Approval UI**: Implemented high-fidelity, table-based viewing for modification requests, including Handshake merges and Dissemination referrals.
+
+### Changed
+*   **Navigational Modernization**: Removed the redundant top-level "Approvals Queue" navigation tab to simplify the managerial user journey.
+*   **Codebase Optimization**: Deleted `ApprovalsQueue.tsx` and removed associated application routes, reducing architectural complexity while preserving all governance features.
+
+## [v3.0.0] - Industrialized Synchronization & Command Center
 ### Added
 *   **Kafka Sync Simulation (Broadcasting)**: Implemented high-fidelity, 1s synchronization simulations across the entire lifecycle. Includes a backdrop-blurred progress modal and a "Red Tick" success confirmation for:
     - Analyst **Sign-off and Escalate** (Triage).
@@ -15,6 +29,7 @@ This document tracks major architectural deviations and deployments across the F
 *   **Managerial Command Center**: Overhauled the Triage Queue into an operational dashboard for Directors/Managers. Features a 4-grid executive summary (Pending Triage, Awaiting Sign-off, Priority Bypasses, Hibernated Registry).
 *   **Pending Approvals Workspace**: Dedicated listing for managers to perform direct, row-level sign-offs and escalations with integrated sync simulation.
 *   **Quantexa Pulse-Sync Ingestion**: Added a multi-phase "Scan for latest tasks" simulation (Connecting → Retrieving → Triaging) to provide visual feedback for background data ingestion.
+
 
 ### Changed
 *   **Intelligent Navigation Flow**:
