@@ -1,0 +1,303 @@
+[
+  {
+    "personId": "1001",
+    "individualName": [
+      "Ahmad Bin Sulaiman"
+    ],
+    "parsedIndividualName": [
+      {
+        "initials": "A",
+        "forename": "Ahmad",
+        "familyName": "Bin Sulaiman",
+        "maidenName": null
+      }
+    ],
+    "gender": "M",
+    "countryOfBirth": "SG",
+    "nationality": "SG",
+    "taxResidency": "SG",
+    "dateOfBirth": "1987-04-14",
+    "parsedDateOfBirth": {
+      "year": 1987,
+      "month": 4,
+      "day": 14
+    },
+    "identificationNumber": "S8712340A",
+    "identificationCountryOfRegistration": "SG",
+    "identificationNumberType": "NRIC",
+    "address": [
+      {
+        "addressId": "ADDR-1001-01",
+        "blockNumber": "411",
+        "streetName": "Hougang Avenue 10",
+        "buildingName": null,
+        "floorNumber": "08",
+        "unitNumber": "22",
+        "cityName": "Singapore",
+        "stateName": null,
+        "countryName": "Singapore",
+        "postalCode": "530411",
+        "country": "SG",
+        "parsedAddress": "411 Hougang Avenue 10 #08-22, Singapore 530411"
+      }
+    ]
+  },
+  {
+    "personId": "1002",
+    "individualName": [
+      "Natalia Petrova"
+    ],
+    "parsedIndividualName": [
+      {
+        "initials": "N",
+        "forename": "Natalia",
+        "familyName": "Petrova",
+        "maidenName": null
+      }
+    ],
+    "gender": "F",
+    "countryOfBirth": "RU",
+    "nationality": "RU",
+    "taxResidency": "IR",
+    "dateOfBirth": "1989-11-02",
+    "parsedDateOfBirth": {
+      "year": 1989,
+      "month": 11,
+      "day": 2
+    },
+    "identificationNumber": null,
+    "identificationCountryOfRegistration": null,
+    "identificationNumberType": null,
+    "address": [
+      {
+        "addressId": "ADDR-1002-01",
+        "blockNumber": null,
+        "streetName": "Pasdaran Avenue",
+        "buildingName": null,
+        "floorNumber": null,
+        "unitNumber": null,
+        "cityName": "Tehran",
+        "stateName": null,
+        "countryName": "Iran",
+        "postalCode": null,
+        "country": "IR",
+        "parsedAddress": "Pasdaran Avenue, Tehran, Iran"
+      }
+    ]
+  },
+  {
+    "personId": "1004",
+    "individualName": [
+      "Lee Wei Jian"
+    ],
+    "parsedIndividualName": [
+      {
+        "initials": "L",
+        "forename": "Wei Jian",
+        "familyName": "Lee",
+        "maidenName": null
+      }
+    ],
+    "gender": "M",
+    "countryOfBirth": "SG",
+    "nationality": "SG",
+    "taxResidency": "SG",
+    "dateOfBirth": "1978-06-15",
+    "parsedDateOfBirth": {
+      "year": 1978,
+      "month": 6,
+      "day": 15
+    },
+    "identificationNumber": "S7801234B",
+    "identificationCountryOfRegistration": "SG",
+    "identificationNumberType": "NRIC",
+    "address": [
+      {
+        "addressId": "ADDR-1004-01",
+        "blockNumber": "88",
+        "streetName": "Telok Blangah Road",
+        "buildingName": null,
+        "floorNumber": "22",
+        "unitNumber": "05",
+        "cityName": "Singapore",
+        "stateName": null,
+        "countryName": "Singapore",
+        "postalCode": "098867",
+        "country": "SG",
+        "parsedAddress": "88 Telok Blangah Road #22-05, Singapore 098867"
+      }
+    ]
+  },
+  {
+    "personId": "1006",
+    "individualName": [
+      "Rajan Krishnamurthy"
+    ],
+    "parsedIndividualName": [
+      {
+        "initials": "R",
+        "forename": "Rajan",
+        "familyName": "Krishnamurthy",
+        "maidenName": null
+      }
+    ],
+    "gender": "M",
+    "countryOfBirth": "IN",
+    "nationality": "IN",
+    "taxResidency": "SG",
+    "dateOfBirth": "1958-03-22",
+    "parsedDateOfBirth": {
+      "year": 1958,
+      "month": 3,
+      "day": 22
+    },
+    "identificationNumber": "Z4821957",
+    "identificationCountryOfRegistration": "IN",
+    "identificationNumberType": "PASSPORT",
+    "address": [
+      {
+        "addressId": "ADDR-1006-01",
+        "blockNumber": "2",
+        "streetName": "Tanjong Rhu Road",
+        "buildingName": null,
+        "floorNumber": "18",
+        "unitNumber": "03",
+        "cityName": "Singapore",
+        "stateName": null,
+        "countryName": "Singapore",
+        "postalCode": "436010",
+        "country": "SG",
+        "parsedAddress": "2 Tanjong Rhu Road #18-03, Singapore 436010"
+      }
+    ]
+  },
+  {
+    "personId": "1008",
+    "individualName": [
+      "Tan Mei Ling"
+    ],
+    "parsedIndividualName": [
+      {
+        "initials": "T",
+        "forename": "Mei Ling",
+        "familyName": "Tan",
+        "maidenName": null
+      }
+    ],
+    "gender": "F",
+    "countryOfBirth": "SG",
+    "nationality": "SG",
+    "taxResidency": "SG",
+    "dateOfBirth": "1995-08-30",
+    "parsedDateOfBirth": {
+      "year": 1995,
+      "month": 8,
+      "day": 30
+    },
+    "identificationNumber": "S9504872D",
+    "identificationCountryOfRegistration": "SG",
+    "identificationNumberType": "NRIC",
+    "address": [
+      {
+        "addressId": "ADDR-1008-01",
+        "blockNumber": "123",
+        "streetName": "Bedok North Street 2",
+        "buildingName": null,
+        "floorNumber": "04",
+        "unitNumber": "118",
+        "cityName": "Singapore",
+        "stateName": null,
+        "countryName": "Singapore",
+        "postalCode": "460123",
+        "country": "SG",
+        "parsedAddress": "123 Bedok North Street 2 #04-118, Singapore 460123"
+      }
+    ]
+  },
+  {
+    "personId": "1009",
+    "individualName": [
+      "Ong Bee Lian"
+    ],
+    "parsedIndividualName": [
+      {
+        "initials": "O",
+        "forename": "Bee Lian",
+        "familyName": "Ong",
+        "maidenName": null
+      }
+    ],
+    "gender": "F",
+    "countryOfBirth": "SG",
+    "nationality": "SG",
+    "taxResidency": "SG",
+    "dateOfBirth": "1975-08-22",
+    "parsedDateOfBirth": {
+      "year": 1975,
+      "month": 8,
+      "day": 22
+    },
+    "identificationNumber": "S7534210B",
+    "identificationCountryOfRegistration": "SG",
+    "identificationNumberType": "NRIC",
+    "address": [
+      {
+        "addressId": "ADDR-1009-01",
+        "blockNumber": "203",
+        "streetName": "Jurong East Street 21",
+        "buildingName": null,
+        "floorNumber": "04",
+        "unitNumber": "15",
+        "cityName": "Singapore",
+        "stateName": null,
+        "countryName": "Singapore",
+        "postalCode": "600203",
+        "country": "SG",
+        "parsedAddress": "203 Jurong East Street 21 #04-15, Singapore 600203"
+      }
+    ]
+  },
+  {
+    "personId": "1011",
+    "individualName": [
+      "Viktor Lazarev"
+    ],
+    "parsedIndividualName": [
+      {
+        "initials": "V",
+        "forename": "Viktor",
+        "familyName": "Lazarev",
+        "maidenName": null
+      }
+    ],
+    "gender": "M",
+    "countryOfBirth": "RU",
+    "nationality": "RU",
+    "taxResidency": "RU",
+    "dateOfBirth": "1968-06-19",
+    "parsedDateOfBirth": {
+      "year": 1968,
+      "month": 6,
+      "day": 19
+    },
+    "identificationNumber": "RF72114589",
+    "identificationCountryOfRegistration": "RU",
+    "identificationNumberType": "PASSPORT",
+    "address": [
+      {
+        "addressId": "ADDR-1011-01",
+        "blockNumber": "1",
+        "streetName": "Cuscaden Road",
+        "buildingName": null,
+        "floorNumber": "38",
+        "unitNumber": "01",
+        "cityName": "Singapore",
+        "stateName": null,
+        "countryName": "Singapore",
+        "postalCode": "249715",
+        "country": "SG",
+        "parsedAddress": "1 Cuscaden Road #38-01, Singapore 249715"
+      }
+    ]
+  }
+]

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { X, CheckSquare, Square, FileText, AlertCircle } from 'lucide-react';
+import { X, CheckSquare, Square, FileText, AlertCircle, Send, ExternalLink } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
-import { STR_CRIME_TYPES, STR_SUSPICION_CATEGORIES, MOCK_CASES } from '../constants';
+import { STR_CRIME_TYPES, STR_SUSPICION_CATEGORIES, MOCK_CASES, MOCK_CMRS, MOCK_CTRS } from '../constants';
 import { SuspiciousTransactionReport, IntelligenceCase } from '../types';
+import CMRViewer from './CMRViewer';
+import CTRViewer from './CTRViewer';
 
 // Reusable UI Components for Read-Only Presentation
 const Field = ({ label, value, bg = true }: { label: string, value: string | React.ReactNode, bg?: boolean }) => (
@@ -135,6 +137,16 @@ const STRViewer: React.FC<STRViewerProps> = ({ onClose, strId }) => {
     report = MOCK_CASES
       .flatMap((c: IntelligenceCase) => c.reports || [])
       .find((r: SuspiciousTransactionReport) => r.id === searchId);
+  }
+
+  // Route CMR/CTR to dedicated viewers if full structured data exists
+  if (report?.type === 'CMR') {
+    const hasCMRData = MOCK_CMRS.some(c => c.reportId === searchId);
+    if (hasCMRData) return <CMRViewer onClose={onClose} reportId={searchId} />;
+  }
+  if (report?.type === 'CTR') {
+    const hasCTRData = MOCK_CTRS.some(c => c.reportId === searchId);
+    if (hasCTRData) return <CTRViewer onClose={onClose} reportId={searchId} />;
   }
 
   if (!report) {

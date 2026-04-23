@@ -1,0 +1,12 @@
+prim_acc_no,composite_acc_name,consolidated_acc_address,acc_stat,acc_district,rel_mngr_name,raw_acc_name,acc_opened_dt,acc_closed_dt,addr_line_one,city,state,postal_cde,ctry,acc_risk_rtng,aml_alr_flg,sar_count,tel_no
+301,AHMAD BIN SULAIMAN,"411 Hougang Avenue 10 #08-22, Singapore 530411",Active,Hougang,,AHMAD BIN SULAIMAN,2019-03-14,,411 Hougang Avenue 10,Singapore,,530411,SG,5200,t,1,+65 8123 4567
+302,AHMAD BIN SULAIMAN FD,"411 Hougang Avenue 10 #08-22, Singapore 530411",Active,Hougang,,AHMAD BIN SULAIMAN FD,2022-06-01,,411 Hougang Avenue 10,Singapore,,530411,SG,5200,f,,+65 8123 4567
+303,NATALIA PETROVA,"Pasdaran Avenue, Tehran, Iran",Active,CBD,Lim Kah Seng,NATALIA PETROVA,2024-08-01,,88 Market Street #14-01,Singapore,,048948,SG,4500,t,1,+65 9876 5432
+304,DRAGON GATE PTE LIMITED,"71 Robinson Road #14-01, Singapore 068895",Active,CBD,,DRAGON GATE PTE LIMITED,2023-02-15,,71 Robinson Road,Singapore,,068895,SG,6350,t,1,+65 6234 5678
+305,LEE WEI JIAN USD,"88 Telok Blangah Road #22-05, Singapore 098867",Active,Telok Blangah,Wong Mei Lin,LEE WEI JIAN USD,2020-01-10,,88 Telok Blangah Road,Singapore,,098867,SG,7800,t,1,+65 9012 3456
+306,LEE WEI JIAN SGD,"88 Telok Blangah Road #22-05, Singapore 098867",Active,Telok Blangah,Wong Mei Lin,LEE WEI JIAN SGD,2020-01-10,,88 Telok Blangah Road,Singapore,,098867,SG,7800,t,,+65 9012 3456
+307,SYNERGY ASIA TRADING PTE LTD,"18 Robinson Road #12-00, Singapore 048547",Active,CBD,,SYNERGY ASIA TRADING PTE LTD,2019-06-20,,18 Robinson Road,Singapore,,048547,SG,4950,t,1,+65 6345 6789
+308,RAJAN KRISHNAMURTHY,"2 Tanjong Rhu Road #18-03, Singapore 436010",Active,Tanjong Rhu,,RAJAN KRISHNAMURTHY,2017-05-08,,2 Tanjong Rhu Road,Singapore,,436010,SG,3800,t,1,+65 8234 5678
+309,PT GLOBAL TRADE SOLUTIONS,"10 Anson Road #25-07, Singapore 079903",Active,CBD,,PT GLOBAL TRADE SOLUTIONS,2019-10-01,,10 Anson Road,Singapore,,079903,SG,8500,t,1,+65 6456 7890
+310,TAN MEI LING CURRENT,"123 Bedok North Street 2 #04-118, Singapore 460123",Cancelled,Bedok,,TAN MEI LING CURRENT,2021-09-15,,123 Bedok North Street 2,Singapore,,460123,SG,4100,t,1,+65 9345 6789
+311,TAN MEI LING SAVINGS,"123 Bedok North Street 2 #04-118, Singapore 460123",Cancelled,Bedok,,TAN MEI LING SAVINGS,2021-09-15,,123 Bedok North Street 2,Singapore,,460123,SG,4100,t,,+65 9345 6789

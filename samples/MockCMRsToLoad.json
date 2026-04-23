@@ -1,0 +1,533 @@
+[
+  {
+    "reportId": "CMR-2026-0101",
+    "reportType": "CMR",
+    "reportForm": "NP728",
+    "linkedSubjectId": "customer-1001",
+    "linkedSubjectName": "Ahmad Bin Sulaiman",
+    "alertRunDate": "2026-03-03",
+    "scorecardOverallScore": 45.0,
+    "partI": {
+      "declarantFullName": "Ahmad Bin Sulaiman",
+      "identificationType": "NRIC",
+      "identificationNumber": "S8712340A",
+      "countryOfIssue": "Singapore",
+      "occupation": "Management executive",
+      "permanentAddress": {
+        "block": "411",
+        "streetName": "Hougang Avenue 10",
+        "unitNumber": "#08-22",
+        "postalCode": "530411",
+        "country": "Singapore"
+      },
+      "addressInSingapore": "Same as permanent address"
+    },
+    "partII": {
+      "movementDirection": "Entering Singapore",
+      "countryFrom": "Malaysia",
+      "dateOfArrival": "03/12/2025",
+      "timeOfArrival": "09:14",
+      "flightVehicleVessel": "Bus SBS8821",
+      "cbniItems": [
+        {
+          "cbniType": "Currency Notes",
+          "currency": "SGD",
+          "amount": 49000,
+          "ownedBySelf": true,
+          "source": null,
+          "recipient": null,
+          "countryCarriedFrom": "Malaysia",
+          "purposeOfMovement": "Personal savings \u2014 stated for living expenses"
+        },
+        {
+          "cbniType": "Currency Notes",
+          "currency": "MYR",
+          "amount": 15000,
+          "amountEquivSGD": 4500,
+          "ownedBySelf": true,
+          "source": null,
+          "recipient": null,
+          "countryCarriedFrom": "Malaysia",
+          "purposeOfMovement": "Personal savings"
+        }
+      ],
+      "totalEquivSGD": 53500
+    },
+    "partIII": {
+      "declarationText": "I declare that the information provided is true and correct.",
+      "declarationChecked": true,
+      "submissionStatus": "Submitted",
+      "reportNumber": "CMR-2026-0101",
+      "submittedVia": "SONAR",
+      "dateOfSubmission": "03/12/2025"
+    },
+    "fiu_annotations": {
+      "redFlags": [
+        "Multiple cross-border cash movements observed over 90-day period",
+        "Total declared CBNI SGD 53,500 on single crossing; subsequent deposits structured below SGD 10,000 threshold",
+        "Frequency of Malaysia-Singapore crossings inconsistent with stated living-expense purpose",
+        "Occupation (logistics coordinator) does not explain SGD 53,500 in physical cash"
+      ],
+      "linkedScores": [
+        "StructuringRelationship",
+        "RoundAmountsCustomer",
+        "NumericIrregularitiesCustomer"
+      ],
+      "linkedSTR": "STR-2026-MCB-1001"
+    }
+  },
+  {
+    "reportId": "CMR-2026-0102",
+    "reportType": "CMR",
+    "reportForm": "NP728",
+    "linkedSubjectId": "customer-1002",
+    "linkedSubjectName": "Natalia Petrova",
+    "alertRunDate": "2026-03-03",
+    "scorecardOverallScore": 51.0,
+    "partI": {
+      "declarantFullName": "Natalia Petrova",
+      "identificationType": "Passport",
+      "identificationNumber": "M19283746",
+      "countryOfIssue": "Russia",
+      "occupation": "Trade broker",
+      "permanentAddress": {
+        "streetName": "Pasdaran Avenue",
+        "city": "Tehran",
+        "country": "Iran"
+      },
+      "addressInSingapore": {
+        "block": "88",
+        "streetName": "Market Street",
+        "unitNumber": "#14-01",
+        "postalCode": "048948",
+        "country": "Singapore",
+        "temporaryAccommodation": true
+      }
+    },
+    "partII": {
+      "movementDirection": "Entering Singapore",
+      "countryFrom": "Iran",
+      "dateOfArrival": "28/01/2026",
+      "timeOfArrival": "14:35",
+      "flightVehicleVessel": "IR-712 (Mahan Air)",
+      "cbniItems": [
+        {
+          "cbniType": "Currency Notes",
+          "currency": "USD",
+          "amount": 207500,
+          "ownedBySelf": false,
+          "source": {
+            "entityType": "Business",
+            "businessName": "Caspian Trade Partners LLC",
+            "address": {
+              "city": "Tehran",
+              "country": "Iran"
+            },
+            "relationship": "Employer / Client"
+          },
+          "recipient": {
+            "entityType": "Business",
+            "businessName": "North Star Resources Co.",
+            "address": {
+              "city": "Pyongyang",
+              "country": "Korea, Democratic People's Republic of"
+            },
+            "relationship": "Business Counterparty"
+          },
+          "countryCarriedFrom": "Iran",
+          "purposeOfMovement": "Payment for technology consultancy services"
+        }
+      ],
+      "totalEquivSGD": 287500
+    },
+    "partIII": {
+      "declarationText": "I declare that the information provided is true and correct.",
+      "declarationChecked": true,
+      "submissionStatus": "Submitted",
+      "reportNumber": "CMR-2026-0102",
+      "submittedVia": "SONAR",
+      "dateOfSubmission": "28/01/2026"
+    },
+    "fiu_annotations": {
+      "redFlags": [
+        "USD 207,500 in physical cash transported from Iran (FATF High Risk) into Singapore",
+        "Funds not owned by carrier \u2014 source is Iranian entity, recipient is North Korean entity",
+        "Recipient (North Star Resources Co., PRK) consistent with DPRK sanctions evasion typology",
+        "Purpose stated as 'technology consultancy' \u2014 no trade documentation presented",
+        "Declared at customs; ICA CBN declaration cross-referenced with SONAR"
+      ],
+      "linkedScores": [
+        "CustomerFromHighRiskCountry",
+        "CustomerHasTransactionWithDifferentJurisdictions",
+        "CustomerHasTransactionWithListedCurrency"
+      ],
+      "linkedSTR": "STR-2026-SFG-1002"
+    }
+  },
+  {
+    "reportId": "CMR-2026-0103",
+    "reportType": "CMR",
+    "reportForm": "NP728",
+    "linkedSubjectId": "customer-1003",
+    "linkedSubjectName": "Dragon Gate Pte Limited",
+    "alertRunDate": "2026-03-03",
+    "scorecardOverallScore": 60.0,
+    "partI": {
+      "declarantFullName": "Chen Jian Wei",
+      "identificationNote": "Director of Dragon Gate Pte Limited (UEN: 202312345W)",
+      "identificationType": "NRIC",
+      "identificationNumber": "S8401232D",
+      "countryOfIssue": "Singapore",
+      "occupation": "Managing director/Chief executive officer",
+      "permanentAddress": {
+        "block": "10",
+        "streetName": "Anson Road",
+        "unitNumber": "#20-01",
+        "postalCode": "079903",
+        "country": "Singapore"
+      }
+    },
+    "partII": {
+      "movementDirection": "Entering Singapore",
+      "countryFrom": "China",
+      "dateOfArrival": "15/02/2026",
+      "timeOfArrival": "08:20",
+      "flightVehicleVessel": "CX-718 (Cathay Pacific)",
+      "cbniItems": [
+        {
+          "cbniType": "Currency Notes",
+          "currency": "CNY",
+          "amount": 830000,
+          "amountEquivSGD": 154000,
+          "ownedBySelf": false,
+          "source": {
+            "entityType": "Business",
+            "businessName": "Shenzhen Golden Bridge Trading Co. Ltd",
+            "address": {
+              "city": "Shenzhen",
+              "province": "Guangdong",
+              "country": "China"
+            },
+            "relationship": "Business Partner"
+          },
+          "recipient": {
+            "entityType": "Business",
+            "businessName": "Dragon Gate Pte Limited",
+            "address": {
+              "block": "10",
+              "streetName": "Anson Road",
+              "unitNumber": "#20-01",
+              "postalCode": "079903",
+              "country": "Singapore"
+            },
+            "relationship": "Own Company"
+          },
+          "countryCarriedFrom": "China",
+          "purposeOfMovement": "Business capital injection for wholesale inventory purchase"
+        },
+        {
+          "cbniType": "Bearer Cheque",
+          "currency": "HKD",
+          "amount": 1200000,
+          "amountEquivSGD": 208000,
+          "ownedBySelf": false,
+          "source": {
+            "entityType": "Business",
+            "businessName": "Kowloon Pacific Holdings Ltd",
+            "address": {
+              "city": "Hong Kong",
+              "country": "China (Hong Kong SAR)"
+            },
+            "relationship": "Investor / Creditor"
+          },
+          "recipient": {
+            "entityType": "Business",
+            "businessName": "Dragon Gate Pte Limited",
+            "address": {
+              "country": "Singapore"
+            },
+            "relationship": "Own Company"
+          },
+          "countryCarriedFrom": "Hong Kong",
+          "purposeOfMovement": "Loan disbursement for business operations"
+        }
+      ],
+      "totalEquivSGD": 362000
+    },
+    "partIII": {
+      "declarationText": "I declare that the information provided is true and correct.",
+      "declarationChecked": true,
+      "submissionStatus": "Submitted",
+      "reportNumber": "CMR-2026-0103",
+      "submittedVia": "SONAR",
+      "dateOfSubmission": "15/02/2026"
+    },
+    "fiu_annotations": {
+      "redFlags": [
+        "SGD 362,000 equivalent in mixed CBNI (CNY cash + HKD bearer cheque) carried into Singapore by company director",
+        "Funds not owned by carrier \u2014 sourced from two separate offshore entities",
+        "Bearer cheque (HKD 1.2M) from Kowloon Pacific Holdings \u2014 bearer instruments are high-risk ML vehicle",
+        "Declared capital injection inconsistent with hub-and-spoke fund transit pattern observed in bank accounts",
+        "Company incorporated Feb 2023 \u2014 business too young to justify this cross-border capital movement",
+        "No loan agreement or trade contract presented at point of declaration"
+      ],
+      "linkedScores": [
+        "RapidMovementOfFundsCustomer",
+        "HubAndSpoke",
+        "TransactionReturnedInShortTime"
+      ],
+      "linkedSTR": "STR-2026-PTB-1003"
+    }
+  },
+  {
+    "reportId": "CMR-2026-0107",
+    "reportType": "CMR",
+    "reportForm": "NP728",
+    "linkedSubjectId": "customer-1007",
+    "linkedSubjectName": "Pyongyang Tech Export Co.",
+    "alertRunDate": "2026-03-03",
+    "scorecardOverallScore": 79.0,
+    "partI": {
+      "declarantFullName": "Kim Sung Jin",
+      "identificationNote": "Representative of Pyongyang Tech Export Co. \u2014 declared as company agent",
+      "identificationType": "Passport",
+      "identificationNumber": "PRK-PAX-7734912",
+      "countryOfIssue": "Korea, Democratic People's Republic of",
+      "occupation": "Trade broker",
+      "permanentAddress": {
+        "streetName": "Ryomyong Street",
+        "city": "Pyongyang",
+        "country": "Korea, Democratic People's Republic of"
+      },
+      "addressInSingapore": {
+        "checkboxNotApplicable": true,
+        "note": "Day trip / transit \u2014 no accommodation"
+      }
+    },
+    "partII": {
+      "movementDirection": "Entering Singapore",
+      "countryFrom": "China",
+      "dateOfArrival": "19/10/2025",
+      "timeOfArrival": "11:05",
+      "flightVehicleVessel": "Air China CA-831",
+      "cbniItems": [
+        {
+          "cbniType": "Currency Notes",
+          "currency": "USD",
+          "amount": 250000,
+          "ownedBySelf": false,
+          "source": {
+            "entityType": "Business",
+            "businessName": "Korea Ryonbong General Corporation",
+            "address": {
+              "city": "Pyongyang",
+              "country": "Korea, Democratic People's Republic of"
+            },
+            "relationship": "Employer / Beneficial Owner of Funds",
+            "sanctionsNote": "UNSC Resolution 1718 DESIGNATED ENTITY"
+          },
+          "recipient": {
+            "entityType": "Business",
+            "businessName": "Unnamed Iranian Procurement Entity",
+            "address": {
+              "city": "Tehran",
+              "country": "Iran, Islamic Republic of"
+            },
+            "relationship": "Technology Procurement Counterparty"
+          },
+          "countryCarriedFrom": "China",
+          "purposeOfMovement": "Payment for technology equipment procurement services"
+        }
+      ],
+      "totalEquivSGD": 350000
+    },
+    "partIII": {
+      "declarationText": "I declare that the information provided is true and correct.",
+      "declarationChecked": true,
+      "submissionStatus": "Submitted \u2014 FLAGGED FOR IMMEDIATE REVIEW",
+      "reportNumber": "CMR-2026-0107",
+      "submittedVia": "SONAR",
+      "dateOfSubmission": "19/10/2025"
+    },
+    "fiu_annotations": {
+      "redFlags": [
+        "CRITICAL: Source of funds is Korea Ryonbong General Corporation \u2014 UNSC Resolution 1718 DESIGNATED ENTITY (WMD proliferator)",
+        "Carrier is North Korean national entering Singapore on PRK passport \u2014 FATF Blacklisted jurisdiction",
+        "Recipient is Iranian procurement entity \u2014 UNSC Sanctioned jurisdiction",
+        "USD 250,000 physical cash (SGD 350,000 equiv) \u2014 cash chosen to circumvent SWIFT/banking controls",
+        "Declared purpose (technology equipment payment) is a known dual-use goods / WMD financing typology",
+        "Singapore used as neutral transit point between two UNSC-sanctioned nations",
+        "IMMEDIATE: ICA detention threshold triggered; referred to SPF-CAD and STRO same day"
+      ],
+      "linkedScores": [
+        "CustomerFromHighRiskCountry",
+        "CustomerHasTransactionWithDifferentJurisdictions",
+        "CustomerIndirectLinkToHotlistRanked"
+      ],
+      "linkedSTR": "STR-2026-CCB-1007",
+      "priorityLevel": "CRITICAL"
+    }
+  },
+  {
+    "reportId": "CMR-2026-0111",
+    "reportType": "CMR",
+    "reportForm": "NP728",
+    "linkedSubjectId": "customer-1011",
+    "linkedSubjectName": "Viktor Lazarev",
+    "alertRunDate": "2026-03-03",
+    "scorecardOverallScore": 156.0,
+    "partI": {
+      "declarantFullName": "Viktor Andreyevich Lazarev",
+      "identificationType": "Passport",
+      "identificationNumber": "RF72114589",
+      "countryOfIssue": "Russia",
+      "occupation": "Private investor",
+      "permanentAddress": {
+        "streetName": "Rublyovo-Uspenskoye Highway",
+        "city": "Moscow",
+        "country": "Russia"
+      },
+      "addressInSingapore": {
+        "block": "1",
+        "streetName": "Cuscaden Road",
+        "unitNumber": "#38-01",
+        "postalCode": "249715",
+        "country": "Singapore"
+      }
+    },
+    "partII": {
+      "movementDirection": "Entering Singapore",
+      "countryFrom": "United Arab Emirates",
+      "dateOfArrival": "12/01/2025",
+      "timeOfArrival": "22:45",
+      "flightVehicleVessel": "EK 354 (Emirates)",
+      "cbniItems": [
+        {
+          "cbniType": "Currency Notes",
+          "currency": "USD",
+          "amount": 185000,
+          "ownedBySelf": true,
+          "source": null,
+          "recipient": null,
+          "countryCarriedFrom": "Russia (via Dubai)",
+          "purposeOfMovement": "Personal funds \u2014 stated for investment purposes"
+        }
+      ],
+      "totalEquivSGD": 251600
+    },
+    "partIII": {
+      "declarationText": "I declare that the information provided is true and correct.",
+      "declarationChecked": true,
+      "submissionStatus": "Submitted",
+      "reportNumber": "CMR-2026-0111",
+      "submittedVia": "SONAR",
+      "dateOfSubmission": "12/01/2025"
+    },
+    "fiu_annotations": {
+      "redFlags": [
+        "USD 185,000 physical cash transported from Russia via Dubai into Singapore",
+        "Declarant is a confirmed PEP (former Russian Deputy Minister) with OFAC SDN-linked counterparties",
+        "Named in OCCRP investigation and Pandora Papers leak",
+        "Transit via UAE consistent with Russian sanctions evasion routing",
+        "Purpose stated as 'investment' \u2014 no specifics provided"
+      ],
+      "linkedScores": [
+        "CustomerIndirectLinkToHotlistRanked",
+        "SanctionsProximity",
+        "PEPAssociation",
+        "CustomerFromHighRiskCountry"
+      ],
+      "linkedSTR": "STR-2026-CCB-1011"
+    }
+  },
+  {
+    "reportId": "CMR-2026-0112",
+    "reportType": "CMR",
+    "reportForm": "NP728",
+    "linkedSubjectId": "customer-1012",
+    "linkedSubjectName": "Golden Phoenix International Ltd",
+    "alertRunDate": "2026-03-03",
+    "scorecardOverallScore": 151.0,
+    "partI": {
+      "declarantFullName": "Zaw Min Tun",
+      "identificationType": "Passport",
+      "identificationNumber": "MD8834521",
+      "countryOfIssue": "Myanmar",
+      "occupation": "Company representative \u2014 Golden Phoenix International Ltd",
+      "permanentAddress": {
+        "streetName": "Merchant Road",
+        "city": "Yangon",
+        "country": "Myanmar"
+      },
+      "addressInSingapore": {
+        "block": "133",
+        "streetName": "New Bridge Road",
+        "unitNumber": "#08-12",
+        "postalCode": "059413",
+        "country": "Singapore",
+        "temporaryAccommodation": true
+      }
+    },
+    "partII": {
+      "movementDirection": "Entering Singapore",
+      "countryFrom": "Thailand",
+      "dateOfArrival": "12/01/2025",
+      "timeOfArrival": "16:20",
+      "flightVehicleVessel": "TG 404 (Thai Airways)",
+      "cbniItems": [
+        {
+          "cbniType": "Currency Notes",
+          "currency": "USD",
+          "amount": 250000,
+          "ownedBySelf": false,
+          "source": {
+            "entityType": "Business",
+            "businessName": "Golden Phoenix International Ltd",
+            "address": {
+              "city": "Labuan",
+              "country": "Malaysia"
+            },
+            "relationship": "Employer"
+          },
+          "recipient": {
+            "entityType": "Business",
+            "businessName": "Phoenix Jade Trading Pte Ltd",
+            "address": {
+              "city": "Singapore",
+              "country": "Singapore"
+            },
+            "relationship": "Subsidiary"
+          },
+          "countryCarriedFrom": "Myanmar (via Bangkok)",
+          "purposeOfMovement": "Jade auction settlement \u2014 Naypyidaw Gems Emporium 2024"
+        }
+      ],
+      "totalEquivSGD": 340000
+    },
+    "partIII": {
+      "declarationText": "I declare that the information provided is true and correct.",
+      "declarationChecked": true,
+      "submissionStatus": "Submitted",
+      "reportNumber": "CMR-2026-0112",
+      "submittedVia": "SONAR",
+      "dateOfSubmission": "12/01/2025"
+    },
+    "fiu_annotations": {
+      "redFlags": [
+        "USD 250,000 in physical cash transported from Myanmar via Bangkok into Singapore",
+        "Carrier is company representative, not the UBO \u2014 funds owned by Labuan-registered shell company",
+        "Recipient is Singapore subsidiary with BVI beneficial ownership and same nominee director",
+        "Source entity linked to OFAC SDN (MEHL) and UNSC-sanctioned Myanmar Gems Enterprise",
+        "Purpose: 'jade auction settlement' \u2014 Naypyidaw Gems Emporium is controlled by Myanmar military",
+        "Transit routing via Bangkok consistent with Myanmar sanctions evasion typology"
+      ],
+      "linkedScores": [
+        "CustomerIndirectLinkToHotlistRanked",
+        "SanctionsProximity",
+        "ShellCompanyIndicators",
+        "TradeBasedLaundering"
+      ],
+      "linkedSTR": "STR-2026-PTB-1012"
+    }
+  }
+]

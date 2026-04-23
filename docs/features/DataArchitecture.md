@@ -30,5 +30,17 @@ All investigations natively support historic traversal across the entire platfor
 - **Operational Metadata**: Cases now include mandatory `title` and `description` fields to define investigating intent beyond raw subject names.
 - **Context Mitigation Engine**: analysts can drop targeted categorical notes mapped against specific risk factors within a subject's profile, providing high-resolution audit trails for risk assessment.
 
+### Account Data in STR Tab II
+Bank account information is embedded within each STR's `tabII_accountInformation` rather than maintained as a separate upstream data source. This reflects the FIU's operational reality: the FIU has no direct access to bank account systems. Everything the FIU knows about an account arrives through the STR filing submitted by the reporting bank. Tab II includes bank-internal account IDs (`bankInternalAccountId`), account holder names, branch district, relationship manager, bank risk ratings, AML alert flags, prior filing counts, and contact numbers — enabling FIU analysts to assess the bank's own risk posture without issuing a Request for Information (RFI).
+
+### Person Case Class (Upstream)
+Individual customer records (5 of 8 subjects) are maintained in a structured Person case class format (`samples/upstream/customer/raw/json/person.json`) following the Quantexa data model schema. This replaces the flat `customer.csv` for individuals — corporate entity data is covered by `opencorporates/companies.csv` and STR Tab III. The Person model provides:
+- **Parsed name components**: `parsedIndividualName` with `initials`, `forename`, `familyName`, `maidenName`
+- **Date decomposition**: `parsedDateOfBirth` with `year`, `month`, `day`
+- **Structured addresses**: `address[]` with parsed `blockNumber`, `streetName`, `floorNumber`, `unitNumber`, `postalCode`, `country`
+- **Identity enrichment**: `countryOfBirth`, `taxResidency`, `identificationNumberType` (NRIC/PASSPORT)
+
+Corporate entities (3 of 8 subjects) are not included in Person — they require a separate Business case class model.
+
 ## Quality Engineering
 Future production upgrades should connect `AppContext.tsx` `useEffect` mounts directly to Kafka or live API streams rather than the `constants.ts` mock variables. The schema handles both real-time ingestion tasks and analyst-created investigations using the same standardized domain model.

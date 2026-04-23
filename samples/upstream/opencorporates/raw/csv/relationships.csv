@@ -1,0 +1,5 @@
+relationship_type,oc_relationship_identifier,subject_entity_name,subject_entity_company_number,subject_entity_jurisdiction_code,object_entity_name,object_entity_company_number,object_entity_jurisdiction_code,percentage_min_share_ownership,percentage_max_share_ownership,percentage_min_voting_rights,percentage_max_voting_rights,number_of_shares,start_date_type,start_date,end_date_type,end_date,created_at,updated_at
+Shareholder,LWJH001,Lee Wei Jian,,SG,LWJ Holdings Pte Ltd,700002,SG,100.0,100.0,,,,,,,,,
+Shareholder,LWJH002,LWJ Holdings Pte Ltd,700002,SG,Tanaka Precision Engineering KK,700003,JP,60.0,60.0,,,,,,,,,
+Shareholder,DRGN001,Chen Jian Wei,,SG,Dragon Gate Pte Limited,700001,SG,85.0,85.0,,,,,,,,,
+Shareholder,GPHX001,Golden Phoenix International Ltd,700008,MY,Phoenix Jade Trading Pte Ltd,700009,SG,100.0,100.0,,,,,,,,,

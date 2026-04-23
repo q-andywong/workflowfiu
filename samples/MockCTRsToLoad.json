@@ -1,0 +1,250 @@
+[
+  {
+    "reportId": "CTR-2026-0105",
+    "reportType": "CTR",
+    "reportForm": "NP784",
+    "linkedSubjectId": "customer-1005",
+    "linkedSubjectName": "Synergy Asia Trading Pte Ltd",
+    "alertRunDate": "2026-03-03",
+    "scorecardOverallScore": 55.0,
+    "partI": {
+      "reportingInstitution": {
+        "name": "Meridian Precious Assets Pte Ltd",
+        "registrationNumber": "201899123K",
+        "countryOfRegistration": "Singapore",
+        "institutionType": "PSMD \u2014 Precious Metals Dealer",
+        "internalReferenceNumber": "MPA-CTR-2026-0105",
+        "reportingOfficer": "[Auto-populated from CorpPass upon submission]"
+      }
+    },
+    "partII": {
+      "cashTransactions": [
+        {
+          "transactionNumber": 1,
+          "transactionDate": "14/02/2026",
+          "commodityType": "Precious Metal \u2014 Gold Bullion",
+          "commodityDescription": "1kg gold bullion bars (LBMA certified)",
+          "quantity": 5,
+          "unitOfMeasure": "kg",
+          "transactionType": "Purchase (Customer buying from dealer)",
+          "cashAmountReceived": {
+            "currency": "SGD",
+            "amount": 450000
+          },
+          "paymentMode": "Cash (SGD notes)",
+          "transactingOfficerName": "David Lim",
+          "transactingOfficerDesignation": "Head of Trading",
+          "remarks": "Customer paid SGD 450,000 cash for 5 x 1kg gold bars. No advance notice given. Customer requested LBMA certified bars only. Purpose stated: 'Investment hedging for sister company.'"
+        },
+        {
+          "transactionNumber": 2,
+          "transactionDate": "15/02/2026",
+          "commodityType": "Precious Metal \u2014 Gold Bullion",
+          "commodityDescription": "500g gold bullion bars",
+          "quantity": 4,
+          "unitOfMeasure": "kg",
+          "transactionType": "Sale (Customer selling to dealer)",
+          "cashAmountPaid": {
+            "currency": "SGD",
+            "amount": 394200
+          },
+          "paymentMode": "Cash (SGD notes)",
+          "transactingOfficerName": "David Lim",
+          "transactingOfficerDesignation": "Head of Trading",
+          "sameDetailsAsTransaction1": {
+            "sameName": true,
+            "sameAddress": true,
+            "sameTransactingOfficer": true
+          },
+          "remarks": "Same customer returned next day to sell 4 x 500g bars (different bars from those purchased). Loss of SGD 55,800 accepted. No commercial rationale provided. Consistent with TBML \u2014 buy/sell mirror via physical precious metals."
+        }
+      ]
+    },
+    "partIII": {
+      "personWhoTransacted": {
+        "isIndividualOrBusiness": "Business",
+        "triggersPartV": true
+      }
+    },
+    "partIV": null,
+    "partV": {
+      "businessOwnerOfCash": {
+        "businessName": "Synergy Asia Trading Pte Ltd",
+        "registrationNumber": "201988432N",
+        "countryOfIncorporation": "Singapore",
+        "businessNature": "Securities Trading and Investment",
+        "isPSMD": false,
+        "principalAddress": {
+          "streetName": "18 Robinson Road",
+          "unitNumber": "#12-00",
+          "postalCode": "048547",
+          "country": "Singapore"
+        },
+        "relationshipToTransactor": "Account Holder / Principal",
+        "authorisedRepresentative": {
+          "name": "Michael Tan Eng Huat",
+          "identification": "S8103412G",
+          "designation": "Director"
+        }
+      }
+    },
+    "partVI": {
+      "declarationText": "I declare that the information provided is true and correct.",
+      "declarationChecked": true,
+      "submissionStatus": "Submitted",
+      "reportNumber": "CTR-2026-0105",
+      "submittedVia": "SONAR",
+      "dateOfDeclaration": "16/02/2026"
+    },
+    "fiu_annotations": {
+      "redFlags": [
+        "Back-to-back physical gold buy/sell within 24 hours \u2014 TBML mirror trade via precious metals",
+        "Total cash paid: SGD 450,000 (Day 1 buy); total cash received: SGD 394,200 (Day 2 sell)",
+        "Economic loss of SGD 55,800 (12.4%) accepted \u2014 irrational commercially, consistent with ML placement",
+        "Securities trading company purchasing physical gold bullion is atypical for stated business purpose",
+        "Only 4 of 5 original bars returned \u2014 destination of the 5th bar (SGD ~90,000 value) unknown",
+        "Cash-based transaction for SGD 450,000 chosen over electronic settlement \u2014 avoids SWIFT trail"
+      ],
+      "linkedScores": [
+        "TransactionWithConnectedPartyWithMirroredTrading",
+        "CustomerHasTransactionWithNewAccount",
+        "TransactionWithLoss"
+      ],
+      "linkedSTR": "STR-2026-PTB-1005"
+    }
+  },
+  {
+    "reportId": "CTR-2026-0108",
+    "reportType": "CTR",
+    "reportForm": "NP784",
+    "linkedSubjectId": "customer-1008",
+    "linkedSubjectName": "Tan Mei Ling",
+    "alertRunDate": "2026-03-03",
+    "scorecardOverallScore": 40.0,
+    "partI": {
+      "reportingInstitution": {
+        "name": "Golden Link Pawnbrokers Pte Ltd",
+        "registrationNumber": "198812345P",
+        "countryOfRegistration": "Singapore",
+        "institutionType": "Pawnbroker (NP784 \u2014 Pawnbrokers Act 2015 s.74A)",
+        "internalReferenceNumber": "GLP-CTR-2026-0108",
+        "reportingOfficer": "[Auto-populated from CorpPass upon submission]"
+      }
+    },
+    "partII": {
+      "cashTransactions": [
+        {
+          "transactionNumber": 1,
+          "transactionDate": "10/01/2026",
+          "commodityType": "Jewellery \u2014 Gold",
+          "commodityDescription": "22K gold necklace set, 120g",
+          "quantity": 1,
+          "unitOfMeasure": "piece",
+          "transactionType": "Pawn (Customer pledging item for cash loan)",
+          "loanAmountDisbursed": {
+            "currency": "SGD",
+            "amount": 8500
+          },
+          "paymentMode": "Cash (SGD notes)",
+          "transactingOfficerName": "Goh Beng Kiat",
+          "transactingOfficerDesignation": "Branch Manager",
+          "remarks": "Customer pledged 22K gold necklace set for SGD 8,500 loan. Round amount."
+        },
+        {
+          "transactionNumber": 2,
+          "transactionDate": "10/01/2026",
+          "commodityType": "Jewellery \u2014 Gold",
+          "commodityDescription": "18K gold bracelet set with diamonds, 45g",
+          "quantity": 1,
+          "unitOfMeasure": "piece",
+          "transactionType": "Pawn",
+          "loanAmountDisbursed": {
+            "currency": "SGD",
+            "amount": 3000
+          },
+          "paymentMode": "Cash (SGD notes)",
+          "sameDetailsAsTransaction1": {
+            "sameName": true,
+            "sameAddress": true,
+            "sameTransactingOfficer": true
+          },
+          "remarks": "Second item pledged in same visit. Round amount SGD 3,000."
+        },
+        {
+          "transactionNumber": 3,
+          "transactionDate": "17/01/2026",
+          "commodityType": "Jewellery \u2014 Gold",
+          "commodityDescription": "24K gold bar pendant, 20g",
+          "quantity": 2,
+          "unitOfMeasure": "pieces",
+          "transactionType": "Pawn",
+          "loanAmountDisbursed": {
+            "currency": "SGD",
+            "amount": 5000
+          },
+          "paymentMode": "Cash (SGD notes)",
+          "sameDetailsAsTransaction1": {
+            "sameName": true,
+            "sameAddress": true,
+            "sameTransactingOfficer": true
+          },
+          "remarks": "Customer returned 7 days later with additional items. All loans disbursed as round amounts. Total across 3 transactions: SGD 16,500 cash."
+        }
+      ],
+      "totalCashDisbursed": {
+        "currency": "SGD",
+        "amount": 16500
+      }
+    },
+    "partIII": {
+      "personWhoTransacted": {
+        "isIndividualOrBusiness": "Individual",
+        "triggersPartIV": true
+      }
+    },
+    "partIV": {
+      "personOwnerOfCash": {
+        "firstName": "Mei Ling",
+        "lastName": "Tan",
+        "dateOfBirth": "05/07/1992",
+        "identificationType": "NRIC",
+        "identificationNumber": "S9201234C",
+        "countryOfIssue": "Singapore",
+        "nationality": "Singaporean",
+        "permanentAddress": {
+          "block": "201",
+          "streetName": "Tampines Street 21",
+          "unitNumber": "#14-108",
+          "postalCode": "520201",
+          "country": "Singapore"
+        },
+        "relationshipToTransactor": "Self (transactor is the owner)"
+      }
+    },
+    "partV": null,
+    "partVI": {
+      "declarationText": "I declare that the information provided is true and correct.",
+      "declarationChecked": true,
+      "submissionStatus": "Submitted",
+      "reportNumber": "CTR-2026-0108",
+      "submittedVia": "SONAR",
+      "dateOfDeclaration": "20/01/2026"
+    },
+    "fiu_annotations": {
+      "redFlags": [
+        "Three separate pawn transactions totalling SGD 16,500 across two visits \u2014 all in exact round amounts",
+        "Multiple high-value jewellery items pawned rapidly suggests liquidation of crime proceeds (scam/fraud gifts)",
+        "Customer bank account subsequently cancelled with Fraud Flag \u2014 cross-institution pattern confirmed",
+        "Jewellery items possibly received as scam proceeds (romance scam / investment scam gifts to mule)",
+        "Round-amount pawn loans (SGD 8,500 / SGD 3,000 / SGD 5,000) consistent with money mule disbursement pattern",
+        "Total 7 accounts across 3 banks, all receiving round-amount transfers \u2014 pawn transactions used for cash-out"
+      ],
+      "linkedScores": [
+        "CancelledCustomerScore",
+        "SeveralAccountsAndCancelledScore",
+        "CustomerWithHighNumberOfRoundAmountTransactions"
+      ],
+      "linkedSTR": "STR-2026-RBC-1008"
+    }
+  }
+]

@@ -1,34 +1,58 @@
 # Industrial User Story: The End-to-End Investigative Lifecycle (v3.0.0)
 
-This comprehensive journey outlines how the **FIU STR Analysis Platform** bridges the gap between raw financial intelligence and actionable law enforcement referrals through industry-standard synchronization and managerial governance.
+This comprehensive journey outlines how the **FIU STR Analysis Platform** bridges the gap between raw financial intelligence — collected from **multiple reporting institutions** across Singapore — and actionable law enforcement referrals through industry-standard synchronization and managerial governance.
 
 ---
 
-## 🟢 Phase 1: Operational Inception & Platform Sync
+## Multi-Institution Intelligence Intake
+
+The FIU receives regulatory reports from **all regulated financial institutions** in Singapore. Unlike a single bank's compliance department, the FIU platform correlates intelligence across institutions:
+
+| Report Type | Filed By | Examples in Current Batch |
+|-------------|----------|--------------------------|
+| **STR** (Suspicious Transaction Report) | Banks | MCB, SFG, PTB, CCB, RBC (5 banks, 8 STRs) |
+| **CMR** (Cash Movement Report, NP728) | ICA Checkpoints | ICA Woodlands, ICA Changi (4 CMRs) |
+| **CTR** (Cash Transaction Report, NP784) | PSMDs, Pawnbrokers | Meridian Precious Assets, Golden Link Pawnbrokers (2 CTRs) |
+
+The Quantexa AML platform ingests upstream data feeds from each institution's KYC, transaction, and screening systems, runs scoring models and network analysis, and generates **tasks** with linked reports. These tasks are then surfaced in the FIU Workflow App for analyst triage and investigation.
+
+```
+Banks (MCB, SFG, PTB, CCB, RBC) ──► STRs ──┐
+ICA Checkpoints ───────────────────► CMRs ──┤──► Quantexa Platform ──► Tasks ──► FIU Workflow App
+PSMDs & Pawnbrokers ───────────────► CTRs ──┘
+```
+
+The FIU's unique capability is **cross-institutional fusion**: correlating a bank's STR with an ICA checkpoint's CMR or a pawnbroker's CTR to build intelligence that no single institution could produce alone. For example, Case 1005 links a bank STR (wire cycling at PTB) with a PSMD CTR (gold mirror trade at Meridian Precious Assets) — neither institution alone sees the full TBML scheme.
+
+---
+
+## Phase 1: Operational Inception & Platform Sync
 **Persona: Operations Manager (e.g., Director Shen)**
 
 1.  **Command Center Oversight**: The Manager logs in and lands on the **Managerial Command Center**. They observe a 4-grid executive summary:
-    - **Pending Triage**: New leads from ingestion pipelines.
+    - **Pending Triage**: New leads from ingestion pipelines, sourced from multiple reporting institutions.
     - **Awaiting Sign-off**: Case escalations requiring executive review.
-    - **Priority Bypasses**: Critical alerts identified by the Quantexa Risk Engine.
+    - **Priority Bypasses**: Critical alerts identified by the Quantexa Risk Engine (e.g., OFAC SDN matches, proliferation financing flags).
     - **Hibernated Registry**: Entities moved to background monitoring.
 2.  **Quantexa Pulse-Sync**: To ensure the morning's latest intelligence is available, the Manager clicks **"Scan for latest tasks"**.
 3.  **Simulation Feedback**: A high-fidelity progress modal plays:
     - Establishing a secure handshake with the **Quantexa Platform**.
-    - Retrieving graph-triangulated tasks from the master registry.
+    - Retrieving graph-triangulated tasks from the master registry across all reporting institutions.
+    - Correlating STRs, CMRs, and CTRs from different institution types into unified case packages.
     - Distributing tasks into analyst specialization buckets based on crime typologies.
-4.  **Operational Readiness**: The sync completes, and the Manager confirms the ingestion count is up-to-date.
+4.  **Operational Readiness**: The sync completes, and the Manager confirms the ingestion count is up-to-date. Tasks from multiple banks (MCB, SFG, PTB, CCB, RBC) and linked CMR/CTR reports are now visible in the platform.
 
 ---
 
-## 🔵 Phase 2: Investigative Triage & Evidence Building
+## Phase 2: Investigative Triage & Evidence Building
 **Persona: FIU Analyst (e.g., Insp. Lim)**
 
-1.  **Specialized Intake**: The Analyst navigates to the **Triage Queue**. The system automatically filters for **'Fraud'** tasks to match their specialization.
-2.  **Workbench Engagement**: The Analyst opens a lead (e.g., `IGOR DIMITROV`). They enter the **Case Analysis Workbench**.
-3.  **Analytical Mitigation**:
-    - The Analyst reviews the **Interactive Risk Scorecard**.
-    - They mitigate the *"High Transaction Velocity"* risk indicator by recording a formal action: *"RFI sent to bank for source of wealth validation"*.
+1.  **Specialized Intake**: The Analyst navigates to the **Triage Queue**. The system automatically filters for tasks matching their crime typology specialization (e.g., 'Fraud', 'Sanctions Evasion'). Tasks from different reporting institutions are mixed in the queue — the analyst works across banks, not within a single institution.
+2.  **Workbench Engagement**: The Analyst opens a lead (e.g., `Natalia Petrova` — STR filed by SFG, with a linked CMR from ICA Changi). They enter the **Case Analysis Workbench**.
+3.  **Cross-Institution Evidence Review**:
+    - The Analyst reviews the **Interactive Risk Scorecard** generated by the Quantexa engine.
+    - They examine linked reports from multiple institutions: the bank's STR for electronic wire patterns, the ICA CMR for physical cash declarations, or a PSMD CTR for commodity transactions.
+    - They mitigate risk indicators by recording formal actions (e.g., *"RFI sent to SFG for source of wealth validation"* — note the analyst references the specific reporting bank).
     - They click **Save Changes**. The **Kafka Sync Modal** triggers with the specific status: *"Syncing Analysis to Quantexa Platform"* followed by a **Red-Tick** success state.
     - The Analyst clicks **"Continue Analysis"** and remains in the workbench to record their final narrative.
 4.  **Escalation Broadcast**:
@@ -38,10 +62,10 @@ This comprehensive journey outlines how the **FIU STR Analysis Platform** bridge
 
 ---
 
-## 🟡 Phase 3: Executive Review & Case Promotion
+## Phase 3: Executive Review & Case Promotion
 **Persona: Operations Manager (Director Shen)**
 
-1.  **Approvals Registry**: The Manager sees the new escalation in the **Awaiting Sign-off** tile.
+1.  **Approvals Registry**: The Manager sees the new escalation in the **Awaiting Sign-off** tile. The escalation includes the reporting institution context (e.g., "STR filed by PTB, corroborated by CTR from Meridian Precious Assets").
 2.  **High-Velocity Review**:
     - The Manager views the **Pending Approvals** list.
     - For lower-complexity tasks, they click **"Sign-off and Escalate"** directly in the table row.
@@ -50,18 +74,18 @@ This comprehensive journey outlines how the **FIU STR Analysis Platform** bridge
 
 ---
 
-## 🔴 Phase 4: Full Field Investigation & Retrieval
+## Phase 4: Full Field Investigation & Dissemination
 **Persona: Lead Investigator (Insp. Lim)**
 
 1.  **Deep-Dive Analysis**: The Investigator opens the case in the **Case Directory**.
 2.  **Industrial Data Enrichment**:
-    - They use the **Global Discovery Registry** to manually link related subjects identified during the deep-dive.
-    - They link several high-value **STR Regulatory Reports** from the master directory to bridge disparate data points.
+    - They use the **Global Discovery Registry** to manually link related subjects identified during the deep-dive — these may include entities flagged by other banks' STRs or counterparties appearing in ICA CMRs.
+    - They link several high-value **STR/CMR/CTR Regulatory Reports** from the master directory to bridge disparate data points across institutions.
 3.  **Intelligence Modeling & Packaging**:
     - The Investigator opens the **Dissemination Report Compiler**.
-    - They instantiate **Intelligence Models** (Bar/Line charts) to visualize complex transaction patterns.
+    - They instantiate **Intelligence Models** (Bar/Line charts) to visualize complex transaction patterns spanning multiple institutions.
     - They click **"Finalize & Disseminate"**. The **Kafka Sync Modal** triggers (topic: `report.event.disseminate`), verifying the package is synchronized with the platform records.
-    - They click **"Complete Dissemination"** to finalize the briefing package.
+    - They click **"Complete Dissemination"** to finalize the briefing package for the relevant agency (SPF-CAD, MAS, ICA, or AGC).
 4.  **Administrative Disposal**:
     - Once the brief is disseminated, the Investigator clicks **"Finalize Case"**.
     - In the **Finalize Modal**, they select a disposal outcome (e.g., *Disseminate to Law Enforcement*).
@@ -71,7 +95,7 @@ This comprehensive journey outlines how the **FIU STR Analysis Platform** bridge
 
 ---
 
-## 🏛️ Unified Governance: Pulse-Sync Trigger Points
+## Unified Governance: Pulse-Sync Trigger Points
 
 For audit transparency, every critical state transition in the FIU lifecycle triggers a **Pulse-Sync** Kafka broadcast:
 
@@ -84,15 +108,19 @@ For audit transparency, every critical state transition in the FIU lifecycle tri
 
 ---
 
-## 🏁 Summary of Governing Logic
+## Summary of Governing Logic
+- **Multi-Institution Intake**: The FIU receives and correlates STRs, CMRs, and CTRs from banks, ICA checkpoints, and non-bank institutions across Singapore.
 - **Always Synchronized**: Every decision point includes a 1s Kafka synchronization simulation to verify platform connectivity.
 - **Role-Awareness**: Managers have command-level dashboards; Analysts have high-volume triage workbenches.
 - **Contextual Continuity**: The system distinguishes between "Progress Saves" (Stay in Workbench) and "Status Decisions" (Return to Queue).
+- **Cross-Institutional Fusion**: The platform's unique value is correlating intelligence from different institution types to build cases no single institution could produce alone.
 
-## 🧩 Advanced Workflow: Proactive Inception
+---
+
+## Advanced Workflow: Proactive Inception
 **Persona: Lead Investigator**
 
-1.  **Manual Discovery**: The investigator identifies a related cluster of STRs in the **STR Master Directory** or identify a missing entity in the **Global Registry**.
+1.  **Manual Discovery**: The investigator identifies a related cluster of STRs from different banks in the **STR Master Directory** or identifies a missing entity in the **Global Registry** that connects reports filed by separate institutions.
 2.  **Cluster Inception**: They click **"Initiate Manual Case"** from the Case Directory.
 3.  **Governance & Sync**: Upon clicking **"Confirm Case Creation"**, the **Kafka Pulse-Sync** simulation triggers (topic: `case.event.manual_inception`).
 4.  **Instant Alignment**: Once the sync completes, the investigator clicks **"Continue to Investigation"** to begin their deep-dive analysis in the workbench with all entities pre-linked and synchronized.

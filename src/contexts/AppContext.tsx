@@ -117,11 +117,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   });
 
   const stats: DashboardStats = {
-    totalIncoming: 1240,
+    totalIncoming: 20,
     activeAnalyses: cases.filter(c => c.status === 'ANALYSIS' || c.status === 'PRIORITY').length,
-    disseminatedTotal: 45,
+    disseminatedTotal: cases.filter(c => c.status === 'DISSEMINATED' || (c.disseminations && c.disseminations.length > 0)).length,
     priorityAlerts: cases.filter(c => c.priority).length,
-    successRate: 78,
+    successRate: resolvedCases.length > 0 ? Math.round((resolvedCases.filter(c => (c.disseminations || []).length > 0).length / resolvedCases.length) * 100) : 0,
     triagesInQueue: filteredTriages.length,
     pendingApproval: cases.filter(c => c.status === 'PENDING_APPROVAL').length,
     casesClosed: cases.filter(c => c.status === 'CLOSED' || c.status === 'DISMISSED').length,
