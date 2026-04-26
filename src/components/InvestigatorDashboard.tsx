@@ -4,24 +4,24 @@ import { useAuth } from '../contexts/AuthContext';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { 
-  CheckCircle2, AlertTriangle, ArrowUpRight, FileText, 
-  Hourglass, ClipboardList, CheckSquare, BarChart3
+import {
+  CheckCircle2, ArrowUpRight, Send,
+  Hourglass, ClipboardList, CheckSquare, BarChart3, Archive
 } from 'lucide-react';
 
 const InvestigatorDashboard: React.FC = () => {
   const { stats, cases, setSelectedCase, setView } = useApp();
   const { user } = useAuth();
 
-  const resolutionTrendData = [
-    { month: 'Oct', resolved: 12, avgTime: 5.2 },
-    { month: 'Nov', resolved: 18, avgTime: 4.8 },
-    { month: 'Dec', resolved: 15, avgTime: 5.5 },
-    { month: 'Jan', resolved: 22, avgTime: 4.1 },
-    { month: 'Feb', resolved: 19, avgTime: 4.3 },
-    { month: 'Mar', resolved: 28, avgTime: 3.8 },
-    { month: 'Apr', resolved: stats.casesClosed, avgTime: stats.avgResolutionTime },
-  ];
+  // Generate resolution trend from actual stats with simulated trailing months
+  const closedCases = cases.filter((c: any) => c.status === 'CLOSED' || c.status === 'DISSEMINATED').length;
+  const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];
+  const baseResolved = Math.max(closedCases, 2);
+  const resolutionTrendData = months.map((month, i) => ({
+    month,
+    resolved: Math.round(baseResolved * (0.5 + (i * 0.12))),
+    avgTime: +(stats.avgResolutionTime * (1.3 - i * 0.07)).toFixed(1),
+  }));
 
   const StatCard = ({ title, value, icon: Icon, colorClass, onClick }: any) => (
     <div 
@@ -49,41 +49,43 @@ const InvestigatorDashboard: React.FC = () => {
           </h2>
           <p className="text-gray-500 text-sm mt-1 font-medium">Real-time tracking of operational queues and case resolution metrics</p>
         </div>
-        <div className="flex gap-3">
-          <button className="px-5 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold flex items-center gap-2 shadow-sm transition-all focus:ring-4 focus:ring-gray-100">
-            <FileText className="w-4 h-4 text-gray-400" />
-            Performance Audit
-          </button>
-        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Triage Queue" 
-          value={stats.triagesInQueue} 
-          icon={ClipboardList} 
-          colorClass="bg-blue-50 text-blue-600" 
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        <StatCard
+          title="Triage Queue"
+          value={stats.triagesInQueue}
+          icon={ClipboardList}
+          colorClass="bg-blue-50 text-blue-600"
           onClick={() => setView('TRIAGE')}
         />
-        <StatCard 
-          title="Awaiting Approval" 
-          value={stats.pendingApproval} 
-          icon={Hourglass} 
-          colorClass="bg-amber-50 text-amber-600" 
+        <StatCard
+          title="Awaiting Approval"
+          value={stats.pendingApproval}
+          icon={Hourglass}
+          colorClass="bg-amber-50 text-amber-600"
+          onClick={() => setView('TRIAGE', 'APPROVALS')}
+        />
+        <StatCard
+          title="Active Cases"
+          value={stats.activeAnalyses}
+          icon={CheckSquare}
+          colorClass="bg-teal-50 text-teal-600"
           onClick={() => setView('DIRECTORY')}
         />
-        <StatCard 
-          title="Active Cases" 
-          value={stats.activeAnalyses} 
-          icon={CheckSquare} 
-          colorClass="bg-teal-50 text-teal-600" 
+        <StatCard
+          title="Disseminated"
+          value={cases.filter(c => c.status === 'DISSEMINATED').length}
+          icon={Send}
+          colorClass="bg-indigo-50 text-indigo-600"
           onClick={() => setView('DIRECTORY')}
         />
-        <StatCard 
-          title="Resolved" 
-          value={stats.casesClosed} 
-          icon={CheckCircle2} 
-          colorClass="bg-gray-100 text-gray-600" 
+        <StatCard
+          title="Closed Cases"
+          value={cases.filter(c => c.status === 'CLOSED').length}
+          icon={Archive}
+          colorClass="bg-gray-100 text-gray-600"
+          onClick={() => setView('DIRECTORY')}
         />
       </div>
 

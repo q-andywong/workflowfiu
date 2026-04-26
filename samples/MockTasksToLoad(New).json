@@ -80,7 +80,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Ahmad Bin Sulaiman recorded SGD 304K across 31 cash transactions exceeding the reporting threshold."
             }
           ],
           [
@@ -158,7 +162,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "StructuringRelationship",
+              "scoreId": "Structuring Relationship",
+              "category": "Relationship Structuring",
+              "description": "Ahmad Bin Sulaiman shows a structuring window ratio of 82% across 31 transactions averaging SGD 9,800, consistent with deliberate threshold avoidance."
             }
           ],
           [
@@ -223,7 +231,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Ahmad Bin Sulaiman has significant transactional exposure to Malaysia, a jurisdiction flagged for elevated financial crime risk."
             }
           ],
           [
@@ -293,7 +305,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RapidMovementOfFundsCustomer",
+              "scoreId": "Rapid Movement Of Funds Customer",
+              "category": "Funds Movement",
+              "description": "Ahmad Bin Sulaiman moved SGD 304K with an average holding period of 18.4 hours, indicating rapid pass-through of funds."
             }
           ],
           [
@@ -367,7 +383,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RoundAmountsCustomer",
+              "scoreId": "Round Amounts Customer",
+              "category": "Transaction Patterns",
+              "description": "Ahmad Bin Sulaiman executed 24 transactions at round amounts (76% of total activity), a pattern commonly associated with structuring."
             }
           ],
           [
@@ -437,7 +457,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Ahmad Bin Sulaiman has 11 third-party transactions representing 34% of account activity, with no clear economic rationale."
             }
           ],
           [
@@ -507,7 +531,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Ahmad Bin Sulaiman exhibits an anomaly score of 0.48, significantly deviating from expected transaction patterns."
             }
           ],
           [
@@ -577,7 +605,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Ahmad Bin Sulaiman transacted across 3 jurisdictions (SG,MY,ID), raising cross-border layering concerns."
             }
           ],
           [
@@ -646,7 +678,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Ahmad Bin Sulaiman is linked to SGP classified as Bordering jurisdiction, elevating the geographic risk profile."
             }
           ]
         ],
@@ -654,7 +690,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-18T01:12:33.089168"
     },
     "_2": {
       "subjectId": "customer-1001",
@@ -663,7 +699,7 @@
       "scorecardOverallScore": 45.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1001",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-18 at 09:12:33 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -689,8 +725,7 @@
         "parsedName": {
           "initials": "A",
           "forename": "Ahmad",
-          "familyName": "Bin Sulaiman",
-          "maidenName": null
+          "familyName": "Bin Sulaiman"
         },
         "gender": "M",
         "dateOfBirth": "1987-04-14",
@@ -705,7 +740,6 @@
           "streetName": "Hougang Avenue 10",
           "floorNumber": "08",
           "unitNumber": "22",
-          "cityName": "Singapore",
           "postalCode": "530411",
           "country": "SG",
           "parsedAddress": "411 Hougang Avenue 10 #08-22, Singapore 530411"
@@ -795,7 +829,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "SanctionsProximity",
+              "scoreId": "Sanctions Proximity",
+              "category": "Sanctions",
+              "description": "Natalia Petrova has a 72% proximity score to sanctioned entity PRK, indicating close network ties to designated parties."
             }
           ],
           [
@@ -864,7 +902,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Natalia Petrova is linked to IRN classified as FATF High Risk, elevating the geographic risk profile."
             }
           ],
           [
@@ -929,7 +971,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "PEPAssociation",
+              "scoreId": "PEP Association",
+              "category": "Politically Exposed Persons",
+              "description": "Natalia Petrova is flagged as a Politically Exposed Person link — Business Associate."
             }
           ],
           [
@@ -999,7 +1045,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Natalia Petrova recorded SGD 288K in high-value cash activity, with a single transaction reaching SGD 125K."
             }
           ],
           [
@@ -1069,7 +1119,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Natalia Petrova exhibits an anomaly score of 0.61 with 2.3x deviation from expected baseline behaviour."
             }
           ],
           [
@@ -1143,7 +1197,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Natalia Petrova transacted across 3 jurisdictions (SG,IRN,PRK), raising cross-border layering concerns."
             }
           ],
           [
@@ -1208,7 +1266,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Natalia Petrova has significant transactional exposure to Iran, a jurisdiction flagged for elevated financial crime risk."
             }
           ],
           [
@@ -1278,7 +1340,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Natalia Petrova has 3 third-party transactions representing 28% of account activity, with no clear economic rationale."
             }
           ],
           [
@@ -1348,7 +1414,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ComplexOwnershipStructure",
+              "scoreId": "Complex Ownership Structure",
+              "category": "Corporate Structure",
+              "description": "Natalia Petrova has 2 ownership layers across 2 jurisdictions, obscuring the ultimate beneficial ownership."
             }
           ]
         ],
@@ -1356,7 +1426,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-20T06:05:17.089168"
     },
     "_2": {
       "subjectId": "customer-1002",
@@ -1365,7 +1435,7 @@
       "scorecardOverallScore": 51.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1002",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-20 at 14:05:17 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -1391,8 +1461,7 @@
         "parsedName": {
           "initials": "N",
           "forename": "Natalia",
-          "familyName": "Petrova",
-          "maidenName": null
+          "familyName": "Petrova"
         },
         "gender": "F",
         "dateOfBirth": "1989-11-02",
@@ -1404,7 +1473,6 @@
         "identificationCountry": null,
         "address": {
           "streetName": "Pasdaran Avenue",
-          "cityName": "Tehran",
           "country": "IR",
           "parsedAddress": "Pasdaran Avenue, Tehran, Iran"
         }
@@ -1493,7 +1561,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ShellCompanyIndicators",
+              "scoreId": "Shell Company Indicators",
+              "category": "Corporate Structure",
+              "description": "Dragon Gate Pte Limited scores 85% on shell company indicators — Minimal employees, nominee directors."
             }
           ],
           [
@@ -1563,7 +1635,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RapidMovementOfFundsCustomer",
+              "scoreId": "Rapid Movement Of Funds Customer",
+              "category": "Funds Movement",
+              "description": "Dragon Gate Pte Limited moved SGD 1.8M with an average holding period of 4.2 hours, indicating rapid pass-through of funds."
             }
           ],
           [
@@ -1633,7 +1709,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ComplexOwnershipStructure",
+              "scoreId": "Complex Ownership Structure",
+              "category": "Corporate Structure",
+              "description": "Dragon Gate Pte Limited has 4 ownership layers across 3 jurisdictions, obscuring the ultimate beneficial ownership."
             }
           ],
           [
@@ -1703,7 +1783,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Dragon Gate Pte Limited recorded SGD 2.9M across 18 cash transactions exceeding the reporting threshold."
             }
           ],
           [
@@ -1773,7 +1857,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HubAndSpoke",
+              "scoreId": "Hub And Spoke",
+              "category": "Network Analysis",
+              "description": "Dragon Gate Pte Limited operates as a hub node with 7 spoke entities and a 89% centrality score, consistent with a layering network."
             }
           ],
           [
@@ -1843,7 +1931,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Dragon Gate Pte Limited has 9 third-party transactions representing 62% of account activity, with no clear economic rationale."
             }
           ],
           [
@@ -1912,7 +2004,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Dragon Gate Pte Limited is linked to VGB classified as Tax Haven, elevating the geographic risk profile."
             }
           ],
           [
@@ -1982,7 +2078,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Dragon Gate Pte Limited exhibits an anomaly score of 0.55, significantly deviating from expected transaction patterns."
             }
           ],
           [
@@ -2052,7 +2152,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Dragon Gate Pte Limited transacted across 4 jurisdictions (SG,HK,VG,BZ), raising cross-border layering concerns."
             }
           ],
           [
@@ -2122,7 +2226,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "TradeBasedLaundering",
+              "scoreId": "Trade Based Laundering",
+              "category": "Trade Based",
+              "description": "Dragon Gate Pte Limited shows trade-based laundering indicators in unspecified goods with 128% over-invoicing ratio against market benchmarks."
             }
           ],
           [
@@ -2187,7 +2295,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Dragon Gate Pte Limited has significant transactional exposure to British Virgin Islands, a jurisdiction flagged for elevated financial crime risk."
             }
           ]
         ],
@@ -2195,7 +2307,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-21T02:33:41.089168"
     },
     "_2": {
       "subjectId": "customer-1003",
@@ -2204,7 +2316,7 @@
       "scorecardOverallScore": 60.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1003",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-21 at 10:33:41 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -2343,7 +2455,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerIndirectLinkToHotlistRanked",
+              "scoreId": "Customer Indirect Link To Hotlist Ranked",
+              "category": "Hotlist",
+              "description": "Lee Wei Jian is 2 hops from Mohammed Al-Rashid Trading LLC (OFAC SDN) with an influence score of 87%."
             }
           ],
           [
@@ -2413,7 +2529,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "SanctionsProximity",
+              "scoreId": "Sanctions Proximity",
+              "category": "Sanctions",
+              "description": "Lee Wei Jian has a 87% proximity score to sanctioned entity Mohammed Al-Rashid Trading LLC, indicating close network ties to designated parties."
             }
           ],
           [
@@ -2478,7 +2598,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "PEPAssociation",
+              "scoreId": "PEP Association",
+              "category": "Politically Exposed Persons",
+              "description": "Lee Wei Jian is flagged as a Politically Exposed Person link — Close Associate."
             }
           ],
           [
@@ -2548,7 +2672,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Lee Wei Jian recorded SGD 1.9M in high-value cash activity, with a single transaction reaching SGD 425K."
             }
           ],
           [
@@ -2622,7 +2750,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Lee Wei Jian transacted across 5 jurisdictions (SG,AE,LB,CY,VG) across 12 transfers, raising cross-border layering concerns."
             }
           ],
           [
@@ -2692,7 +2824,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "AdverseMediaHits",
+              "scoreId": "Adverse Media Hits",
+              "category": "Adverse Media",
+              "description": "Lee Wei Jian has 3 adverse media hits from International wire services linking the entity to financial crime or misconduct."
             }
           ],
           [
@@ -2762,7 +2898,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Lee Wei Jian exhibits an anomaly score of 0.68 with 2.4x deviation from expected baseline behaviour."
             }
           ],
           [
@@ -2832,7 +2972,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Lee Wei Jian has 0 third-party transactions representing 45% of account activity, including 4 from unknown sources, with no clear economic rationale."
             }
           ],
           [
@@ -2901,7 +3045,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Lee Wei Jian has significant transactional exposure to Lebanon, a jurisdiction flagged for elevated financial crime risk."
             }
           ],
           [
@@ -2970,7 +3118,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Lee Wei Jian has counterparty relationships in ARE, a jurisdiction with heightened AML/CFT risk."
             }
           ],
           [
@@ -3044,7 +3196,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RoundAmountsCustomer",
+              "scoreId": "Round Amounts Customer",
+              "category": "Transaction Patterns",
+              "description": "Lee Wei Jian executed 7 transactions at round amounts (58% of total activity), a pattern commonly associated with structuring."
             }
           ]
         ],
@@ -3052,7 +3208,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-24T00:15:02.089168"
     },
     "_2": {
       "subjectId": "customer-1004",
@@ -3061,7 +3217,7 @@
       "scorecardOverallScore": 68.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1004",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-24 at 08:15:02 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -3086,8 +3242,7 @@
         "parsedName": {
           "initials": "L",
           "forename": "Wei Jian",
-          "familyName": "Lee",
-          "maidenName": null
+          "familyName": "Lee"
         },
         "gender": "M",
         "dateOfBirth": "1978-06-15",
@@ -3102,7 +3257,6 @@
           "streetName": "Telok Blangah Road",
           "floorNumber": "22",
           "unitNumber": "05",
-          "cityName": "Singapore",
           "postalCode": "098867",
           "country": "SG",
           "parsedAddress": "88 Telok Blangah Road #22-05, Singapore 098867"
@@ -3192,7 +3346,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ShellCompanyIndicators",
+              "scoreId": "Shell Company Indicators",
+              "category": "Corporate Structure",
+              "description": "Synergy Asia Trading Pte Ltd scores 71% on shell company indicators — Recently incorporated, minimal operations."
             }
           ],
           [
@@ -3262,7 +3420,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RapidMovementOfFundsCustomer",
+              "scoreId": "Rapid Movement Of Funds Customer",
+              "category": "Funds Movement",
+              "description": "Synergy Asia Trading Pte Ltd moved SGD 894K with an average holding period of 6.8 hours, indicating rapid pass-through of funds."
             }
           ],
           [
@@ -3332,7 +3494,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Synergy Asia Trading Pte Ltd recorded SGD 844K in high-value cash activity, with a single transaction reaching SGD 450K."
             }
           ],
           [
@@ -3402,7 +3568,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Synergy Asia Trading Pte Ltd has an anomaly score of 0.72 with 81% confidence of mirror trading activity."
             }
           ],
           [
@@ -3471,7 +3641,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Synergy Asia Trading Pte Ltd has counterparty relationships in HKG, a jurisdiction with heightened AML/CFT risk."
             }
           ],
           [
@@ -3541,7 +3715,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Synergy Asia Trading Pte Ltd has 3 third-party transactions representing 56% of account activity, with no clear economic rationale."
             }
           ],
           [
@@ -3611,7 +3789,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "TradeBasedLaundering",
+              "scoreId": "Trade Based Laundering",
+              "category": "Trade Based",
+              "description": "Synergy Asia Trading Pte Ltd shows trade-based laundering indicators in unspecified goods with 0% over-invoicing ratio against market benchmarks."
             }
           ],
           [
@@ -3681,7 +3863,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HubAndSpoke",
+              "scoreId": "Hub And Spoke",
+              "category": "Network Analysis",
+              "description": "Synergy Asia Trading Pte Ltd operates as a hub node with 4 spoke entities and a 62% centrality score, consistent with a layering network."
             }
           ],
           [
@@ -3751,7 +3937,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ComplexOwnershipStructure",
+              "scoreId": "Complex Ownership Structure",
+              "category": "Corporate Structure",
+              "description": "Synergy Asia Trading Pte Ltd has 2 ownership layers across 2 jurisdictions, obscuring the ultimate beneficial ownership."
             }
           ],
           [
@@ -3816,7 +4006,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Synergy Asia Trading Pte Ltd has significant transactional exposure to Hong Kong, a jurisdiction flagged for elevated financial crime risk."
             }
           ]
         ],
@@ -3824,7 +4018,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-22T03:47:29.089168"
     },
     "_2": {
       "subjectId": "customer-1005",
@@ -3833,7 +4027,7 @@
       "scorecardOverallScore": 55.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1005",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-22 at 11:47:29 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -3962,7 +4156,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Rajan Krishnamurthy reactivated after 14 months of dormancy with an anomaly score of 0.58, suggesting possible account takeover or misuse."
             }
           ],
           [
@@ -4032,7 +4230,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Rajan Krishnamurthy recorded SGD 520K in high-value cash activity, with a single transaction reaching SGD 185K."
             }
           ],
           [
@@ -4101,7 +4303,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Rajan Krishnamurthy has significant transactional exposure to India, a jurisdiction flagged for elevated financial crime risk."
             }
           ],
           [
@@ -4171,7 +4377,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RapidMovementOfFundsCustomer",
+              "scoreId": "Rapid Movement Of Funds Customer",
+              "category": "Funds Movement",
+              "description": "Rajan Krishnamurthy moved SGD 520K with an average holding period of 22.0 hours, indicating rapid pass-through of funds."
             }
           ],
           [
@@ -4241,7 +4451,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Rajan Krishnamurthy transacted across 3 jurisdictions (SG,IN,AE), raising cross-border layering concerns."
             }
           ],
           [
@@ -4311,7 +4525,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Rajan Krishnamurthy has 5 third-party transactions representing 38% of account activity, with no clear economic rationale."
             }
           ],
           [
@@ -4380,7 +4598,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Rajan Krishnamurthy has counterparty relationships in IND, a jurisdiction with heightened AML/CFT risk."
             }
           ],
           [
@@ -4454,7 +4676,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RoundAmountsCustomer",
+              "scoreId": "Round Amounts Customer",
+              "category": "Transaction Patterns",
+              "description": "Rajan Krishnamurthy executed 6 transactions at round amounts (52% of total activity), a pattern commonly associated with structuring."
             }
           ],
           [
@@ -4528,7 +4754,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "StructuringRelationship",
+              "scoreId": "Structuring Relationship",
+              "category": "Relationship Structuring",
+              "description": "Rajan Krishnamurthy shows a structuring window ratio of 38% across 9 transactions, consistent with deliberate threshold avoidance."
             }
           ]
         ],
@@ -4536,7 +4766,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-25T07:22:08.089168"
     },
     "_2": {
       "subjectId": "customer-1006",
@@ -4545,7 +4775,7 @@
       "scorecardOverallScore": 45.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1006",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-25 at 15:22:08 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -4575,8 +4805,7 @@
         "parsedName": {
           "initials": "R",
           "forename": "Rajan",
-          "familyName": "Krishnamurthy",
-          "maidenName": null
+          "familyName": "Krishnamurthy"
         },
         "gender": "M",
         "dateOfBirth": "1958-03-22",
@@ -4591,7 +4820,6 @@
           "streetName": "Tanjong Rhu Road",
           "floorNumber": "18",
           "unitNumber": "03",
-          "cityName": "Singapore",
           "postalCode": "436010",
           "country": "SG",
           "parsedAddress": "2 Tanjong Rhu Road #18-03, Singapore 436010"
@@ -4689,7 +4917,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerIndirectLinkToHotlistRanked",
+              "scoreId": "Customer Indirect Link To Hotlist Ranked",
+              "category": "Hotlist",
+              "description": "Pyongyang Tech Export Co. is 1 hop from Korea Ryonbong General Corporation (UNSC Resolution 1718) with an influence score of 95%."
             }
           ],
           [
@@ -4759,7 +4991,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "SanctionsProximity",
+              "scoreId": "Sanctions Proximity",
+              "category": "Sanctions",
+              "description": "Pyongyang Tech Export Co. has a 95% proximity score to sanctioned entity Korea Ryonbong General Corporation, indicating close network ties to designated parties."
             }
           ],
           [
@@ -4828,7 +5064,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Pyongyang Tech Export Co. is linked to PRK classified as FATF Blacklisted, elevating the geographic risk profile."
             }
           ],
           [
@@ -4902,7 +5142,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "TradeBasedLaundering",
+              "scoreId": "Trade Based Laundering",
+              "category": "Trade Based",
+              "description": "Pyongyang Tech Export Co. shows trade-based laundering indicators in Precision machining equipment with 145% over-invoicing ratio against market benchmarks."
             }
           ],
           [
@@ -4976,7 +5220,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Pyongyang Tech Export Co. transacted across 4 jurisdictions (SG,CN,IR,PRK) across 8 transfers, raising cross-border layering concerns."
             }
           ],
           [
@@ -5046,7 +5294,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ShellCompanyIndicators",
+              "scoreId": "Shell Company Indicators",
+              "category": "Corporate Structure",
+              "description": "Pyongyang Tech Export Co. scores 92% on shell company indicators — State-linked entity, opaque ownership."
             }
           ],
           [
@@ -5116,7 +5368,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ComplexOwnershipStructure",
+              "scoreId": "Complex Ownership Structure",
+              "category": "Corporate Structure",
+              "description": "Pyongyang Tech Export Co. has 5 ownership layers across 4 jurisdictions, obscuring the ultimate beneficial ownership."
             }
           ],
           [
@@ -5181,7 +5437,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "PEPAssociation",
+              "scoreId": "PEP Association",
+              "category": "Politically Exposed Persons",
+              "description": "Pyongyang Tech Export Co. is flagged as a Politically Exposed Person link — Government-linked — DPRK Ministry of Defence."
             }
           ],
           [
@@ -5251,7 +5511,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "AdverseMediaHits",
+              "scoreId": "Adverse Media Hits",
+              "category": "Adverse Media",
+              "description": "Pyongyang Tech Export Co. has 7 adverse media hits from UN Panel of Experts reports linking the entity to financial crime or misconduct."
             }
           ],
           [
@@ -5316,7 +5580,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Pyongyang Tech Export Co. has significant transactional exposure to North Korea, a jurisdiction flagged for elevated financial crime risk."
             }
           ],
           [
@@ -5386,7 +5654,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Pyongyang Tech Export Co. recorded SGD 1.2M across 3 cash transactions exceeding the reporting threshold."
             }
           ],
           [
@@ -5456,7 +5728,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Pyongyang Tech Export Co. exhibits an anomaly score of 0.74, significantly deviating from expected transaction patterns."
             }
           ]
         ],
@@ -5464,7 +5740,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-13T23:55:19.089168"
     },
     "_2": {
       "subjectId": "customer-1007",
@@ -5473,7 +5749,7 @@
       "scorecardOverallScore": 79.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1007",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-14 at 07:55:19 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -5602,7 +5878,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Tan Mei Ling recorded SGD 185K across 12 cash transactions exceeding the reporting threshold."
             }
           ],
           [
@@ -5672,7 +5952,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Tan Mei Ling exhibits an anomaly score of 0.55 with 1.8x deviation from expected baseline behaviour."
             }
           ],
           [
@@ -5746,7 +6030,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "StructuringRelationship",
+              "scoreId": "Structuring Relationship",
+              "category": "Relationship Structuring",
+              "description": "Tan Mei Ling shows a structuring window ratio of 65% across 29 transactions, consistent with deliberate threshold avoidance."
             }
           ],
           [
@@ -5816,7 +6104,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Tan Mei Ling has 7 third-party transactions representing 41% of account activity, with no clear economic rationale."
             }
           ],
           [
@@ -5881,7 +6173,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Tan Mei Ling has significant transactional exposure to Myanmar, a jurisdiction flagged for elevated financial crime risk."
             }
           ],
           [
@@ -5955,7 +6251,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RoundAmountsCustomer",
+              "scoreId": "Round Amounts Customer",
+              "category": "Transaction Patterns",
+              "description": "Tan Mei Ling executed 19 transactions at round amounts (65% of total activity), a pattern commonly associated with structuring."
             }
           ],
           [
@@ -6025,7 +6325,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CancelledCustomerScore",
+              "scoreId": "Cancelled Customer Score",
+              "category": "Account Activity",
+              "description": "Tan Mei Ling has 2 cancelled or closed accounts out of 7 total accounts, indicating possible de-risking by financial institutions."
             }
           ],
           [
@@ -6094,7 +6398,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Tan Mei Ling has counterparty relationships in MMR, a jurisdiction with heightened AML/CFT risk."
             }
           ]
         ],
@@ -6102,7 +6410,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-26T05:08:44.089168"
     },
     "_2": {
       "subjectId": "customer-1008",
@@ -6111,7 +6419,7 @@
       "scorecardOverallScore": 40.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1008",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-26 at 13:08:44 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -6142,8 +6450,7 @@
         "parsedName": {
           "initials": "T",
           "forename": "Mei Ling",
-          "familyName": "Tan",
-          "maidenName": null
+          "familyName": "Tan"
         },
         "gender": "F",
         "dateOfBirth": "1995-08-30",
@@ -6158,7 +6465,6 @@
           "streetName": "Bedok North Street 2",
           "floorNumber": "04",
           "unitNumber": "118",
-          "cityName": "Singapore",
           "postalCode": "460123",
           "country": "SG",
           "parsedAddress": "123 Bedok North Street 2 #04-118, Singapore 460123"
@@ -6243,7 +6549,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Ong Bee Lian has significant transactional exposure to Indonesia, a jurisdiction flagged for elevated financial crime risk."
             }
           ]
         ],
@@ -6251,7 +6561,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-28T08:30:55.089168"
     },
     "_2": {
       "subjectId": "customer-1009",
@@ -6260,7 +6570,7 @@
       "scorecardOverallScore": 4.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1009",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-28 at 16:30:55 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -6283,8 +6593,7 @@
         "parsedName": {
           "initials": "O",
           "forename": "Bee Lian",
-          "familyName": "Ong",
-          "maidenName": null
+          "familyName": "Ong"
         },
         "gender": "F",
         "dateOfBirth": "1975-08-22",
@@ -6299,7 +6608,6 @@
           "streetName": "Jurong East Street 21",
           "floorNumber": "04",
           "unitNumber": "15",
-          "cityName": "Singapore",
           "postalCode": "600203",
           "country": "SG",
           "parsedAddress": "203 Jurong East Street 21 #04-15, Singapore 600203"
@@ -6384,7 +6692,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Sunrise Wellness Pte Ltd has significant transactional exposure to Cambodia, a jurisdiction flagged for elevated financial crime risk."
             }
           ],
           [
@@ -6458,7 +6770,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RoundAmountsCustomer",
+              "scoreId": "Round Amounts Customer",
+              "category": "Transaction Patterns",
+              "description": "Sunrise Wellness Pte Ltd executed 4 transactions at round amounts (31% of total activity), a pattern commonly associated with structuring."
             }
           ]
         ],
@@ -6466,7 +6782,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-03-01T01:45:12.089168"
     },
     "_2": {
       "subjectId": "customer-1010",
@@ -6475,7 +6791,7 @@
       "scorecardOverallScore": 8.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1010",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-03-01 at 09:45:12 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -6609,7 +6925,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerIndirectLinkToHotlistRanked",
+              "scoreId": "Customer Indirect Link To Hotlist Ranked",
+              "category": "Hotlist",
+              "description": "Viktor Lazarev is 1 hop from Rostec State Corporation (OFAC SDN) with an influence score of 96%."
             }
           ],
           [
@@ -6679,7 +6999,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "SanctionsProximity",
+              "scoreId": "Sanctions Proximity",
+              "category": "Sanctions",
+              "description": "Viktor Lazarev has a 96% proximity score to sanctioned entity Rostec State Corporation, indicating close network ties to designated parties."
             }
           ],
           [
@@ -6749,7 +7073,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ShellCompanyIndicators",
+              "scoreId": "Shell Company Indicators",
+              "category": "Corporate Structure",
+              "description": "Viktor Lazarev scores 94% on shell company indicators — Nominee directors, no physical office, BVI registered."
             }
           ],
           [
@@ -6823,7 +7151,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Viktor Lazarev recorded SGD 4.2M across 8 cash transactions exceeding the reporting threshold."
             }
           ],
           [
@@ -6888,7 +7220,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "PEPAssociation",
+              "scoreId": "PEP Association",
+              "category": "Politically Exposed Persons",
+              "description": "Viktor Lazarev is flagged as a Politically Exposed Person link — Former Deputy Minister, Russian Ministry of Industry."
             }
           ],
           [
@@ -6958,7 +7294,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "AdverseMediaHits",
+              "scoreId": "Adverse Media Hits",
+              "category": "Adverse Media",
+              "description": "Viktor Lazarev has 12 adverse media hits from OCCRP Investigation 2025 linking the entity to financial crime or misconduct."
             }
           ],
           [
@@ -7028,7 +7368,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CancelledCustomerScore",
+              "scoreId": "Cancelled Customer Score",
+              "category": "Account Activity",
+              "description": "Viktor Lazarev has 4 cancelled or closed accounts out of 11 total accounts, indicating possible de-risking by financial institutions."
             }
           ],
           [
@@ -7098,7 +7442,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RapidMovementOfFundsCustomer",
+              "scoreId": "Rapid Movement Of Funds Customer",
+              "category": "Funds Movement",
+              "description": "Viktor Lazarev moved SGD 8.5M with an average holding period of 1.8 hours, indicating rapid pass-through of funds."
             }
           ],
           [
@@ -7172,7 +7520,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "TradeBasedLaundering",
+              "scoreId": "Trade Based Laundering",
+              "category": "Trade Based",
+              "description": "Viktor Lazarev shows trade-based laundering indicators in Titanium alloy components with 215% over-invoicing ratio against market benchmarks."
             }
           ],
           [
@@ -7242,7 +7594,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ComplexOwnershipStructure",
+              "scoreId": "Complex Ownership Structure",
+              "category": "Corporate Structure",
+              "description": "Viktor Lazarev has 7 ownership layers across 5 jurisdictions, obscuring the ultimate beneficial ownership."
             }
           ],
           [
@@ -7311,7 +7667,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Viktor Lazarev is linked to RUS classified as FATF High Risk, elevating the geographic risk profile."
             }
           ],
           [
@@ -7385,7 +7745,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Viktor Lazarev transacted across 7 jurisdictions (SG,RU,CY,BVI,AE,CH,HK) across 23 transfers, raising cross-border layering concerns."
             }
           ],
           [
@@ -7455,7 +7819,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HubAndSpoke",
+              "scoreId": "Hub And Spoke",
+              "category": "Network Analysis",
+              "description": "Viktor Lazarev operates as a hub node with 14 spoke entities and a 97% centrality score, consistent with a layering network."
             }
           ],
           [
@@ -7533,7 +7901,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "StructuringRelationship",
+              "scoreId": "Structuring Relationship",
+              "category": "Relationship Structuring",
+              "description": "Viktor Lazarev shows a structuring window ratio of 88% across 42 transactions averaging SGD 9,950, consistent with deliberate threshold avoidance."
             }
           ],
           [
@@ -7603,7 +7975,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Viktor Lazarev exhibits an anomaly score of 0.91 with 4.8x deviation from expected baseline behaviour."
             }
           ],
           [
@@ -7668,7 +8044,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Viktor Lazarev has significant transactional exposure to Russia, a jurisdiction flagged for elevated financial crime risk."
             }
           ],
           [
@@ -7742,7 +8122,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RoundAmountsCustomer",
+              "scoreId": "Round Amounts Customer",
+              "category": "Transaction Patterns",
+              "description": "Viktor Lazarev executed 33 transactions at round amounts (79% of total activity), a pattern commonly associated with structuring."
             }
           ],
           [
@@ -7812,7 +8196,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Viktor Lazarev has 18 third-party transactions representing 71% of account activity, with no clear economic rationale."
             }
           ],
           [
@@ -7890,7 +8278,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerIndirectLinkToHotlistRanked",
+              "scoreId": "Customer Indirect Link To Hotlist Ranked",
+              "category": "Hotlist",
+              "description": "Viktor Lazarev is 1 hop from Promtechnologia LLC (EU Consolidated Sanctions) with an influence score of 91%."
             }
           ],
           [
@@ -7960,7 +8352,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "SanctionsProximity",
+              "scoreId": "Sanctions Proximity",
+              "category": "Sanctions",
+              "description": "Viktor Lazarev has a 91% proximity score to sanctioned entity Promtechnologia LLC, indicating close network ties to designated parties."
             }
           ],
           [
@@ -8034,7 +8430,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Viktor Lazarev recorded SGD 2.1M across 5 cash transactions exceeding the reporting threshold."
             }
           ],
           [
@@ -8099,7 +8499,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "PEPAssociation",
+              "scoreId": "PEP Association",
+              "category": "Politically Exposed Persons",
+              "description": "Viktor Lazarev is flagged as a Politically Exposed Person link — Spouse is board member of state energy conglomerate."
             }
           ],
           [
@@ -8169,7 +8573,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "AdverseMediaHits",
+              "scoreId": "Adverse Media Hits",
+              "category": "Adverse Media",
+              "description": "Viktor Lazarev has 5 adverse media hits from Pandora Papers leak — ICIJ linking the entity to financial crime or misconduct."
             }
           ],
           [
@@ -8243,7 +8651,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RapidMovementOfFundsCustomer",
+              "scoreId": "Rapid Movement Of Funds Customer",
+              "category": "Funds Movement",
+              "description": "Viktor Lazarev moved SGD 3.2M with an average holding period of 2.1 hours, indicating rapid pass-through of funds."
             }
           ]
         ],
@@ -8251,7 +8663,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-09T22:30:22.089168"
     },
     "_2": {
       "subjectId": "customer-1011",
@@ -8260,7 +8672,7 @@
       "scorecardOverallScore": 156.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1011",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-10 at 06:30:22 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [
@@ -8284,8 +8696,7 @@
         "parsedName": {
           "initials": "V",
           "forename": "Viktor",
-          "familyName": "Lazarev",
-          "maidenName": null
+          "familyName": "Lazarev"
         },
         "gender": "M",
         "dateOfBirth": "1968-06-19",
@@ -8300,7 +8711,6 @@
           "streetName": "Cuscaden Road",
           "floorNumber": "38",
           "unitNumber": "01",
-          "cityName": "Singapore",
           "postalCode": "249715",
           "country": "SG",
           "parsedAddress": "1 Cuscaden Road #38-01, Singapore 249715"
@@ -8398,7 +8808,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerIndirectLinkToHotlistRanked",
+              "scoreId": "Customer Indirect Link To Hotlist Ranked",
+              "category": "Hotlist",
+              "description": "Golden Phoenix International Ltd is 1 hop from Myanmar Economic Holdings Ltd (OFAC SDN) with an influence score of 93%."
             }
           ],
           [
@@ -8468,7 +8882,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "SanctionsProximity",
+              "scoreId": "Sanctions Proximity",
+              "category": "Sanctions",
+              "description": "Golden Phoenix International Ltd has a 93% proximity score to sanctioned entity Myanmar Economic Holdings Ltd, indicating close network ties to designated parties."
             }
           ],
           [
@@ -8538,7 +8956,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ShellCompanyIndicators",
+              "scoreId": "Shell Company Indicators",
+              "category": "Corporate Structure",
+              "description": "Golden Phoenix International Ltd scores 91% on shell company indicators — Registered in Labuan, no employees, dormant then reactivated."
             }
           ],
           [
@@ -8612,7 +9034,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Golden Phoenix International Ltd recorded SGD 3.8M across 11 cash transactions exceeding the reporting threshold."
             }
           ],
           [
@@ -8677,7 +9103,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "PEPAssociation",
+              "scoreId": "PEP Association",
+              "category": "Politically Exposed Persons",
+              "description": "Golden Phoenix International Ltd is flagged as a Politically Exposed Person link — UBO is retired Myanmar military general."
             }
           ],
           [
@@ -8747,7 +9177,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "AdverseMediaHits",
+              "scoreId": "Adverse Media Hits",
+              "category": "Adverse Media",
+              "description": "Golden Phoenix International Ltd has 8 adverse media hits from Justice for Myanmar NGO report linking the entity to financial crime or misconduct."
             }
           ],
           [
@@ -8817,7 +9251,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CancelledCustomerScore",
+              "scoreId": "Cancelled Customer Score",
+              "category": "Account Activity",
+              "description": "Golden Phoenix International Ltd has 3 cancelled or closed accounts out of 9 total accounts, indicating possible de-risking by financial institutions."
             }
           ],
           [
@@ -8887,7 +9325,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RapidMovementOfFundsCustomer",
+              "scoreId": "Rapid Movement Of Funds Customer",
+              "category": "Funds Movement",
+              "description": "Golden Phoenix International Ltd moved SGD 6.2M with an average holding period of 2.4 hours, indicating rapid pass-through of funds."
             }
           ],
           [
@@ -8961,7 +9403,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "TradeBasedLaundering",
+              "scoreId": "Trade Based Laundering",
+              "category": "Trade Based",
+              "description": "Golden Phoenix International Ltd shows trade-based laundering indicators in Jade and gemstones with 185% over-invoicing ratio against market benchmarks."
             }
           ],
           [
@@ -9031,7 +9477,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ComplexOwnershipStructure",
+              "scoreId": "Complex Ownership Structure",
+              "category": "Corporate Structure",
+              "description": "Golden Phoenix International Ltd has 6 ownership layers across 4 jurisdictions, obscuring the ultimate beneficial ownership."
             }
           ],
           [
@@ -9100,7 +9550,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerFromHighRiskCountry",
+              "scoreId": "Customer From High Risk Country",
+              "category": "Geographic Risk",
+              "description": "Golden Phoenix International Ltd is linked to MMR classified as FATF Blacklisted, elevating the geographic risk profile."
             }
           ],
           [
@@ -9174,7 +9628,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Golden Phoenix International Ltd transacted across 6 jurisdictions (SG,MM,TH,CN,HK,MY) across 19 transfers, raising cross-border layering concerns."
             }
           ],
           [
@@ -9244,7 +9702,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HubAndSpoke",
+              "scoreId": "Hub And Spoke",
+              "category": "Network Analysis",
+              "description": "Golden Phoenix International Ltd operates as a hub node with 11 spoke entities and a 94% centrality score, consistent with a layering network."
             }
           ],
           [
@@ -9322,7 +9784,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "StructuringRelationship",
+              "scoreId": "Structuring Relationship",
+              "category": "Relationship Structuring",
+              "description": "Golden Phoenix International Ltd shows a structuring window ratio of 84% across 38 transactions averaging SGD 9,900, consistent with deliberate threshold avoidance."
             }
           ],
           [
@@ -9392,7 +9858,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Golden Phoenix International Ltd exhibits an anomaly score of 0.87 with 4.2x deviation from expected baseline behaviour."
             }
           ],
           [
@@ -9457,7 +9927,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Golden Phoenix International Ltd has significant transactional exposure to Myanmar, a jurisdiction flagged for elevated financial crime risk."
             }
           ],
           [
@@ -9531,7 +10005,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "RoundAmountsCustomer",
+              "scoreId": "Round Amounts Customer",
+              "category": "Transaction Patterns",
+              "description": "Golden Phoenix International Ltd executed 31 transactions at round amounts (82% of total activity), a pattern commonly associated with structuring."
             }
           ],
           [
@@ -9601,7 +10079,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Golden Phoenix International Ltd has 15 third-party transactions representing 65% of account activity, with no clear economic rationale."
             }
           ],
           [
@@ -9679,7 +10161,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "CustomerIndirectLinkToHotlistRanked",
+              "scoreId": "Customer Indirect Link To Hotlist Ranked",
+              "category": "Hotlist",
+              "description": "Golden Phoenix International Ltd is 2 hops from Myanmar Gems Enterprise (State-owned) (UNSC) with an influence score of 85%."
             }
           ],
           [
@@ -9749,7 +10235,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "SanctionsProximity",
+              "scoreId": "Sanctions Proximity",
+              "category": "Sanctions",
+              "description": "Golden Phoenix International Ltd has a 85% proximity score to sanctioned entity Myanmar Gems Enterprise (State-owned), indicating close network ties to designated parties."
             }
           ],
           [
@@ -9823,7 +10313,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Golden Phoenix International Ltd recorded SGD 1.9M across 6 cash transactions exceeding the reporting threshold."
             }
           ],
           [
@@ -9893,7 +10387,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "ShellCompanyIndicators",
+              "scoreId": "Shell Company Indicators",
+              "category": "Corporate Structure",
+              "description": "Golden Phoenix International Ltd scores 88% on shell company indicators — Subsidiary Phoenix Jade Trading — same nominee director, BVI."
             }
           ],
           [
@@ -9967,7 +10465,11 @@
               "relatedEdges": [],
               "relatedPaths": [],
               "rankedPaths": null,
-              "relatedForeignDocuments": null
+              "relatedForeignDocuments": null,
+              "id": "TradeBasedLaundering",
+              "scoreId": "Trade Based Laundering",
+              "category": "Trade Based",
+              "description": "Golden Phoenix International Ltd shows trade-based laundering indicators in Teak timber exports with 162% over-invoicing ratio against market benchmarks."
             }
           ]
         ],
@@ -9975,7 +10477,7 @@
         "relatedScores": []
       },
       "related1": [],
-      "alertingRunTime": "2026-03-03T00:40:56.089168"
+      "alertingRunTime": "2026-02-12T03:18:37.089168"
     },
     "_2": {
       "subjectId": "customer-1012",
@@ -9984,7 +10486,7 @@
       "scorecardOverallScore": 151.0,
       "alertingAuditDetails": {
         "subjectId": "customer-1012",
-        "alertingRunTime": "2026-03-03 at 08:40:56 SGT",
+        "alertingRunTime": "2026-02-12 at 11:18:37 SGT",
         "subjectAlert": true,
         "subjectMostRecentAlertTime": "2026-03-03 at 08:40:56 SGT",
         "alertReason": [

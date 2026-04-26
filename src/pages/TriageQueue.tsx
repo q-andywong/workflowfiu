@@ -5,7 +5,7 @@ import { Inbox, Filter, ShieldAlert, ArrowRight, UserPlus, FileSearch, AlertTria
 import BulkActionToolbar from '../components/BulkActionToolbar';
 
 const TriageQueue: React.FC = () => {
-    const { cases, allCases, stats, setView, setSelectedCase, bulkUpdateCases, linkEntitiesToCase, assessEntity, approveCase } = useApp();
+    const { cases, allCases, stats, setView, setSelectedCase, bulkUpdateCases, linkEntitiesToCase, assessEntity, approveCase, ingestCases } = useApp();
     const { user } = useAuth();
     
     const isInvestigator = user?.role === 'INVESTIGATOR';
@@ -55,13 +55,15 @@ const TriageQueue: React.FC = () => {
 
     // Scanning Simulation State
     const [isScanning, setIsScanning] = useState(false);
-    const [scanStep, setScanStep] = useState(0); // 0: Connect, 1: Retrieve, 2: Triage
+    const [scanStep, setScanStep] = useState(0); // 0: Connect, 1: Retrieve, 2: Triage, 3: Results
     const [scanProgress, setScanProgress] = useState(0);
+    const [scanResults, setScanResults] = useState<{ tasks: number; strs: number; cmrs: number; ctrs: number }>({ tasks: 0, strs: 0, cmrs: 0, ctrs: 0 });
 
     const handleStartScan = () => {
         setIsScanning(true);
         setScanStep(0);
         setScanProgress(0);
+        setScanResults({ tasks: 0, strs: 0, cmrs: 0, ctrs: 0 });
 
         // Phase 1: Connecting (1.5s)
         const phase1Duration = 1500;
@@ -75,11 +77,30 @@ const TriageQueue: React.FC = () => {
             if (timer >= phase1Duration) {
                 clearInterval(progressInterval);
                 setTimeout(() => {
-                    // Phase 2: Retrieving (1s)
+                    // Phase 2: Retrieving — fetch new tasks from JSON (1s animation)
                     setScanStep(1);
                     setScanProgress(0);
                     let timer2 = 0;
                     const phase2Duration = 1000;
+
+                    // Fetch new tasks in parallel with animation
+                    fetch('/samples/NewTasksToIngest.json')
+                        .then(res => res.ok ? res.json() : [])
+                        .catch(() => [])
+                        .then((newTasks: any[]) => {
+                            // Compute counts from newly fetched tasks before dedup
+                            const existingIds = new Set(allCases.map(c => c.id));
+                            const trulyNew = newTasks.filter((t: any) => !existingIds.has(t.id));
+                            const newReports = trulyNew.flatMap((t: any) => t.reports || []);
+                            setScanResults({
+                                tasks: trulyNew.length,
+                                strs: newReports.filter((r: any) => r.type === 'STR').length,
+                                cmrs: newReports.filter((r: any) => r.type === 'CMR').length,
+                                ctrs: newReports.filter((r: any) => r.type === 'CTR').length,
+                            });
+                            ingestCases(newTasks);
+                        });
+
                     const progressInterval2 = setInterval(() => {
                         timer2 += interval;
                         setScanProgress(Math.min((timer2 / phase2Duration) * 100, 100));
@@ -96,11 +117,11 @@ const TriageQueue: React.FC = () => {
                                     setScanProgress(Math.min((timer3 / phase3Duration) * 100, 100));
                                     if (timer3 >= phase3Duration) {
                                         clearInterval(progressInterval3);
+                                        // Phase 4: Show results instead of dismissing
                                         setTimeout(() => {
-                                            setIsScanning(false);
-                                            setScanStep(0);
-                                            setScanProgress(0);
-                                        }, 500);
+                                            setScanStep(3);
+                                            setScanProgress(100);
+                                        }, 400);
                                     }
                                 }, interval);
                             }, 200);
@@ -109,6 +130,12 @@ const TriageQueue: React.FC = () => {
                 }, 200);
             }
         }, interval);
+    };
+
+    const handleDismissScan = () => {
+        setIsScanning(false);
+        setScanStep(0);
+        setScanProgress(0);
     };
     
     // Kafka Sync Simulation Logic
@@ -225,55 +252,68 @@ const TriageQueue: React.FC = () => {
 
             {/* Manager Dashboard (Summary Tiles) */}
             {!isInvestigator && managerView === 'SUMMARY' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* Triage Bucket */}
-                    <div onClick={() => setManagerView('TRIAGE')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all cursor-pointer group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
-                        <div className="relative z-10">
-                            <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl w-fit mb-4"><Inbox className="w-5 h-5" /></div>
-                            <div className="text-3xl font-black text-gray-900">{triageEntities.length}</div>
-                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Pending Triage</div>
-                            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
-                                Expand Details <ChevronRight className="w-3 h-3" />
+                <div className="space-y-6">
+                    {/* Row 1: Pending Triage, Priority Bypasses, Hibernated */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Triage Bucket */}
+                        <div onClick={() => setManagerView('TRIAGE')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all cursor-pointer group relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
+                            <div className="relative z-10">
+                                <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl w-fit mb-4"><Inbox className="w-5 h-5" /></div>
+                                <div className="text-3xl font-black text-gray-900">{triageEntities.length}</div>
+                                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Pending Triage</div>
+                                <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">Tasks with risk score between <span className="font-black text-blue-600">10</span> and <span className="font-black text-blue-600">150</span>, awaiting analyst assessment and evidence review.</p>
+                                <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                                    Expand Details <ChevronRight className="w-3 h-3" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Priority Bucket */}
+                        <div onClick={() => setManagerView('PRIORITY')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-red-200 transition-all cursor-pointer group relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
+                            <div className="relative z-10">
+                                <div className="p-3 bg-red-50 text-red-600 rounded-2xl w-fit mb-4"><ShieldAlert className="w-5 h-5" /></div>
+                                <div className="text-3xl font-black text-gray-900">{priorityCases.length}</div>
+                                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Priority Bypasses</div>
+                                <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">Auto-escalated: risk score exceeds <span className="font-black text-red-600">&gt; 150</span>. Sanctions matches, PEP exposure, or multiple high-severity hits.</p>
+                                <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between text-red-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                                    Access List <ChevronRight className="w-3 h-3" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Hibernation Bucket */}
+                        <div onClick={() => setManagerView('HIBERNATED')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-green-200 transition-all cursor-pointer group relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
+                            <div className="relative z-10">
+                                <div className="p-3 bg-green-50 text-green-600 rounded-2xl w-fit mb-4"><Clock className="w-5 h-5" /></div>
+                                <div className="text-3xl font-black text-gray-900">{hibernationCount}</div>
+                                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Hibernated</div>
+                                <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">Auto-deferred: risk score below <span className="font-black text-green-600">&lt; 10</span>. Geographic flags only, no behavioural anomalies. Background monitoring.</p>
+                                <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between text-green-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                                    Access List <ChevronRight className="w-3 h-3" />
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Pending Approvals Bucket */}
+                    {/* Row 2: Review Approvals (full-width banner) */}
                     <div onClick={() => setManagerView('APPROVALS')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-emerald-200 transition-all cursor-pointer group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
-                        <div className="relative z-10">
-                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl w-fit mb-4"><CheckCircle className="w-5 h-5" /></div>
-                            <div className="text-3xl font-black text-gray-900">{pendingApprovals.length}</div>
-                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Awaiting Sign-off</div>
-                            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-emerald-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+                        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="flex items-center gap-5">
+                                <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl shrink-0"><CheckCircle className="w-5 h-5" /></div>
+                                <div>
+                                    <div className="flex items-baseline gap-3">
+                                        <div className="text-3xl font-black text-gray-900">{pendingApprovals.length}</div>
+                                        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Awaiting Sign-off</div>
+                                    </div>
+                                    <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">Tasks escalated by analysts requiring managerial authorization to convert into formal investigation cases. Includes status changes, data corrections, and deletion requests.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-emerald-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform shrink-0">
                                 Review Approvals <ChevronRight className="w-3 h-3" />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Priority Bucket */}
-                    <div onClick={() => setManagerView('PRIORITY')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-red-200 transition-all cursor-pointer group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
-                        <div className="relative z-10">
-                            <div className="p-3 bg-red-50 text-red-600 rounded-2xl w-fit mb-4"><ShieldAlert className="w-5 h-5" /></div>
-                            <div className="text-3xl font-black text-gray-900">{priorityCases.length}</div>
-                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Priority Bypasses</div>
-                            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-red-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
-                                Access List <ChevronRight className="w-3 h-3" />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Hibernation Bucket */}
-                    <div onClick={() => setManagerView('HIBERNATED')} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-green-200 transition-all cursor-pointer group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
-                        <div className="relative z-10">
-                            <div className="p-3 bg-green-50 text-green-600 rounded-2xl w-fit mb-4"><Clock className="w-5 h-5" /></div>
-                            <div className="text-3xl font-black text-gray-900">{hibernationCount}</div>
-                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Hibernated</div>
-                            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-green-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform">
-                                Access List <ChevronRight className="w-3 h-3" />
                             </div>
                         </div>
                     </div>
@@ -319,11 +359,11 @@ const TriageQueue: React.FC = () => {
                                                             />
                                                         </td>
                                                         <td className="px-6 py-4 cursor-pointer" onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}>
-                                                            <div className="flex items-center gap-4">
-                                                                <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
+                                                            <div className="flex items-start gap-4">
+                                                                <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors mt-0.5">
                                                                     <Inbox className="w-5 h-5" />
                                                                 </div>
-                                                                <div>
+                                                                <div className="min-w-0">
                                                                     <div className="text-sm font-black text-gray-900 flex items-center gap-2 group-hover:text-blue-600 transition-colors">
                                                                         {c.subjects[0]?.name}
                                                                         {c.subjects.length > 1 && (
@@ -331,37 +371,28 @@ const TriageQueue: React.FC = () => {
                                                                         )}
                                                                     </div>
                                                                     <div className="flex items-center gap-2 mt-0.5">
-                                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.id}</div>
-                                                                        
+                                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest shrink-0">{c.id}</div>
                                                                         {c.reports && c.reports.length > 0 && (
                                                                             <>
-                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                                                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/5 border border-blue-500/10 rounded-lg shadow-sm">
-                                                                                    <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">{c.reports[0].type}: {c.reports[0].id}</span>
-                                                                                    {c.reports.length > 1 && (
-                                                                                        <span className="text-[8px] font-black text-blue-400">+{c.reports.length - 1} more</span>
-                                                                                    )}
+                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full shrink-0"></div>
+                                                                                <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0">
+                                                                                    {c.reports.length} report{c.reports.length > 1 ? 's' : ''}
                                                                                 </div>
                                                                             </>
                                                                         )}
-
+                                                                    </div>
+                                                                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
                                                                         {Array.from(new Set(c.subjects.flatMap(s => s.crimeTypologies || []))).length > 0 ? (
                                                                             Array.from(new Set(c.subjects.flatMap(s => s.crimeTypologies || []))).map((typ, idx) => (
-                                                                                <React.Fragment key={idx}>
-                                                                                    <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                                                    <div className="text-[9px] font-black w-fit flex items-center gap-1.5 text-amber-600 uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded border border-amber-200 shadow-sm shrink-0">
-                                                                                        <AlertTriangle className="w-2.5 h-2.5" />
-                                                                                        {typ}
-                                                                                    </div>
-                                                                                </React.Fragment>
+                                                                                <div key={idx} className="text-[9px] font-black flex items-center gap-1 text-amber-600 uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                                                                    <AlertTriangle className="w-2.5 h-2.5" />
+                                                                                    {typ}
+                                                                                </div>
                                                                             ))
                                                                         ) : (
-                                                                            <React.Fragment>
-                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                                                <div className="text-[9px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded border border-blue-100 shrink-0">
-                                                                                    General Triage
-                                                                                </div>
-                                                                            </React.Fragment>
+                                                                            <div className="text-[9px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                                                                                General Triage
+                                                                            </div>
                                                                         )}
                                                                     </div>
                                                                 </div>
@@ -434,24 +465,42 @@ const TriageQueue: React.FC = () => {
                                                 {priorityCases.map(pc => (
                                                     <tr key={pc.id} className="hover:bg-red-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-red-600 cursor-pointer" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
                                                         <td className="px-6 py-4">
-                                                            <span className="text-sm font-black text-gray-900 tracking-tight">{pc.id}</span>
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <div>
-                                                                <div className="text-sm font-black text-gray-900 truncate group-hover:text-red-600 transition-colors flex items-center gap-2">
-                                                                    {pc.title}
+                                                            <div className="flex items-start gap-4">
+                                                                <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-100 text-red-600 flex items-center justify-center shrink-0 group-hover:bg-red-100 transition-colors mt-0.5">
+                                                                    <ShieldAlert className="w-5 h-5" />
                                                                 </div>
-                                                                <div className="flex flex-wrap items-center gap-1 mt-1.5">
-                                                                    {pc.reports && pc.reports.length > 0 && (
-                                                                        <span className="text-[8px] font-black text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-200 uppercase tracking-tighter">
-                                                                            Source: {pc.reports[0].id}
-                                                                        </span>
-                                                                    )}
-                                                                    {pc.subjects.map(s => (
-                                                                        <span key={s.id} className="text-[8px] font-black text-white bg-gradient-to-r from-red-500 to-orange-500 px-1.5 py-0.5 rounded shadow-sm shadow-red-500/20 uppercase border border-red-400/30">
-                                                                            {s.name}
-                                                                        </span>
-                                                                    ))}
+                                                                <div className="min-w-0">
+                                                                    <div className="text-sm font-black text-gray-900 flex items-center gap-2 group-hover:text-red-600 transition-colors">
+                                                                        {pc.subjects[0]?.name}
+                                                                        {pc.subjects.length > 1 && (
+                                                                            <span className="bg-red-50 text-red-600 px-1.5 py-0.5 rounded text-[8px] border border-red-100">+{pc.subjects.length - 1} Entities</span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest shrink-0">{pc.id}</div>
+                                                                        {pc.reports && pc.reports.length > 0 && (
+                                                                            <>
+                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full shrink-0"></div>
+                                                                                <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0">
+                                                                                    {pc.reports.length} report{pc.reports.length > 1 ? 's' : ''}
+                                                                                </div>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                                                        {Array.from(new Set(pc.subjects.flatMap(s => s.crimeTypologies || []))).length > 0 ? (
+                                                                            Array.from(new Set(pc.subjects.flatMap(s => s.crimeTypologies || []))).map((typ, idx) => (
+                                                                                <div key={idx} className="text-[9px] font-black flex items-center gap-1 text-red-600 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded border border-red-200">
+                                                                                    <AlertTriangle className="w-2.5 h-2.5" />
+                                                                                    {typ}
+                                                                                </div>
+                                                                            ))
+                                                                        ) : (
+                                                                            <div className="text-[9px] font-black text-red-600 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded border border-red-100">
+                                                                                Priority Bypass
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -464,11 +513,7 @@ const TriageQueue: React.FC = () => {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 text-center">
-                                                            <span className={`font-black px-2.5 py-1 rounded shadow-sm text-xs border ${
-                                                                Math.max(...pc.subjects.map(s => s.riskProfile.totalScore)) > 100 
-                                                                  ? 'text-red-600 bg-red-50 border-red-100' 
-                                                                  : 'text-amber-600 bg-amber-50 border-amber-100'
-                                                            }`}>
+                                                            <span className="font-black px-2.5 py-1 rounded shadow-sm text-xs border text-red-600 bg-red-50 border-red-100">
                                                                 {Math.max(...pc.subjects.map(s => s.riskProfile.totalScore))}
                                                             </span>
                                                         </td>
@@ -510,26 +555,40 @@ const TriageQueue: React.FC = () => {
                                                 {hibernatedEntities.map(hc => (
                                                     <tr key={hc.id} className="hover:bg-green-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-green-500 cursor-pointer" onClick={() => { setSelectedCase(hc); setView('ANALYSIS'); }}>
                                                         <td className="px-6 py-4">
-                                                            <div className="flex items-center gap-4">
-                                                                <div className="w-10 h-10 rounded-lg bg-green-50 border border-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover:bg-green-100 transition-colors">
+                                                            <div className="flex items-start gap-4">
+                                                                <div className="w-10 h-10 rounded-lg bg-green-50 border border-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover:bg-green-100 transition-colors mt-0.5">
                                                                     <Clock className="w-5 h-5" />
                                                                 </div>
-                                                                <div>
+                                                                <div className="min-w-0">
                                                                     <div className="text-sm font-black text-gray-900 flex items-center gap-2 group-hover:text-green-600 transition-colors">
                                                                         {hc.subjects[0]?.name}
                                                                         {hc.subjects.length > 1 && (
-                                                                            <span className="bg-green-50 text-green-600 px-1.5 py-0.5 rounded text-[8px] border border-green-100 uppercase">+ {hc.subjects.length - 1} Entities</span>
+                                                                            <span className="bg-green-50 text-green-600 px-1.5 py-0.5 rounded text-[8px] border border-green-100 uppercase">+{hc.subjects.length - 1} Entities</span>
                                                                         )}
                                                                     </div>
                                                                     <div className="flex items-center gap-2 mt-0.5">
-                                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{hc.id}</div>
+                                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest shrink-0">{hc.id}</div>
                                                                         {hc.reports && hc.reports.length > 0 && (
                                                                             <>
-                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                                                <div className="text-[9px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-100">
-                                                                                    {hc.reports[0].type}: {hc.reports[0].id}
+                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full shrink-0"></div>
+                                                                                <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0">
+                                                                                    {hc.reports.length} report{hc.reports.length > 1 ? 's' : ''}
                                                                                 </div>
                                                                             </>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                                                        {Array.from(new Set(hc.subjects.flatMap(s => s.crimeTypologies || []))).length > 0 ? (
+                                                                            Array.from(new Set(hc.subjects.flatMap(s => s.crimeTypologies || []))).map((typ, idx) => (
+                                                                                <div key={idx} className="text-[9px] font-black flex items-center gap-1 text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-200">
+                                                                                    <AlertTriangle className="w-2.5 h-2.5" />
+                                                                                    {typ}
+                                                                                </div>
+                                                                            ))
+                                                                        ) : (
+                                                                            <div className="text-[9px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded border border-green-100">
+                                                                                Hibernated
+                                                                            </div>
                                                                         )}
                                                                     </div>
                                                                 </div>
@@ -577,24 +636,42 @@ const TriageQueue: React.FC = () => {
                                                 {priorityCases.map(pc => (
                                                     <tr key={pc.id} className="hover:bg-red-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-red-600 cursor-pointer" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
                                                         <td className="px-6 py-4">
-                                                            <span className="text-sm font-black text-gray-900 tracking-tight">{pc.id}</span>
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <div>
-                                                                <div className="text-sm font-black text-gray-900 truncate group-hover:text-red-600 transition-colors flex items-center gap-2">
-                                                                    {pc.title}
+                                                            <div className="flex items-start gap-4">
+                                                                <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-100 text-red-600 flex items-center justify-center shrink-0 group-hover:bg-red-100 transition-colors mt-0.5">
+                                                                    <ShieldAlert className="w-5 h-5" />
                                                                 </div>
-                                                                <div className="flex flex-wrap items-center gap-1 mt-1.5">
-                                                                    {pc.reports && pc.reports.length > 0 && (
-                                                                        <span className="text-[8px] font-black text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-200 uppercase tracking-tighter">
-                                                                            Source: {pc.reports[0].id}
-                                                                        </span>
-                                                                    )}
-                                                                    {pc.subjects.map(s => (
-                                                                        <span key={s.id} className="text-[8px] font-black text-white bg-gradient-to-r from-red-500 to-orange-500 px-1.5 py-0.5 rounded shadow-sm shadow-red-500/20 uppercase border border-red-400/30">
-                                                                            {s.name}
-                                                                        </span>
-                                                                    ))}
+                                                                <div className="min-w-0">
+                                                                    <div className="text-sm font-black text-gray-900 flex items-center gap-2 group-hover:text-red-600 transition-colors">
+                                                                        {pc.subjects[0]?.name}
+                                                                        {pc.subjects.length > 1 && (
+                                                                            <span className="bg-red-50 text-red-600 px-1.5 py-0.5 rounded text-[8px] border border-red-100">+{pc.subjects.length - 1} Entities</span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest shrink-0">{pc.id}</div>
+                                                                        {pc.reports && pc.reports.length > 0 && (
+                                                                            <>
+                                                                                <div className="w-1 h-1 bg-gray-300 rounded-full shrink-0"></div>
+                                                                                <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0">
+                                                                                    {pc.reports.length} report{pc.reports.length > 1 ? 's' : ''}
+                                                                                </div>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                                                        {Array.from(new Set(pc.subjects.flatMap(s => s.crimeTypologies || []))).length > 0 ? (
+                                                                            Array.from(new Set(pc.subjects.flatMap(s => s.crimeTypologies || []))).map((typ, idx) => (
+                                                                                <div key={idx} className="text-[9px] font-black flex items-center gap-1 text-red-600 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded border border-red-200">
+                                                                                    <AlertTriangle className="w-2.5 h-2.5" />
+                                                                                    {typ}
+                                                                                </div>
+                                                                            ))
+                                                                        ) : (
+                                                                            <div className="text-[9px] font-black text-red-600 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded border border-red-100">
+                                                                                Priority Bypass
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -607,11 +684,7 @@ const TriageQueue: React.FC = () => {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 text-center">
-                                                            <span className={`font-black px-2.5 py-1 rounded shadow-sm text-xs border ${
-                                                                Math.max(...pc.subjects.map(s => s.riskProfile.totalScore)) > 100 
-                                                                  ? 'text-red-600 bg-red-50 border-red-100' 
-                                                                  : 'text-amber-600 bg-amber-50 border-amber-100'
-                                                            }`}>
+                                                            <span className="font-black px-2.5 py-1 rounded shadow-sm text-xs border text-red-600 bg-red-50 border-red-100">
                                                                 {Math.max(...pc.subjects.map(s => s.riskProfile.totalScore))}
                                                             </span>
                                                         </td>
@@ -696,45 +769,57 @@ const TriageQueue: React.FC = () => {
                                     <div key={pc.id} className="p-6 transition-colors hover:bg-emerald-50/10 flex flex-col gap-4 border-l-4 border-l-transparent hover:border-l-emerald-600">
                                         <div className="flex justify-between items-start">
                                             <div className="cursor-pointer" onClick={() => { setSelectedCase(pc); setView('ANALYSIS'); }}>
-                                                <h4 className="text-lg font-black text-gray-900 flex items-center gap-2 group transition-colors hover:text-emerald-600">
-                                                    {pc.title}
-                                                    {isDeletion && (
-                                                        <span className="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded border border-red-200 shrink-0 uppercase font-black tracking-widest">Deletion Request</span>
-                                                    )}
-                                                    {isLinkClose ? (
-                                                        <span className="text-[10px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-200 shrink-0 uppercase font-black tracking-widest">Handshake Merge</span>
-                                                    ) : (pc.pendingModification && !isDeletion && (
-                                                        <span className={`text-[10px] px-2 py-0.5 rounded border shrink-0 uppercase font-black tracking-widest ${pc.pendingModification.details.newValue === 'DISSEMINATED' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-blue-50 text-blue-600 border-blue-200'}`}>
-                                                            {pc.pendingModification.details.newValue === 'DISSEMINATED' ? 'Dissemination Referral' : 'Closure Approval'}
-                                                        </span>
-                                                    ))}
-                                                </h4>
-                                                <div className="flex flex-wrap gap-4 mt-2">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Target Entity</span>
-                                                        <span className="text-sm font-bold text-gray-700">
-                                                            {(pc.subjects || [])[0]?.name || 'Unknown Entity'}
-                                                            {(pc.subjects || []).length > 1 && ` (+${(pc.subjects || []).length - 1} more)`}
-                                                        </span>
+                                                <div className="flex items-start gap-4">
+                                                    <div className="w-10 h-10 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                                                        <CheckCircle className="w-5 h-5" />
                                                     </div>
-
-                                                    {isLinkClose ? (
-                                                        <>
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[8px] font-black text-amber-500 uppercase tracking-[0.2em]">Requestor</span>
-                                                                <span className="text-sm font-black text-gray-900">{pc.pendingModification?.requestedBy}</span>
-                                                            </div>
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Original Owner</span>
-                                                                <span className="text-sm font-bold text-gray-700">{pc.pendingModification?.details?.originalOwner}</span>
-                                                            </div>
-                                                        </>
-                                                    ) : (
-                                                        <div className="flex flex-col">
-                                                            <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Submitting Analyst</span>
-                                                            <span className="text-sm font-bold text-gray-700">{pc.analyst || 'Unassigned'}</span>
+                                                    <div className="min-w-0">
+                                                        <div className="text-sm font-black text-gray-900 flex items-center gap-2 hover:text-emerald-600 transition-colors">
+                                                            {(pc.subjects || [])[0]?.name || 'Unknown Entity'}
+                                                            {(pc.subjects || []).length > 1 && (
+                                                                <span className="bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded text-[8px] border border-emerald-100">+{(pc.subjects || []).length - 1} Entities</span>
+                                                            )}
+                                                            {isDeletion && (
+                                                                <span className="text-[8px] bg-red-50 text-red-600 px-2 py-0.5 rounded border border-red-200 uppercase font-black tracking-widest">Deletion</span>
+                                                            )}
+                                                            {isLinkClose ? (
+                                                                <span className="text-[8px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-200 uppercase font-black tracking-widest">Merge</span>
+                                                            ) : (pc.pendingModification && !isDeletion && (
+                                                                <span className={`text-[8px] px-2 py-0.5 rounded border uppercase font-black tracking-widest ${pc.pendingModification.details.newValue === 'DISSEMINATED' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-blue-50 text-blue-600 border-blue-200'}`}>
+                                                                    {pc.pendingModification.details.newValue === 'DISSEMINATED' ? 'Dissemination' : 'Closure'}
+                                                                </span>
+                                                            ))}
                                                         </div>
-                                                    )}
+                                                        <div className="flex items-center gap-2 mt-0.5">
+                                                            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest shrink-0">{pc.id}</div>
+                                                            {pc.reports && pc.reports.length > 0 && (
+                                                                <>
+                                                                    <div className="w-1 h-1 bg-gray-300 rounded-full shrink-0"></div>
+                                                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0">
+                                                                        {pc.reports.length} report{pc.reports.length > 1 ? 's' : ''}
+                                                                    </div>
+                                                                </>
+                                                            )}
+                                                            <div className="w-1 h-1 bg-gray-300 rounded-full shrink-0"></div>
+                                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0">
+                                                                {isLinkClose ? `By: ${pc.pendingModification?.requestedBy}` : `Analyst: ${pc.analyst || 'Unassigned'}`}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                                            {Array.from(new Set((pc.subjects || []).flatMap(s => s.crimeTypologies || []))).length > 0 ? (
+                                                                Array.from(new Set((pc.subjects || []).flatMap(s => s.crimeTypologies || []))).map((typ, idx) => (
+                                                                    <div key={idx} className="text-[9px] font-black flex items-center gap-1 text-amber-600 uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                                                        <AlertTriangle className="w-2.5 h-2.5" />
+                                                                        {typ}
+                                                                    </div>
+                                                                ))
+                                                            ) : (
+                                                                <div className="text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+                                                                    Pending Review
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="text-right">
@@ -847,37 +932,89 @@ const TriageQueue: React.FC = () => {
                     <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-10 relative overflow-hidden">
                         {/* Animated Grid Background */}
                         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-                        
+
                         <div className="relative z-10 text-center">
-                            <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-8 relative">
-                                {scanStep === 0 && <Network className="w-10 h-10 text-blue-600 animate-pulse" />}
-                                {scanStep === 1 && <Database className="w-10 h-10 text-blue-600 animate-bounce" />}
-                                {scanStep === 2 && <RefreshCw className="w-10 h-10 text-blue-600 animate-spin" />}
-                                
-                                <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-4 border-white">
-                                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></div>
-                                </div>
-                            </div>
+                            {scanStep < 3 ? (
+                                <>
+                                    <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-8 relative">
+                                        {scanStep === 0 && <Network className="w-10 h-10 text-blue-600 animate-pulse" />}
+                                        {scanStep === 1 && <Database className="w-10 h-10 text-blue-600 animate-bounce" />}
+                                        {scanStep === 2 && <RefreshCw className="w-10 h-10 text-blue-600 animate-spin" />}
 
-                            <h3 className="text-xl font-black text-gray-900 mb-2 tracking-tight">
-                                {scanStep === 0 && "Connecting to Quantexa Platform"}
-                                {scanStep === 1 && "Retrieving Tasks"}
-                                {scanStep === 2 && "Automated Triaging"}
-                            </h3>
-                            <p className="text-sm font-medium text-gray-400 mb-10">Please wait while we synchronize ingestion pipelines...</p>
+                                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-4 border-white">
+                                            <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></div>
+                                        </div>
+                                    </div>
 
-                            <div className="space-y-4">
-                                <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden p-0.5 border border-gray-100">
-                                    <div 
-                                        className="h-full bg-blue-600 rounded-full transition-all duration-75 ease-linear shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-                                        style={{ width: `${scanProgress}%` }}
-                                    ></div>
-                                </div>
-                                <div className="flex justify-between items-center px-1">
-                                    <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">System Sync in Progress</span>
-                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{Math.round(scanProgress)}%</span>
-                                </div>
-                            </div>
+                                    <h3 className="text-xl font-black text-gray-900 mb-2 tracking-tight">
+                                        {scanStep === 0 && "Connecting to Quantexa Platform"}
+                                        {scanStep === 1 && "Retrieving Tasks"}
+                                        {scanStep === 2 && "Automated Triaging"}
+                                    </h3>
+                                    <p className="text-sm font-medium text-gray-400 mb-10">Please wait while we synchronize ingestion pipelines...</p>
+
+                                    <div className="space-y-4">
+                                        <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden p-0.5 border border-gray-100">
+                                            <div
+                                                className="h-full bg-blue-600 rounded-full transition-all duration-75 ease-linear shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+                                                style={{ width: `${scanProgress}%` }}
+                                            ></div>
+                                        </div>
+                                        <div className="flex justify-between items-center px-1">
+                                            <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">System Sync in Progress</span>
+                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{Math.round(scanProgress)}%</span>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-8">
+                                        <CheckCircle className="w-10 h-10 text-green-600" />
+                                    </div>
+
+                                    <h3 className="text-xl font-black text-gray-900 mb-2 tracking-tight">Pulse-Sync Complete</h3>
+                                    <p className="text-sm font-medium text-gray-400 mb-8">Successfully synchronized with Q Platform ingestion pipeline</p>
+
+                                    {scanResults.tasks > 0 ? (
+                                        <div className="bg-gray-50 rounded-2xl p-6 mb-6 text-left space-y-4">
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                                                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest">New Items Discovered</div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                                    <div className="text-2xl font-black text-gray-900">{scanResults.tasks}</div>
+                                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">New Tasks</div>
+                                                </div>
+                                                <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                                    <div className="text-2xl font-black text-blue-600">{scanResults.strs}</div>
+                                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">New STRs</div>
+                                                </div>
+                                                <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                                    <div className="text-2xl font-black text-teal-600">{scanResults.cmrs}</div>
+                                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">New CMRs</div>
+                                                </div>
+                                                <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                                    <div className="text-2xl font-black text-purple-600">{scanResults.ctrs}</div>
+                                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">New CTRs</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-gray-50 rounded-2xl p-6 mb-6 text-center">
+                                            <p className="text-sm font-bold text-gray-400">No new tasks found in this scan cycle</p>
+                                            <p className="text-xs text-gray-300 mt-1">All upstream data is already synchronized</p>
+                                        </div>
+                                    )}
+
+                                    <button
+                                        onClick={handleDismissScan}
+                                        className="w-full px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all"
+                                    >
+                                        Acknowledge & Close
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

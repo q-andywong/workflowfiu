@@ -3,7 +3,7 @@ import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
 import { CaseStatus } from '../types';
 import ManualCaseModal from '../components/ManualCaseModal';
-import { FolderGit2, ArrowRight, PlusCircle, ShieldAlert, ArrowUpDown, ArrowUp, ArrowDown, Search, UserMinus, UserCheck, X } from 'lucide-react';
+import { FolderGit2, ArrowRight, PlusCircle, ShieldAlert, ArrowUpDown, ArrowUp, ArrowDown, Search, UserMinus, UserCheck, X, AlertTriangle } from 'lucide-react';
 import { MOCK_INVESTIGATORS } from '../constants';
 
 const CaseDirectory: React.FC = () => {
@@ -175,138 +175,93 @@ const CaseDirectory: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-gray-50 border-b border-gray-200">
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-blue-600 transition-colors" onClick={() => handleSort('id')}>
-                                    <div className="flex items-center">Case ID <SortIcon column="id" /></div>
-                                </th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-blue-600 transition-colors" onClick={() => handleSort('title')}>
-                                    <div className="flex items-center">Investigation Title <SortIcon column="title" /></div>
-                                </th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-blue-600 transition-colors" onClick={() => handleSort('analyst')}>
-                                    <div className="flex items-center">Assigned Analyst <SortIcon column="analyst" /></div>
-                                </th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center cursor-pointer hover:text-blue-600 transition-colors" onClick={() => handleSort('score')}>
-                                    <div className="flex items-center justify-center">Score <SortIcon column="score" /></div>
-                                </th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center cursor-pointer hover:text-blue-600 transition-colors" onClick={() => handleSort('status')}>
-                                    <div className="flex items-center justify-center">Lifecycle <SortIcon column="status" /></div>
-                                </th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Access</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100 italic font-medium">
-                            {registry.map(c => (
-                                <tr 
-                                    key={c.id} 
-                                    onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
-                                    className="hover:bg-blue-50/30 cursor-pointer transition-all group border-l-4 border-l-transparent hover:border-l-blue-600"
-                                >
-                                    <td className="px-6 py-4">
-                                        <span className="text-sm font-black text-gray-900 tracking-tight">{c.id}</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div>
-                                            <div className="text-sm font-black text-gray-900 truncate group-hover:text-blue-600 transition-colors flex items-center gap-2">
-                                                {c.title}
+                <div className="bg-gray-50/50 px-6 py-3 border-b border-gray-100 flex items-center gap-4">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        Sort:
+                    </div>
+                    {['id', 'title', 'analyst', 'score', 'status'].map(col => (
+                        <button key={col} onClick={() => handleSort(col)} className="flex items-center text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-blue-600 transition-colors">
+                            {col === 'id' ? 'Case ID' : col === 'title' ? 'Title' : col === 'analyst' ? 'Analyst' : col === 'score' ? 'Score' : 'Status'}
+                            <SortIcon column={col} />
+                        </button>
+                    ))}
+                </div>
+
+                <div className="divide-y divide-gray-100">
+                    {registry.map(c => {
+                        const maxScore = Math.max(...c.subjects.map(s => s.riskProfile.totalScore));
+                        const statusColor = c.status === 'PRIORITY' ? 'red' : c.status === 'ANALYSIS' ? 'emerald' : c.status === 'DISSEMINATED' ? 'purple' : c.status === 'PENDING_APPROVAL' ? 'blue' : c.status === 'STAGING' ? 'amber' : 'gray';
+
+                        return (
+                            <div key={c.id} className="hover:bg-blue-50/30 transition-all group border-l-4 border-l-transparent hover:border-l-blue-600 cursor-pointer" onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}>
+                                <div className="px-6 py-4 flex items-start justify-between gap-4">
+                                    <div className="flex items-start gap-4 min-w-0 flex-1">
+                                        <div className={`w-10 h-10 rounded-lg bg-${statusColor}-50 border border-${statusColor}-100 text-${statusColor}-600 flex items-center justify-center shrink-0 mt-0.5`}>
+                                            <FolderGit2 className="w-5 h-5" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <div className="text-sm font-black text-gray-900 flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                                                {c.subjects[0]?.name}
+                                                {c.subjects.length > 1 && (
+                                                    <span className="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded text-[8px] border border-blue-100">+{c.subjects.length - 1} Entities</span>
+                                                )}
                                             </div>
-                                            <div className="flex flex-wrap items-center gap-1 mt-1.5">
-                                                {c.subjects.map(s => (
-                                                    <span key={s.id} className="text-[8px] font-black text-white bg-gradient-to-r from-blue-500 to-indigo-500 px-1.5 py-0.5 rounded shadow-sm shadow-blue-500/20 uppercase border border-blue-400/30">
-                                                        {s.name}
-                                                    </span>
+                                            <div className="flex items-center gap-2 mt-0.5">
+                                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest shrink-0">{c.id}</div>
+                                                {c.reports && c.reports.length > 0 && (
+                                                    <>
+                                                        <div className="w-1 h-1 bg-gray-300 rounded-full shrink-0"></div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0">
+                                                            {c.reports.length} report{c.reports.length > 1 ? 's' : ''}
+                                                        </div>
+                                                    </>
+                                                )}
+                                                {c.analyst && (
+                                                    <>
+                                                        <div className="w-1 h-1 bg-gray-300 rounded-full shrink-0"></div>
+                                                        <div className="text-[9px] font-bold text-gray-400 shrink-0">{c.analyst}</div>
+                                                    </>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                                {getStatusBadge(c.status)}
+                                                {Array.from(new Set(c.subjects.flatMap(s => s.crimeTypologies || []))).map((typ, idx) => (
+                                                    <div key={idx} className="text-[9px] font-black flex items-center gap-1 text-gray-500 uppercase tracking-widest bg-gray-50 px-2 py-0.5 rounded border border-gray-200">
+                                                        <AlertTriangle className="w-2.5 h-2.5" />
+                                                        {typ}
+                                                    </div>
                                                 ))}
                                             </div>
                                         </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-black text-gray-500 uppercase">
-                                                {(c.analyst || 'UN')[0]}
-                                            </div>
-                                            <span className="text-xs font-bold text-gray-700">{c.analyst || 'Unassigned'}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
+                                    </div>
+                                    <div className="flex items-center gap-3 shrink-0 mt-1">
                                         <span className={`font-black px-2.5 py-1 rounded shadow-sm text-xs border ${
-                                            Math.max(...c.subjects.map(s => s.riskProfile.totalScore)) > 100 
-                                              ? 'text-red-600 bg-red-50 border-red-100' 
+                                            maxScore > 100
+                                              ? 'text-red-600 bg-red-50 border-red-100'
                                               : 'text-amber-600 bg-amber-50 border-amber-100'
                                         }`}>
-                                            {Math.max(...c.subjects.map(s => s.riskProfile.totalScore))}
+                                            {maxScore}
                                         </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <div className="flex justify-center">
-                                            {getStatusBadge(c.status)}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-2">
-                                            {user?.role === 'MANAGER' && (
-                                                <div className="relative">
-                                                    <button 
-                                                        onClick={(e) => { e.stopPropagation(); setReassigningId(reassigningId === c.id ? null : c.id); }}
-                                                        className={`p-1.5 rounded-lg transition-all ${reassigningId === c.id ? 'bg-amber-100 text-amber-700' : 'bg-gray-50 text-gray-400 hover:bg-amber-50 hover:text-amber-600'}`}
-                                                        title="Re-assign Analyst"
-                                                    >
-                                                        <UserMinus className="w-4 h-4" />
-                                                    </button>
-                                                    
-                                            {reassigningId === c.id && (
-                                                <div className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4" onClick={() => setReassigningId(null)}>
-                                                    <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.3)] border border-white/20 z-[120] overflow-hidden animate-in zoom-in duration-300 transform scale-100" onClick={e => e.stopPropagation()}>
-                                                        <div className="p-8 border-b border-gray-50 flex items-center justify-between bg-gradient-to-br from-gray-50 to-white">
-                                                            <div>
-                                                                <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] block mb-1">Governance Portal</span>
-                                                                <h3 className="text-lg font-black text-gray-900 tracking-tight">Re-assign Case</h3>
-                                                            </div>
-                                                            <button onClick={() => setReassigningId(null)} className="p-2 border border-gray-100 hover:bg-gray-100 rounded-2xl text-gray-400 transition-all">
-                                                                <X className="w-5 h-5" />
-                                                            </button>
-                                                        </div>
-                                                        <div className="p-4 space-y-1.5 max-h-[400px] overflow-y-auto custom-scrollbar bg-gray-50/30">
-                                                            {MOCK_INVESTIGATORS.map(inv => (
-                                                                <button
-                                                                    key={inv.name}
-                                                                    onClick={() => { reassignCase(c.id, inv.name); setReassigningId(null); }}
-                                                                    className={`w-full text-left px-5 py-4 rounded-2xl text-sm font-bold transition-all flex flex-col group relative ${c.analyst === inv.name ? 'bg-blue-600 text-white shadow-xl shadow-blue-200' : 'bg-white border border-gray-100 text-gray-700 hover:border-blue-300 hover:shadow-lg'}`}
-                                                                >
-                                                                    <div className="flex items-center justify-between w-full">
-                                                                        <span className="font-black text-base tracking-tight">{inv.name}</span>
-                                                                        {c.analyst === inv.name ? <UserCheck className="w-5 h-5" /> : <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-blue-500" />}
-                                                                    </div>
-                                                                    <div className={`text-[10px] font-black uppercase tracking-widest mt-1 ${c.analyst === inv.name ? 'text-blue-200' : 'text-gray-400 group-hover:text-blue-500/80'}`}>
-                                                                        {inv.typology} Specialist
-                                                                    </div>
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                        <div className="p-6 bg-blue-50/50 border-t border-gray-100 italic text-center">
-                                                            <div className="flex items-center justify-center gap-2 text-[10px] text-blue-800/60 font-black uppercase tracking-widest">
-                                                                <ShieldAlert className="w-3.5 h-3.5" />
-                                                                Audit Trail Guaranteed
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                                </div>
-                                            )}
-                                            <button 
-                                                onClick={() => { setSelectedCase(c); setView('ANALYSIS'); }}
-                                                className="p-1.5 bg-gray-50 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-gray-400"
+                                        {user?.role === 'MANAGER' && (
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setReassigningId(reassigningId === c.id ? null : c.id); }}
+                                                className={`p-1.5 rounded-lg transition-all ${reassigningId === c.id ? 'bg-amber-100 text-amber-700' : 'bg-gray-50 text-gray-400 hover:bg-amber-50 hover:text-amber-600'}`}
+                                                title="Re-assign Analyst"
                                             >
-                                                <ArrowRight className="w-4 h-4" />
+                                                <UserMinus className="w-4 h-4" />
                                             </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                        )}
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); setSelectedCase(c); setView('ANALYSIS'); }}
+                                            className="p-1.5 bg-gray-50 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-gray-400"
+                                        >
+                                            <ArrowRight className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
 
                     {registry.length === 0 && (
                         <div className="p-20 text-center space-y-4">
@@ -315,6 +270,49 @@ const CaseDirectory: React.FC = () => {
                         </div>
                     )}
                 </div>
+
+                {/* Reassignment Modal */}
+                {reassigningId && (
+                    <div className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex justify-center items-center p-4" onClick={() => setReassigningId(null)}>
+                        <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.3)] border border-white/20 z-[120] overflow-hidden" onClick={e => e.stopPropagation()}>
+                            <div className="p-8 border-b border-gray-50 flex items-center justify-between bg-gradient-to-br from-gray-50 to-white">
+                                <div>
+                                    <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] block mb-1">Governance Portal</span>
+                                    <h3 className="text-lg font-black text-gray-900 tracking-tight">Re-assign Case</h3>
+                                </div>
+                                <button onClick={() => setReassigningId(null)} className="p-2 border border-gray-100 hover:bg-gray-100 rounded-2xl text-gray-400 transition-all">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+                            <div className="p-4 space-y-1.5 max-h-[400px] overflow-y-auto custom-scrollbar bg-gray-50/30">
+                                {MOCK_INVESTIGATORS.map(inv => {
+                                    const targetCase = registry.find(c => c.id === reassigningId);
+                                    return (
+                                        <button
+                                            key={inv.name}
+                                            onClick={() => { reassignCase(reassigningId, inv.name); setReassigningId(null); }}
+                                            className={`w-full text-left px-5 py-4 rounded-2xl text-sm font-bold transition-all flex flex-col group relative ${targetCase?.analyst === inv.name ? 'bg-blue-600 text-white shadow-xl shadow-blue-200' : 'bg-white border border-gray-100 text-gray-700 hover:border-blue-300 hover:shadow-lg'}`}
+                                        >
+                                            <div className="flex items-center justify-between w-full">
+                                                <span className="font-black text-base tracking-tight">{inv.name}</span>
+                                                {targetCase?.analyst === inv.name ? <UserCheck className="w-5 h-5" /> : <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-blue-500" />}
+                                            </div>
+                                            <div className={`text-[10px] font-black uppercase tracking-widest mt-1 ${targetCase?.analyst === inv.name ? 'text-blue-200' : 'text-gray-400 group-hover:text-blue-500/80'}`}>
+                                                {inv.typology} Specialist
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            <div className="p-6 bg-blue-50/50 border-t border-gray-100 italic text-center">
+                                <div className="flex items-center justify-center gap-2 text-[10px] text-blue-800/60 font-black uppercase tracking-widest">
+                                    <ShieldAlert className="w-3.5 h-3.5" />
+                                    Audit Trail Guaranteed
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {showCreateModal && (

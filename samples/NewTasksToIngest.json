@@ -1,0 +1,131 @@
+[
+  {
+    "id": "TASK-2026-MCB-1013",
+    "title": "Automated Triage: Ransomware Proceeds Laundering — Chen Hao Yang",
+    "description": "Subject is linked to cryptocurrency wallets flagged by Chainalysis as ransomware-related. SGD 1.2M in fiat conversions through local exchange within 14 days, followed by rapid disbursement to 8 personal accounts. Digital forensics indicate wallet cluster associated with LockBit 4.0 affiliate programme. ICA checkpoint CMR filed 15/03/2026: USD 95,000 cash declared on arrival from Hong Kong.",
+    "subjects": [{
+      "id": "customer-1013",
+      "name": "Chen Hao Yang",
+      "nationality": "Singaporean",
+      "occupation": "IT consultant / Freelance developer",
+      "type": "INDIVIDUAL",
+      "status": "Open",
+      "dob": "22/09/1994",
+      "idNumber": "S9412876B",
+      "gender": "Male",
+      "fullAddress": "Blk 782 Yishun Ring Road #14-08 S760782",
+      "screeningStatus": {
+        "isPEP": false,
+        "isPEPRelative": false,
+        "adverseNewsForeign": true,
+        "adverseNewsLocal": false,
+        "sanctionsMatch": false
+      },
+      "crimeTypologies": ["Cybercrime", "Money Laundering"],
+      "riskProfile": {
+        "totalScore": 72,
+        "status": "AMBER",
+        "factors": [
+          { "id": "r1", "category": "Screening", "factor": "AdverseMediaMatch", "score": 8, "notes": "High — wallet cluster flagged by Chainalysis as LockBit 4.0 affiliate" },
+          { "id": "r2", "category": "Transaction Behaviour", "factor": "HighValueCashTransaction", "score": 7, "notes": "High — SGD 1.2M fiat conversion within 14 days" },
+          { "id": "r3", "category": "Transaction Behaviour", "factor": "RapidMovementOfFundsCustomer", "score": 7, "notes": "High — disbursement to 8 accounts within 72 hours of conversion" },
+          { "id": "r4", "category": "Transaction Behaviour", "factor": "UnusualTransactionPattern", "score": 6, "notes": "High — crypto-to-fiat conversion pattern consistent with ransomware cashout" },
+          { "id": "r5", "category": "Entity Risk", "factor": "InconsistentProfile", "score": 6, "notes": "High — IT freelancer with SGD 1.2M inflow; declared annual income SGD 72,000" },
+          { "id": "r6", "category": "Transaction Behaviour", "factor": "StructuringRelationship", "score": 5, "notes": "Medium — 8 disbursements across different banks below threshold" },
+          { "id": "r7", "category": "Jurisdiction Risk", "factor": "CustomerHasTransactionWithDifferentJurisdictions", "score": 5, "notes": "Medium — HKG→SGD fiat corridor" },
+          { "id": "r8", "category": "Transaction Behaviour", "factor": "ThirdPartyTransactions", "score": 4, "notes": "Medium — disbursement recipients unrelated to subject" },
+          { "id": "r9", "category": "Entity Risk", "factor": "NewAccountActivity", "score": 4, "notes": "Medium — exchange account opened 3 weeks before first large deposit" },
+          { "id": "r10", "category": "Jurisdiction Risk", "factor": "GeographicRiskCountry", "score": 4, "notes": "Low — Hong Kong (not high-risk but relevant corridor)" }
+        ]
+      }
+    }],
+    "reports": [
+      {
+        "id": "STR-2026-PTB-1013",
+        "date": "2026-04-22",
+        "amount": 1200000,
+        "currency": "SGD",
+        "institution": "PACIFIC TRADE BANK",
+        "type": "STR",
+        "riskScore": 72,
+        "status": "TRIAGED",
+        "crimeTypes": ["ML_NP", "ML_SL", "ML_TPL"],
+        "suspicionCategories": ["S_L_T_A", "S_L_T_B_I", "S_L_T_F", "T_W_NAB_A_IV"],
+        "narrative": "Ransomware proceeds laundering: SGD 1.2M crypto-to-fiat conversion via local exchange, disbursed to 8 unrelated accounts within 72 hours. Wallet cluster linked to LockBit 4.0 affiliate programme per Chainalysis. Filed under CDSA s.39 + Computer Misuse Act."
+      },
+      {
+        "id": "CMR-2026-0113",
+        "date": "2026-03-15",
+        "amount": 95000,
+        "currency": "USD",
+        "institution": "ICA CHECKPOINT (CHANGI)",
+        "type": "CMR",
+        "riskScore": 72,
+        "status": "TRIAGED",
+        "narrative": "USD 95,000 cash declared on arrival from Hong Kong. Subject stated purpose as 'personal investment.' No supporting documentation."
+      }
+    ],
+    "status": "TRIAGE",
+    "priority": false,
+    "createdAt": "2026-04-24T02:15:00Z"
+  },
+  {
+    "id": "TASK-2026-MCB-1014",
+    "title": "Automated Triage: Offshore Tax Evasion / Undeclared Trust — Margaret Tan Siew Bee",
+    "description": "Subject maintains undeclared offshore trust structures in BVI and Labuan with estimated assets of SGD 8.5M. IRAS referral flagged unreported foreign-sourced income exceeding SGD 2M annually for FY2023–2025. Trust distributions routed through nominee accounts in Singapore before conversion to physical gold and safe deposit box storage. No income tax filings for offshore structures.",
+    "subjects": [{
+      "id": "customer-1014",
+      "name": "Margaret Tan Siew Bee",
+      "nationality": "Singaporean",
+      "occupation": "Property investor / Former banker",
+      "type": "INDIVIDUAL",
+      "status": "Open",
+      "dob": "08/06/1968",
+      "idNumber": "S6845129C",
+      "gender": "Female",
+      "fullAddress": "18 Nassim Hill #03-01 S258466",
+      "screeningStatus": {
+        "isPEP": false,
+        "isPEPRelative": false,
+        "adverseNewsForeign": false,
+        "adverseNewsLocal": true,
+        "sanctionsMatch": false
+      },
+      "crimeTypologies": ["Tax Evasion", "Money Laundering"],
+      "riskProfile": {
+        "totalScore": 65,
+        "status": "AMBER",
+        "factors": [
+          { "id": "r1", "category": "Entity Risk", "factor": "ComplexOwnershipStructure", "score": 8, "notes": "High — 3 BVI trusts + 2 Labuan holding companies with nominee directors" },
+          { "id": "r2", "category": "Transaction Behaviour", "factor": "HighValueCashTransaction", "score": 7, "notes": "High — SGD 8.5M estimated assets in undeclared offshore structures" },
+          { "id": "r3", "category": "Screening", "factor": "RegulatoryReferral", "score": 7, "notes": "High — IRAS referral for unreported foreign-sourced income FY2023–2025" },
+          { "id": "r4", "category": "Transaction Behaviour", "factor": "UnusualTransactionPattern", "score": 6, "notes": "High — trust distributions → nominee accounts → physical gold conversion" },
+          { "id": "r5", "category": "Jurisdiction Risk", "factor": "CustomerHasTransactionWithDifferentJurisdictions", "score": 5, "notes": "High — BVI + Labuan + Singapore multi-jurisdictional layering" },
+          { "id": "r6", "category": "Entity Risk", "factor": "InconsistentProfile", "score": 5, "notes": "Medium — declared rental income SGD 180,000/yr vs. estimated offshore assets SGD 8.5M" },
+          { "id": "r7", "category": "Jurisdiction Risk", "factor": "GeographicRiskCountry", "score": 5, "notes": "Medium — BVI and Labuan (secrecy jurisdictions)" },
+          { "id": "r8", "category": "Transaction Behaviour", "factor": "ThirdPartyTransactions", "score": 4, "notes": "Medium — nominee account holders acting as intermediaries" },
+          { "id": "r9", "category": "Transaction Behaviour", "factor": "SafeDepositBoxActivity", "score": 4, "notes": "Medium — 3 safe deposit boxes at 2 institutions; gold bars stored" },
+          { "id": "r10", "category": "Entity Risk", "factor": "FormerBankingProfessional", "score": 4, "notes": "Medium — knowledge of AML controls and structuring avoidance" }
+        ]
+      }
+    }],
+    "reports": [
+      {
+        "id": "STR-2026-MCB-1014",
+        "date": "2026-04-21",
+        "amount": 8500000,
+        "currency": "SGD",
+        "institution": "MERIDIAN CAPITAL BANK",
+        "type": "STR",
+        "riskScore": 65,
+        "status": "TRIAGED",
+        "crimeTypes": ["ML_NP", "ML_LE", "ML_TPL"],
+        "suspicionCategories": ["S_L_T_B_I", "S_L_T_B_II", "S_L_T_C", "T_W_NAB_A_II", "T_W_NAB_A_IV"],
+        "narrative": "Undeclared offshore trust structures (BVI/Labuan) with SGD 8.5M assets. Trust distributions laundered through nominee accounts and converted to physical gold stored in safe deposit boxes. IRAS referral for unreported foreign income FY2023–2025. Filed under Income Tax Act s.96 + CDSA s.39."
+      }
+    ],
+    "status": "TRIAGE",
+    "priority": false,
+    "createdAt": "2026-04-24T02:30:00Z"
+  }
+]

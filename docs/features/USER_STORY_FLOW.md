@@ -1,4 +1,4 @@
-# Industrial User Story: The End-to-End Investigative Lifecycle (v3.0.0)
+# Industrial User Story: The End-to-End Investigative Lifecycle (v3.1.0)
 
 This comprehensive journey outlines how the **FIU STR Analysis Platform** bridges the gap between raw financial intelligence — collected from **multiple reporting institutions** across Singapore — and actionable law enforcement referrals through industry-standard synchronization and managerial governance.
 
@@ -10,8 +10,8 @@ The FIU receives regulatory reports from **all regulated financial institutions*
 
 | Report Type | Filed By | Examples in Current Batch |
 |-------------|----------|--------------------------|
-| **STR** (Suspicious Transaction Report) | Banks | MCB, SFG, PTB, CCB, RBC (5 banks, 8 STRs) |
-| **CMR** (Cash Movement Report, NP728) | ICA Checkpoints | ICA Woodlands, ICA Changi (4 CMRs) |
+| **STR** (Suspicious Transaction Report) | Banks | MCB, SFG, PTB, CCB, RBC (5 banks, 12 base STRs + 2 scan-ingestible) |
+| **CMR** (Cash Movement Report, NP728) | ICA Checkpoints | ICA Woodlands, ICA Changi (7 CMRs) |
 | **CTR** (Cash Transaction Report, NP784) | PSMDs, Pawnbrokers | Meridian Precious Assets, Golden Link Pawnbrokers (2 CTRs) |
 
 The Quantexa AML platform ingests upstream data feeds from each institution's KYC, transaction, and screening systems, runs scoring models and network analysis, and generates **tasks** with linked reports. These tasks are then surfaced in the FIU Workflow App for analyst triage and investigation.
@@ -35,12 +35,13 @@ The FIU's unique capability is **cross-institutional fusion**: correlating a ban
     - **Priority Bypasses**: Critical alerts identified by the Quantexa Risk Engine (e.g., OFAC SDN matches, proliferation financing flags).
     - **Hibernated Registry**: Entities moved to background monitoring.
 2.  **Quantexa Pulse-Sync**: To ensure the morning's latest intelligence is available, the Manager clicks **"Scan for latest tasks"**.
-3.  **Simulation Feedback**: A high-fidelity progress modal plays:
+3.  **Live Ingestion Pipeline**: The scan fetches new tasks from the upstream endpoint (`/samples/NewTasksToIngest.json`). A high-fidelity progress modal plays:
     - Establishing a secure handshake with the **Quantexa Platform**.
     - Retrieving graph-triangulated tasks from the master registry across all reporting institutions.
     - Correlating STRs, CMRs, and CTRs from different institution types into unified case packages.
     - Distributing tasks into analyst specialization buckets based on crime typologies.
-4.  **Operational Readiness**: The sync completes, and the Manager confirms the ingestion count is up-to-date. Tasks from multiple banks (MCB, SFG, PTB, CCB, RBC) and linked CMR/CTR reports are now visible in the platform.
+4.  **New Items Discovered**: On completion, a results panel shows only the **newly ingested** items — new tasks, STRs, CMRs, and CTRs discovered during the scan. Re-scanning when no new tasks are available shows "No new tasks found". The `ingestCases` function in AppContext deduplicates by case ID, runs `initializeCases()` for auto-routing (score <10 → HIBERNATED, >150 → PRIORITY), and merges into state.
+5.  **Operational Readiness**: Tasks from multiple banks (MCB, SFG, PTB, CCB, RBC) and linked CMR/CTR reports are now visible in the platform. The 2 scan-ingestible tasks (Cybercrime and Tax Evasion typologies) supplement the 12 base batch cases.
 
 ---
 
@@ -86,12 +87,18 @@ The FIU's unique capability is **cross-institutional fusion**: correlating a ban
     - They instantiate **Intelligence Models** (Bar/Line charts) to visualize complex transaction patterns spanning multiple institutions.
     - They click **"Finalize & Disseminate"**. The **Kafka Sync Modal** triggers (topic: `report.event.disseminate`), verifying the package is synchronized with the platform records.
     - They click **"Complete Dissemination"** to finalize the briefing package for the relevant agency (SPF-CAD, MAS, ICA, or AGC).
-4.  **Administrative Disposal**:
-    - Once the brief is disseminated, the Investigator clicks **"Finalize Case"**.
-    - In the **Finalize Modal**, they select a disposal outcome (e.g., *Disseminate to Law Enforcement*).
+4.  **Administrative Disposal & Dissemination**:
+    - The Investigator clicks **"Finalize Case"** (available for both `ANALYSIS` and `PRIORITY` status cases — priority bypass means auto-escalation to a formal case).
+    - In the **Finalize Modal**, they select a disposal outcome (e.g., *Disseminate Intelligence*) and target agency.
     - They click **"Confirm Finalization"**.
     - The final Kafka Sync modal plays: *"Broadcasting Final Disposal to Platform"* (topic: `update.event.disposal`).
-5.  **Archival Handshake**: The Investigator clicks **"Return to Queue"**. The case is transitioned out of the active directory and securely archived in the **Administrative Registry**.
+    - When the outcome is `DISSEMINATE`, the system creates a `DisseminationRecord` (agency, date, intelligence summary) so the case appears in the **Dissemination & Feedback** tracker.
+5.  **Agency Feedback & Closure**:
+    - Once disseminated, the Investigator opens the case and clicks **"Record Agency Feedback"**.
+    - They select an outcome (`CONVICTION`, `ASSET_SEIZURE`, `ONGOING`, `NO_OFFENCE_FOUND`, or `DISMISSED`), with optional reference number and notes.
+    - If the feedback is `ONGOING`, the case remains in `DISSEMINATED` status for continued tracking.
+    - Once a terminal outcome is recorded, the **"Close Case"** button appears, allowing final archival.
+6.  **Archival Handshake**: The Investigator clicks **"Return to Queue"**. The case is transitioned out of the active directory and securely archived in the **Administrative Registry**.
 
 ---
 

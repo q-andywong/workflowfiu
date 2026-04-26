@@ -1,0 +1,1583 @@
+[
+  {
+    "_1": {
+      "subjectScorecard": {
+        "subjectId": {
+          "type": "customer",
+          "value": "1013"
+        },
+        "scorecardVersion": {
+          "name": "2.6.0",
+          "index": 12,
+          "description": null
+        },
+        "overallScore": 72.0,
+        "scoreSummary": [
+          [
+            {
+              "value": "AdverseMediaMatch"
+            },
+            {
+              "severity": 3.0,
+              "candidateContribution": 8.0,
+              "contribution": 8.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 4.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "AdverseMediaMatch"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Critical"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "Screening"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "matchConfidence",
+                  94.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "AdverseMediaMatch",
+              "scoreId": "AdverseMediaMatch",
+              "category": "Other",
+              "description": "Score triggered for Chen Hao Yang."
+            }
+          ],
+          [
+            {
+              "value": "HighValueCashTransaction"
+            },
+            {
+              "severity": 2.0,
+              "candidateContribution": 7.0,
+              "contribution": 7.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 3.5,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "HighValueCashTransaction"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "High"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "CashActivity"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "totalCashValue",
+                  1200000.0
+                ],
+                [
+                  "transactionCount",
+                  14.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Chen Hao Yang recorded SGD 1.2M across 14 cash transactions exceeding the reporting threshold."
+            }
+          ],
+          [
+            {
+              "value": "RapidMovementOfFundsCustomer"
+            },
+            {
+              "severity": 2.0,
+              "candidateContribution": 7.0,
+              "contribution": 7.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 3.5,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "RapidMovementOfFundsCustomer"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "High"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "TransactionVelocity"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "disbursementCount",
+                  8.0
+                ],
+                [
+                  "disbursementWindowHours",
+                  72.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "RapidMovementOfFundsCustomer",
+              "scoreId": "Rapid Movement Of Funds Customer",
+              "category": "Funds Movement",
+              "description": "Chen Hao Yang moved SGD 0 with an average holding period of 0.0 hours, indicating rapid pass-through of funds."
+            }
+          ],
+          [
+            {
+              "value": "UnusualTransactionPattern"
+            },
+            {
+              "severity": 2.0,
+              "candidateContribution": 6.0,
+              "contribution": 6.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 3.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "UnusualTransactionPattern"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "High"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "TransactionBehaviour"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "cryptoToFiatConversionSGD",
+                  1200000.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Chen Hao Yang exhibits an anomaly score of 0.00, significantly deviating from expected transaction patterns."
+            }
+          ],
+          [
+            {
+              "value": "InconsistentProfile"
+            },
+            {
+              "severity": 2.0,
+              "candidateContribution": 6.0,
+              "contribution": 6.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 3.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "InconsistentProfile"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "High"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "EntityRisk"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "declaredIncome",
+                  72000.0
+                ],
+                [
+                  "actualInflow",
+                  1200000.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "InconsistentProfile",
+              "scoreId": "InconsistentProfile",
+              "category": "Other",
+              "description": "Score triggered for Chen Hao Yang."
+            }
+          ],
+          [
+            {
+              "value": "StructuringRelationship"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 5.0,
+              "contribution": 5.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.5,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "StructuringRelationship"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Medium"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "TransactionBehaviour"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "disbursementBanks",
+                  8.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "StructuringRelationship",
+              "scoreId": "Structuring Relationship",
+              "category": "Relationship Structuring",
+              "description": "Chen Hao Yang shows a structuring window ratio of 0% across 0 transactions, consistent with deliberate threshold avoidance."
+            }
+          ],
+          [
+            {
+              "value": "CustomerHasTransactionWithDifferentJurisdictions"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 5.0,
+              "contribution": 5.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.5,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "CustomerHasTransactionWithDifferentJurisdictions"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Medium"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "JurisdictionRisk"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "jurisdictionCount",
+                  2.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Chen Hao Yang transacted across 2 jurisdictions (), raising cross-border layering concerns."
+            }
+          ],
+          [
+            {
+              "value": "ThirdPartyTransactions"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 4.0,
+              "contribution": 4.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "ThirdPartyTransactions"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Medium"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "TransactionBehaviour"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "thirdPartyCount",
+                  8.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Chen Hao Yang has 8 third-party transactions representing 0% of account activity, with no clear economic rationale."
+            }
+          ],
+          [
+            {
+              "value": "NewAccountActivity"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 4.0,
+              "contribution": 4.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "NewAccountActivity"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Medium"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "EntityRisk"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "accountAgeDays",
+                  21.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "NewAccountActivity",
+              "scoreId": "NewAccountActivity",
+              "category": "Other",
+              "description": "Score triggered for Chen Hao Yang."
+            }
+          ],
+          [
+            {
+              "value": "GeographicRiskCountry"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 4.0,
+              "contribution": 4.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "GeographicRiskCountry"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1013"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Low"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Chen Hao Yang"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1013"
+                ],
+                [
+                  "group",
+                  "JurisdictionRisk"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1013"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Chen Hao Yang has significant transactional exposure to unknown, a jurisdiction flagged for elevated financial crime risk."
+            }
+          ]
+        ]
+      },
+      "related1": [],
+      "alertingRunTime": "2026-04-24T02:15:00.089168"
+    },
+    "_2": {
+      "subjectId": "customer-1013",
+      "jurisdiction": "SG",
+      "name": "Chen Hao Yang",
+      "scorecardOverallScore": 72.0,
+      "alertingAuditDetails": {
+        "subjectId": "customer-1013",
+        "alertingRunTime": "2026-04-24 at 10:15:00 SGT",
+        "subjectAlert": true,
+        "subjectMostRecentAlertTime": "2026-04-24 at 10:15:00 SGT",
+        "alertReason": [
+          {
+            "stepReference": "RedFlagScenarioTriggeredAndNotRecentlyAlerted",
+            "moduleDecision": "Alert",
+            "decisionReason": "Subject level score(s) AdverseMediaMatch (from the selected scores) were found in this Scorecard meeting the following condition: Chainalysis wallet cluster linked to LockBit 4.0 ransomware affiliate programme. SGD 1.2M crypto-to-fiat conversion within 14 days.",
+            "subjectLevelScores": [
+              "AdverseMediaMatch¬¬customer-1013"
+            ],
+            "relatedScores": []
+          }
+        ],
+        "alertDescription": "Subject is linked to cryptocurrency wallets flagged by Chainalysis as ransomware-related (LockBit 4.0 affiliate). SGD 1.2M in fiat conversions through local exchange within 14 days, followed by rapid disbursement to 8 unrelated personal accounts within 72 hours. Digital forensics indicate wallet cluster associated with ransomware payment addresses. ICA checkpoint CMR filed 15/03/2026: USD 95,000 cash declared on arrival from Hong Kong.",
+        "linkedReportIds": {
+          "strReportId": "STR-2026-PTB-1013",
+          "cmrReportId": "CMR-2026-0113"
+        }
+      },
+      "subjectProfile": {
+        "entityType": "INDIVIDUAL",
+        "fullName": "Chen Hao Yang",
+        "parsedName": {
+          "initials": "C",
+          "forename": "Hao Yang",
+          "familyName": "Chen"
+        },
+        "gender": "M",
+        "dateOfBirth": "1994-09-22",
+        "nationality": "SG",
+        "countryOfBirth": "SG",
+        "taxResidency": "SG",
+        "identificationType": "NRIC",
+        "identificationNumber": "S9412876B",
+        "identificationCountry": "SG",
+        "address": {
+          "blockNumber": "782",
+          "streetName": "Yishun Ring Road",
+          "floorNumber": "14",
+          "unitNumber": "08",
+          "postalCode": "760782",
+          "country": "SG",
+          "parsedAddress": "782 Yishun Ring Road #14-08, Singapore 760782"
+        }
+      }
+    },
+    "_3": "BINARY_GRAPH_PLACEHOLDER_CUSTOMER_1013"
+  },
+  {
+    "_1": {
+      "subjectScorecard": {
+        "subjectId": {
+          "type": "customer",
+          "value": "1014"
+        },
+        "scorecardVersion": {
+          "name": "2.6.0",
+          "index": 12,
+          "description": null
+        },
+        "overallScore": 65.0,
+        "scoreSummary": [
+          [
+            {
+              "value": "ComplexOwnershipStructure"
+            },
+            {
+              "severity": 3.0,
+              "candidateContribution": 8.0,
+              "contribution": 8.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 4.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "ComplexOwnershipStructure"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "High"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "EntityRisk"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "shellEntityCount",
+                  5.0
+                ],
+                [
+                  "jurisdictionCount",
+                  3.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "ComplexOwnershipStructure",
+              "scoreId": "Complex Ownership Structure",
+              "category": "Corporate Structure",
+              "description": "Margaret Tan Siew Bee has 0 ownership layers across 3 jurisdictions, obscuring the ultimate beneficial ownership."
+            }
+          ],
+          [
+            {
+              "value": "HighValueCashTransaction"
+            },
+            {
+              "severity": 2.0,
+              "candidateContribution": 7.0,
+              "contribution": 7.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 3.5,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "HighValueCashTransaction"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "High"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "CashActivity"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "estimatedOffshoreAssets",
+                  8500000.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "HighValueCashTransaction",
+              "scoreId": "High Value Cash Transaction",
+              "category": "Cash Activity",
+              "description": "Margaret Tan Siew Bee recorded SGD 0 in high-value cash activity exceeding the reporting threshold."
+            }
+          ],
+          [
+            {
+              "value": "RegulatoryReferral"
+            },
+            {
+              "severity": 2.0,
+              "candidateContribution": 7.0,
+              "contribution": 7.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 3.5,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "RegulatoryReferral"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "High"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "Screening"
+                ],
+                [
+                  "referralSource",
+                  "IRAS"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "unreportedIncomeSGD",
+                  2000000.0
+                ],
+                [
+                  "fiscalYearsAffected",
+                  3.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "RegulatoryReferral",
+              "scoreId": "RegulatoryReferral",
+              "category": "Other",
+              "description": "Score triggered for Margaret Tan Siew Bee."
+            }
+          ],
+          [
+            {
+              "value": "UnusualTransactionPattern"
+            },
+            {
+              "severity": 2.0,
+              "candidateContribution": 6.0,
+              "contribution": 6.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 3.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "UnusualTransactionPattern"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "High"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "TransactionBehaviour"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "goldConversionSGD",
+                  3200000.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "UnusualTransactionPattern",
+              "scoreId": "Unusual Transaction Pattern",
+              "category": "Transaction Patterns",
+              "description": "Margaret Tan Siew Bee exhibits an anomaly score of 0.00, significantly deviating from expected transaction patterns."
+            }
+          ],
+          [
+            {
+              "value": "CustomerHasTransactionWithDifferentJurisdictions"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 5.0,
+              "contribution": 5.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.5,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "CustomerHasTransactionWithDifferentJurisdictions"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "High"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "JurisdictionRisk"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "jurisdictionCount",
+                  3.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "CustomerHasTransactionWithDifferentJurisdictions",
+              "scoreId": "Customer Has Transaction With Different Jurisdictions",
+              "category": "Cross Border",
+              "description": "Margaret Tan Siew Bee transacted across 3 jurisdictions (), raising cross-border layering concerns."
+            }
+          ],
+          [
+            {
+              "value": "InconsistentProfile"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 5.0,
+              "contribution": 5.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.5,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "InconsistentProfile"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Medium"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "EntityRisk"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "declaredIncome",
+                  180000.0
+                ],
+                [
+                  "offshoreAssets",
+                  8500000.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "InconsistentProfile",
+              "scoreId": "InconsistentProfile",
+              "category": "Other",
+              "description": "Score triggered for Margaret Tan Siew Bee."
+            }
+          ],
+          [
+            {
+              "value": "GeographicRiskCountry"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 5.0,
+              "contribution": 5.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.5,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "GeographicRiskCountry"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Medium"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "JurisdictionRisk"
+                ],
+                [
+                  "jurisdiction",
+                  "BVI"
+                ],
+                [
+                  "jurisdiction2",
+                  "MY-Labuan"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "GeographicRiskCountry",
+              "scoreId": "Geographic Risk Country",
+              "category": "Geographic Risk",
+              "description": "Margaret Tan Siew Bee has significant transactional exposure to unknown, a jurisdiction flagged for elevated financial crime risk."
+            }
+          ],
+          [
+            {
+              "value": "ThirdPartyTransactions"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 4.0,
+              "contribution": 4.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "ThirdPartyTransactions"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Medium"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "TransactionBehaviour"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "nomineeAccountCount",
+                  3.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "ThirdPartyTransactions",
+              "scoreId": "Third Party Transactions",
+              "category": "Third Party",
+              "description": "Margaret Tan Siew Bee has 0 third-party transactions representing 0% of account activity, with no clear economic rationale."
+            }
+          ],
+          [
+            {
+              "value": "SafeDepositBoxActivity"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 4.0,
+              "contribution": 4.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "SafeDepositBoxActivity"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Medium"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "TransactionBehaviour"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "safeDepositBoxCount",
+                  3.0
+                ],
+                [
+                  "institutionCount",
+                  2.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "SafeDepositBoxActivity",
+              "scoreId": "SafeDepositBoxActivity",
+              "category": "Other",
+              "description": "Score triggered for Margaret Tan Siew Bee."
+            }
+          ],
+          [
+            {
+              "value": "FormerBankingProfessional"
+            },
+            {
+              "severity": 1.0,
+              "candidateContribution": 4.0,
+              "contribution": 4.0,
+              "contributionIndicator": "No grouping applied",
+              "contributesToOverallScore": true,
+              "weighting": 2.0,
+              "scoreHitId": {
+                "scoreId": {
+                  "value": "FormerBankingProfessional"
+                },
+                "uniqueKeyOfScoredDataAsString": "customer-1014"
+              },
+              "version": {
+                "name": "2.6.0",
+                "index": 12,
+                "description": null
+              },
+              "relatedStrings": [
+                [
+                  "scoreBand",
+                  "Medium"
+                ],
+                [
+                  "customerIdAndName__name",
+                  "Margaret Tan Siew Bee"
+                ],
+                [
+                  "customerIdAndName__id__type",
+                  "customer"
+                ],
+                [
+                  "customerIdAndName__id__value",
+                  "1014"
+                ],
+                [
+                  "group",
+                  "EntityRisk"
+                ]
+              ],
+              "relatedDates": [],
+              "relatedNumbers": [
+                [
+                  "bankingYears",
+                  18.0
+                ]
+              ],
+              "relatedScoreHits": [],
+              "relatedDocuments": [
+                {
+                  "type": "customer",
+                  "value": "1014"
+                }
+              ],
+              "relatedEntities": [],
+              "relatedEntitiesRecords": null,
+              "relatedEdges": [],
+              "relatedPaths": [],
+              "rankedPaths": null,
+              "relatedForeignDocuments": null,
+              "id": "FormerBankingProfessional",
+              "scoreId": "FormerBankingProfessional",
+              "category": "Other",
+              "description": "Score triggered for Margaret Tan Siew Bee."
+            }
+          ]
+        ]
+      },
+      "related1": [],
+      "alertingRunTime": "2026-04-24T02:30:00.089168"
+    },
+    "_2": {
+      "subjectId": "customer-1014",
+      "jurisdiction": "SG",
+      "name": "Margaret Tan Siew Bee",
+      "scorecardOverallScore": 65.0,
+      "alertingAuditDetails": {
+        "subjectId": "customer-1014",
+        "alertingRunTime": "2026-04-24 at 10:30:00 SGT",
+        "subjectAlert": true,
+        "subjectMostRecentAlertTime": "2026-04-24 at 10:30:00 SGT",
+        "alertReason": [
+          {
+            "stepReference": "RedFlagScenarioTriggeredAndNotRecentlyAlerted",
+            "moduleDecision": "Alert",
+            "decisionReason": "Subject level score(s) ComplexOwnershipStructure, RegulatoryReferral (from the selected scores) were found in this Scorecard meeting the following condition: IRAS referral for unreported foreign-sourced income FY2023–2025. 3 BVI trusts + 2 Labuan holding companies with nominee directors.",
+            "subjectLevelScores": [
+              "ComplexOwnershipStructure¬¬customer-1014",
+              "RegulatoryReferral¬¬customer-1014"
+            ],
+            "relatedScores": []
+          }
+        ],
+        "alertDescription": "Subject maintains undeclared offshore trust structures in BVI and Labuan with estimated assets of SGD 8.5M. IRAS referral flagged unreported foreign-sourced income exceeding SGD 2M annually for FY2023–2025. Trust distributions routed through nominee accounts in Singapore before conversion to physical gold and safe deposit box storage. No income tax filings for offshore structures. Former banking professional with 18 years experience.",
+        "linkedReportIds": {
+          "strReportId": "STR-2026-MCB-1014",
+          "cmrReportId": null
+        }
+      },
+      "subjectProfile": {
+        "entityType": "INDIVIDUAL",
+        "fullName": "Margaret Tan Siew Bee",
+        "parsedName": {
+          "initials": "M",
+          "forename": "Siew Bee",
+          "familyName": "Tan"
+        },
+        "gender": "F",
+        "dateOfBirth": "1968-06-08",
+        "nationality": "SG",
+        "countryOfBirth": "SG",
+        "taxResidency": "SG",
+        "identificationType": "NRIC",
+        "identificationNumber": "S6845129C",
+        "identificationCountry": "SG",
+        "address": {
+          "blockNumber": "18",
+          "streetName": "Nassim Hill",
+          "floorNumber": "03",
+          "unitNumber": "01",
+          "postalCode": "258466",
+          "country": "SG",
+          "parsedAddress": "18 Nassim Hill #03-01, Singapore 258466"
+        }
+      }
+    },
+    "_3": "BINARY_GRAPH_PLACEHOLDER_CUSTOMER_1014"
+  }
+]

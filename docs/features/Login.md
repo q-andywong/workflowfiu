@@ -18,9 +18,9 @@ The `AppProvider` context is now hoisted above the `AuthProvider` layer in `App.
 
 ### Tier 2: Typology Investigator
 * **Identifier:** `INVESTIGATOR`
-* **Dynamic Binding:** Investigators must declare an operational mandate (e.g. "Tax Evasion", "Cybercrime") at login.
+* **Dynamic Binding:** Investigators must declare an operational mandate at login. Available typologies: *Money Laundering*, *Sanctions Evasion*, *Terrorism Financing*, *Cybercrime*, *Tax Evasion*, *Fraud*.
 * **Access Scope:** 
-  * The `Dashboard` view is explicitly restricted.
+  * The `Dashboard` view renders the `InvestigatorDashboard` (not the Manager's Command Center).
   * The default landing view shifts dynamically to `TRIAGE`.
   * `AppContext` filters ingestion points based on the selected typology.
   * **Escalation Permission:** Can recommend an entity for case-creation, triggering the **Awaiting Director Sign-off** state.

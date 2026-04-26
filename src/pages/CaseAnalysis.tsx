@@ -1,15 +1,15 @@
 
 import React, { useState } from 'react';
-import { 
-    Shield, Globe, Clock, UserCheck, X, FileText, Activity, 
+import {
+    Shield, Globe, Clock, UserCheck, X, FileText, Activity,
     Zap, Users, Briefcase, User, Hash, ShieldPlus, ShieldCheck,
     Scale, Plus, FileCheck2, CheckCircle2, Share2, Eye, Box,
     Lock, ExternalLink, Search, BadgeCheck, ShieldAlert, Info,
-    ChevronDown, ChevronUp, Check, Trash2
+    ChevronDown, ChevronUp, Check, Trash2, Building2, MapPin, CreditCard, Fingerprint
 } from 'lucide-react';
 import { useApp as useAppContext } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
-import { MOCK_STRS as STR_DIRECTORY, MOCK_ENTITIES } from '../constants';
+import { MOCK_STRS as STR_DIRECTORY, MOCK_ENTITIES, MOCK_SUBJECT_PROFILES, SubjectProfile, SubjectProfileIndividual, SubjectProfileCompany } from '../constants';
 import STRViewer from '../components/STRViewer';
 import ReportBuilder from '../components/ReportBuilder';
 
@@ -25,7 +25,8 @@ const CaseAnalysis = () => {
         bulkLinkReports,
         bulkUpdateCases,
         saveFindings,
-        assessEntity
+        assessEntity,
+        addFeedback
     } = useAppContext();
     const { user } = useAuth();
     const isInvestigator = user?.role === 'INVESTIGATOR';
@@ -47,6 +48,12 @@ const CaseAnalysis = () => {
     const [finalizeOutcome, setFinalizeOutcome] = useState<'DISSEMINATE' | 'HIBERNATE' | 'CLOSE' | null>(null);
     const [selectedAgency, setSelectedAgency] = useState('');
     const [finalizeRationale, setFinalizeRationale] = useState('');
+
+    // Agency Feedback States (for DISSEMINATED cases)
+    const [isRecordingFeedback, setIsRecordingFeedback] = useState(false);
+    const [feedbackOutcome, setFeedbackOutcome] = useState<string>('');
+    const [feedbackNotes, setFeedbackNotes] = useState('');
+    const [feedbackRef, setFeedbackRef] = useState('');
 
     // Search & Link States
     const [searchModal, setSearchModal] = useState<{ open: boolean, type: 'ENTITY' | 'REPORT' }>({ open: false, type: 'ENTITY' });
@@ -98,12 +105,27 @@ const CaseAnalysis = () => {
                     if (finalizeOutcome === 'DISSEMINATE') finalStatus = 'DISSEMINATED';
                     if (finalizeOutcome === 'HIBERNATE') finalStatus = 'HIBERNATED';
 
-                    bulkUpdateCases([entityId], { 
-                        status: finalStatus as any, 
-                        lastUpdated: new Date().toLocaleDateString(), 
-                        outcomeRationale: finalizeRationale, 
-                        targetAgency: selectedAgency 
-                    });
+                    const updates: any = {
+                        status: finalStatus,
+                        lastUpdated: new Date().toLocaleDateString(),
+                        outcomeRationale: finalizeRationale,
+                        targetAgency: selectedAgency
+                    };
+
+                    if (finalizeOutcome === 'DISSEMINATE') {
+                        const currentCase = cases.find(c => c.id === entityId);
+                        updates.disseminations = [
+                            ...(currentCase?.disseminations || []),
+                            {
+                                id: `DIS-${Date.now()}`,
+                                agency: selectedAgency || 'CAD',
+                                date: new Date().toISOString(),
+                                intelligenceSummary: finalizeRationale || 'Operational intelligence referral.',
+                            }
+                        ];
+                    }
+
+                    bulkUpdateCases([entityId], updates);
                     setIsFinalizing(false);
                 } else {
                     assessEntity(entityId, action as any);
@@ -130,10 +152,35 @@ const CaseAnalysis = () => {
         'Remaining Open / Priority Analysis'
     ];
 
+    const SCORE_META: Record<string, { scoreId: string; description: (name: string) => string }> = {
+        HighValueCashTransaction: { scoreId: 'High Value Cash Transaction', description: (n) => `${n} recorded high-value cash transactions exceeding the reporting threshold.` },
+        StructuringRelationship: { scoreId: 'Structuring Relationship', description: (n) => `${n} exhibits structuring patterns consistent with deliberate threshold avoidance.` },
+        GeographicRiskCountry: { scoreId: 'Geographic Risk Country', description: (n) => `${n} has significant transactional exposure to a jurisdiction flagged for elevated financial crime risk.` },
+        RapidMovementOfFundsCustomer: { scoreId: 'Rapid Movement Of Funds Customer', description: (n) => `${n} moved funds with a short average holding period, indicating rapid pass-through activity.` },
+        RoundAmountsCustomer: { scoreId: 'Round Amounts Customer', description: (n) => `${n} executed transactions at round amounts, a pattern commonly associated with structuring.` },
+        ThirdPartyTransactions: { scoreId: 'Third Party Transactions', description: (n) => `${n} has third-party transactions with no clear economic rationale.` },
+        UnusualTransactionPattern: { scoreId: 'Unusual Transaction Pattern', description: (n) => `${n} exhibits transaction patterns significantly deviating from expected baseline behaviour.` },
+        CustomerHasTransactionWithDifferentJurisdictions: { scoreId: 'Customer Has Transaction With Different Jurisdictions', description: (n) => `${n} transacted across multiple jurisdictions, raising cross-border layering concerns.` },
+        CustomerFromHighRiskCountry: { scoreId: 'Customer From High Risk Country', description: (n) => `${n} originates from or has ties to a country with heightened AML/CFT risk.` },
+        SanctionsProximity: { scoreId: 'Sanctions Proximity', description: (n) => `${n} has proximity to sanctioned entities, indicating close network ties to designated parties.` },
+        PEPAssociation: { scoreId: 'PEP Association', description: (n) => `${n} is flagged as having a link to a Politically Exposed Person.` },
+        ComplexOwnershipStructure: { scoreId: 'Complex Ownership Structure', description: (n) => `${n} has multiple ownership layers across jurisdictions, obscuring beneficial ownership.` },
+        ShellCompanyIndicators: { scoreId: 'Shell Company Indicators', description: (n) => `${n} exhibits shell company characteristics with minimal operational substance.` },
+        HubAndSpoke: { scoreId: 'Hub And Spoke', description: (n) => `${n} operates as a hub node in a transaction network consistent with a layering structure.` },
+        TradeBasedLaundering: { scoreId: 'Trade Based Laundering', description: (n) => `${n} shows trade-based laundering indicators with invoice discrepancies against market benchmarks.` },
+        AdverseMediaHits: { scoreId: 'Adverse Media Hits', description: (n) => `${n} has adverse media mentions linking the entity to financial crime or misconduct.` },
+        CancelledCustomerScore: { scoreId: 'Cancelled Customer Score', description: (n) => `${n} has cancelled or closed accounts, indicating possible de-risking by financial institutions.` },
+        CustomerIndirectLinkToHotlistRanked: { scoreId: 'Customer Indirect Link To Hotlist Ranked', description: (n) => `${n} has indirect links to hotlisted or watchlisted entities.` },
+    };
+
     if (!activeCase) return null;
 
     const activeSubject = activeCase.subjects.find(s => s.id === selectedSubjectId) || activeCase.subjects[0];
     const totalCaseRisk = activeCase.subjects.reduce((sum, s) => sum + (s.riskProfile?.totalScore || 0), 0);
+
+    // Lookup enriched subject profile from upstream data
+    const subjectIdSuffix = activeSubject?.id?.match(/(\d{4})$/)?.[1];
+    const subjectProfile = subjectIdSuffix ? MOCK_SUBJECT_PROFILES[`customer-${subjectIdSuffix}`] : null;
 
     const handleClose = () => setActiveCase(null);
 
@@ -267,9 +314,9 @@ const CaseAnalysis = () => {
                                         className="px-6 py-4 bg-emerald-600 hover:bg-emerald-700 rounded-2xl transition-all text-white shadow-xl shadow-emerald-500/20 flex items-center gap-3 group"
                                     >
                                         <ShieldPlus className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Sign-off and Escalate</span>
+                                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Case Creation Approval</span>
                                     </button>
-                                    <button 
+                                    <button
                                         onClick={() => assessEntity(activeCase.id, 'HIBERNATE')}
                                         className="px-6 py-4 bg-amber-500/10 hover:bg-amber-500/20 rounded-2xl transition-all text-amber-500 border border-amber-500/20 flex items-center gap-3 group"
                                     >
@@ -284,11 +331,41 @@ const CaseAnalysis = () => {
                                         <span className="text-[9px] font-black uppercase tracking-[0.2em]">Dismiss</span>
                                     </button>
                                 </div>
-                            ) : activeCase.status === 'ANALYSIS' && activeCase.findings ? (
+                            ) : (activeCase.status === 'ANALYSIS' || activeCase.status === 'PRIORITY') && activeCase.findings ? (
                                 <button onClick={() => setIsFinalizing(true)} className="px-8 py-4 bg-[#00D7BA]/10 hover:bg-[#00D7BA]/20 rounded-2xl transition-all text-[#00D7BA] border border-[#00D7BA]/20 group shadow-[0_0_20px_rgba(0,215,186,0.1)] flex items-center gap-4">
                                     <CheckCircle2 className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
                                     <span className="text-[10px] font-black uppercase tracking-[0.2em]">Finalize Case</span>
                                 </button>
+                            ) : activeCase.status === 'DISSEMINATED' ? (
+                                <div className="flex items-center gap-3">
+                                    {(() => {
+                                        const latestDis = (activeCase.disseminations || []).slice(-1)[0];
+                                        const hasFeedback = latestDis?.feedback;
+                                        return (
+                                            <>
+                                                <button
+                                                    onClick={() => setIsRecordingFeedback(true)}
+                                                    className="px-8 py-4 bg-blue-500/10 hover:bg-blue-500/20 rounded-2xl transition-all text-blue-400 border border-blue-500/20 flex items-center gap-4 group"
+                                                >
+                                                    <FileCheck2 className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+                                                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">{hasFeedback ? 'Update Feedback' : 'Record Agency Feedback'}</span>
+                                                </button>
+                                                {hasFeedback && hasFeedback.outcome !== 'ONGOING' && (
+                                                    <button
+                                                        onClick={() => {
+                                                            bulkUpdateCases([activeCase.id], { status: 'CLOSED', lastUpdated: new Date().toLocaleDateString() });
+                                                            handleClose();
+                                                        }}
+                                                        className="px-8 py-4 bg-gray-500/10 hover:bg-gray-500/20 rounded-2xl transition-all text-gray-400 border border-gray-500/20 flex items-center gap-4 group"
+                                                    >
+                                                        <Lock className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                                                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Close Case</span>
+                                                    </button>
+                                                )}
+                                            </>
+                                        );
+                                    })()}
+                                </div>
                             ) : null}
 
                             <button onClick={handleClose} className="w-14 h-14 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-2xl transition-all text-white/20 hover:text-white border border-white/5 group">
@@ -348,10 +425,20 @@ const CaseAnalysis = () => {
                                 </div>
 
                                 {/* Aggregate Case Risk */}
-                                <div className="bg-white p-8 rounded-3xl shadow-xl shadow-gray-200/50 border-t-8 border-red-500 shrink-0 min-w-[200px] flex flex-col items-center justify-center text-center">
-                                    <div className="text-[10px] font-black text-red-600 uppercase tracking-[0.2em] mb-2 leading-tight">Aggregate Case Risk<br/>High Exposure Cluster</div>
-                                    <div className="text-6xl font-black text-gray-900 tracking-tighter">{totalCaseRisk}</div>
-                                </div>
+                                {(() => {
+                                    const isHibernated = activeCase.status === 'HIBERNATED';
+                                    const isPriority = activeCase.status === 'PRIORITY';
+                                    const borderColor = isHibernated ? 'border-emerald-500' : isPriority ? 'border-red-500' : 'border-amber-500';
+                                    const textColor = isHibernated ? 'text-emerald-600' : isPriority ? 'text-red-600' : 'text-amber-600';
+                                    const shadowColor = isHibernated ? 'shadow-emerald-200/50' : isPriority ? 'shadow-red-200/50' : 'shadow-amber-200/50';
+                                    const riskLabel = isHibernated ? 'Low Exposure' : isPriority ? 'High Exposure Cluster' : 'Under Review';
+                                    return (
+                                        <div className={`bg-white p-8 rounded-3xl shadow-xl ${shadowColor} border-t-8 ${borderColor} shrink-0 min-w-[200px] flex flex-col items-center justify-center text-center`}>
+                                            <div className={`text-[10px] font-black ${textColor} uppercase tracking-[0.2em] mb-2 leading-tight`}>Aggregate Case Risk<br/>{riskLabel}</div>
+                                            <div className="text-6xl font-black text-gray-900 tracking-tighter">{totalCaseRisk}</div>
+                                        </div>
+                                    );
+                                })()}
                             </div>
 
                             {/* Staging Notice */}
@@ -384,11 +471,6 @@ const CaseAnalysis = () => {
                                                     <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Risk Score</div>
                                                     <div className="text-4xl font-black text-red-600 tracking-tighter leading-none">{activeSubject?.riskProfile?.totalScore || 0}</div>
                                                 </div>
-                                                <div className="h-10 w-px bg-gray-100 mx-2" />
-                                                <div className="text-right">
-                                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Risk Factors</div>
-                                                    <div className="text-4xl font-black text-gray-900 tracking-tighter leading-none">{activeSubject?.riskProfile?.factors?.length || 0}</div>
-                                                </div>
                                             </div>
                                         </div>
                                         <div className="p-0">
@@ -411,7 +493,7 @@ const CaseAnalysis = () => {
                                                                     onClick={() => setExpandedFactorId(isExpanded ? null : factorId)}
                                                                     className={`hover:bg-gray-50/50 transition-colors cursor-pointer group ${isExpanded ? 'bg-blue-50/30' : ''}`}
                                                                 >
-                                                                    <td className="px-8 py-6">
+                                                                    <td className="px-8 py-3">
                                                                         <div className="flex items-center gap-4">
                                                                             <div className="text-gray-300 group-hover:text-blue-500 transition-colors">
                                                                                 {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -422,11 +504,18 @@ const CaseAnalysis = () => {
                                                                             </div>
                                                                         </div>
                                                                     </td>
-                                                                    <td className="px-8 py-6">
+                                                                    <td className="px-8 py-3">
                                                                         <div className="flex items-center justify-between">
-                                                                            <div className="text-xs font-black text-gray-900 uppercase tracking-wider">{factor.factor || factor.category}</div>
+                                                                            <div>
+                                                                                <div className="text-xs font-black text-gray-900 uppercase tracking-wider">{SCORE_META[factor.factor]?.scoreId || factor.factor || factor.category}</div>
+                                                                                {isExpanded && (
+                                                                                    <div className="text-[11px] text-gray-500 font-medium mt-2 leading-relaxed italic">
+                                                                                        {SCORE_META[factor.factor]?.description(activeSubject?.name || 'Subject') || `Score triggered for ${activeSubject?.name || 'Subject'}.`}
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
                                                                             {isSaved && (
-                                                                                <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100 animate-in fade-in slide-in-from-right-2">
+                                                                                <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100 animate-in fade-in slide-in-from-right-2 shrink-0">
                                                                                     <Check className="w-3 h-3" />
                                                                                     <span className="text-[8px] font-black uppercase tracking-widest">Mitigated</span>
                                                                                 </div>
@@ -582,8 +671,50 @@ const CaseAnalysis = () => {
                                                 </div>
                                             </div>
 
+                                            {/* Dissemination & Agency Feedback Trail */}
+                                            {activeCase.disseminations && activeCase.disseminations.length > 0 && (
+                                                <div className="pt-6 border-t border-gray-50">
+                                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Dissemination & Agency Feedback</div>
+                                                    <div className="space-y-3">
+                                                        {activeCase.disseminations.map((d: any) => (
+                                                            <div key={d.id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                                                                <div className="px-5 py-4 flex items-center justify-between bg-gray-50/50">
+                                                                    <div className="flex items-center gap-3">
+                                                                        <div className={`w-2 h-2 rounded-full ${d.feedback ? (d.feedback.outcome === 'ONGOING' ? 'bg-amber-400 animate-pulse' : 'bg-green-500') : 'bg-amber-400 animate-pulse'}`} />
+                                                                        <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">{d.agency}</span>
+                                                                        <span className="text-[9px] font-bold text-gray-400">{new Date(d.date).toLocaleDateString()}</span>
+                                                                    </div>
+                                                                    {d.feedback ? (
+                                                                        <span className={`px-2.5 py-1 rounded text-[9px] font-black uppercase tracking-widest border ${
+                                                                            d.feedback.outcome === 'CONVICTION' ? 'bg-green-50 text-green-700 border-green-200' :
+                                                                            d.feedback.outcome === 'ASSET_SEIZURE' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                                            d.feedback.outcome === 'ONGOING' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                                                                            'bg-gray-100 text-gray-600 border-gray-200'
+                                                                        }`}>{d.feedback.outcome.replace(/_/g, ' ')}</span>
+                                                                    ) : (
+                                                                        <span className="px-2.5 py-1 rounded text-[9px] font-black uppercase tracking-widest bg-amber-50 text-amber-600 border border-amber-200 animate-pulse">Awaiting Response</span>
+                                                                    )}
+                                                                </div>
+                                                                <div className="px-5 py-3 space-y-2">
+                                                                    <div className="text-[10px] text-gray-600 leading-relaxed">{d.intelligenceSummary}</div>
+                                                                    {d.feedback && (
+                                                                        <div className="mt-3 pt-3 border-t border-gray-100 space-y-1.5">
+                                                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Agency Response — {new Date(d.feedback.receivedDate).toLocaleDateString()}</div>
+                                                                            <div className="text-[10px] text-gray-700 leading-relaxed">{d.feedback.notes}</div>
+                                                                            {d.feedback.officialRef && (
+                                                                                <div className="text-[9px] font-bold text-gray-400 mt-1">Ref: {d.feedback.officialRef}</div>
+                                                                            )}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             <div className="pt-6 border-t border-gray-50">
-                                                {/* Open in Quantexa Button - Moved here as requested */}
+                                                {/* Open in Quantexa Button */}
                                                 <button 
                                                     onClick={() => window.open('https://quantexa.com', '_blank')} 
                                                     className="w-full mt-2 px-8 py-5 bg-[#0c051a] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl flex items-center justify-center gap-4 group overflow-hidden relative"
@@ -607,37 +738,230 @@ const CaseAnalysis = () => {
                                             <div className="w-2 h-2 rounded-full bg-emerald-500" />
                                             <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-[0.3em]">Vital Particulars & Target Identity</h3>
                                         </div>
-                                        <span className="px-3 py-1 bg-gray-50 text-gray-400 rounded-lg text-[8px] font-black uppercase tracking-widest border border-gray-100">DUE/VERIFIED</span>
+                                        <div className="flex items-center gap-3">
+                                            {subjectProfile && (
+                                                <span className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest border ${
+                                                    subjectProfile.entityType === 'INDIVIDUAL'
+                                                        ? 'bg-blue-50 text-blue-600 border-blue-200'
+                                                        : 'bg-purple-50 text-purple-600 border-purple-200'
+                                                }`}>
+                                                    {subjectProfile.entityType}
+                                                </span>
+                                            )}
+                                            <span className="px-3 py-1 bg-gray-50 text-gray-400 rounded-lg text-[8px] font-black uppercase tracking-widest border border-gray-100">DUE/VERIFIED</span>
+                                        </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-                                        <div>
-                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Entity Designation</div>
-                                            <div className="text-lg font-black text-gray-900 tracking-tight">{activeSubject?.name}</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Jurisdiction / Origin</div>
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-6 h-4 bg-gray-100 rounded shadow-sm border border-gray-200" />
-                                                <span className="text-xs font-black text-gray-900 uppercase tracking-wider">{activeSubject?.nationality || 'Global'}</span>
+                                    {subjectProfile && subjectProfile.entityType === 'INDIVIDUAL' ? (() => {
+                                        const p = subjectProfile as SubjectProfileIndividual;
+                                        return (
+                                            <div className="space-y-8">
+                                                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                                    <div className="md:col-span-2">
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Full Name</div>
+                                                        <div className="text-lg font-black text-gray-900 tracking-tight">{p.fullName}</div>
+                                                        <div className="text-[10px] text-gray-400 font-bold mt-1">{p.parsedName.initials}. {p.parsedName.forename} {p.parsedName.familyName}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Gender</div>
+                                                        <div className="text-sm font-black text-gray-900">{p.gender === 'M' ? 'Male' : p.gender === 'F' ? 'Female' : p.gender}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Date of Birth</div>
+                                                        <div className="text-sm font-black text-gray-900 tracking-tight">{p.dateOfBirth}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Nationality</div>
+                                                        <div className="flex items-center gap-2">
+                                                            <Globe className="w-4 h-4 text-blue-500" />
+                                                            <span className="text-xs font-black text-gray-900 uppercase tracking-wider">{p.nationality}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Country of Birth</div>
+                                                        <span className="text-xs font-black text-gray-900 uppercase tracking-wider">{p.countryOfBirth}</span>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Tax Residency</div>
+                                                        <span className="text-xs font-black text-gray-900 uppercase tracking-wider">{p.taxResidency}</span>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Operational ID</div>
+                                                        <span className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-black uppercase tracking-widest border border-blue-100">{activeSubject?.id}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="p-5 bg-blue-50/50 border border-blue-100 rounded-2xl">
+                                                    <div className="flex items-center gap-3 mb-4">
+                                                        <Fingerprint className="w-5 h-5 text-blue-600" />
+                                                        <div className="text-[10px] font-black text-blue-700 uppercase tracking-[0.2em]">Identification Document</div>
+                                                    </div>
+                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                        <div>
+                                                            <div className="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] mb-2">ID Type</div>
+                                                            <div className="text-sm font-black text-gray-900">{p.identificationType}</div>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] mb-2">ID Number</div>
+                                                            <div className="text-sm font-black text-gray-900 tracking-widest">{p.identificationNumber}</div>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] mb-2">Issuing Country</div>
+                                                            <div className="text-sm font-black text-gray-900">{p.identificationCountry}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="pt-6 border-t border-gray-50">
+                                                    <div className="flex items-center gap-3 mb-4">
+                                                        <MapPin className="w-4 h-4 text-emerald-500" />
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Registered Address</div>
+                                                    </div>
+                                                    <div className="p-4 bg-gray-50/50 border border-gray-100 rounded-xl">
+                                                        <div className="text-sm font-bold text-gray-900 mb-2">{p.address.parsedAddress}</div>
+                                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+                                                            {p.address.blockNumber && <div><span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Block</span><div className="text-xs font-bold text-gray-700">{p.address.blockNumber}</div></div>}
+                                                            {p.address.streetName && <div><span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Street</span><div className="text-xs font-bold text-gray-700">{p.address.streetName}</div></div>}
+                                                            {p.address.floorNumber && <div><span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Floor / Unit</span><div className="text-xs font-bold text-gray-700">#{p.address.floorNumber}-{p.address.unitNumber}</div></div>}
+                                                            {p.address.postalCode && <div><span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Postal Code</span><div className="text-xs font-bold text-gray-700">{p.address.postalCode}</div></div>}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Operational ID</div>
-                                            <span className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-black uppercase tracking-widest border border-blue-100 underline decoration-blue-300 underline-offset-4 cursor-pointer">{activeSubject?.id}</span>
-                                        </div>
-                                        <div>
-                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Birth / Incorp Date</div>
-                                            <div className="text-sm font-black text-gray-900 tracking-tight">{activeSubject?.dob || '1965-02-28'}</div>
-                                        </div>
-                                    </div>
+                                        );
+                                    })() : subjectProfile && subjectProfile.entityType === 'COMPANY' ? (() => {
+                                        const p = subjectProfile as SubjectProfileCompany;
+                                        return (
+                                            <div className="space-y-8">
+                                                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                                    <div className="md:col-span-2">
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Company Name</div>
+                                                        <div className="text-lg font-black text-gray-900 tracking-tight">{p.companyName}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Registration Number</div>
+                                                        <span className="px-3 py-1.5 bg-purple-50 text-purple-700 rounded-lg text-xs font-black uppercase tracking-widest border border-purple-100">{p.companyNumber}</span>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Jurisdiction</div>
+                                                        <div className="flex items-center gap-2">
+                                                            <Globe className="w-4 h-4 text-purple-500" />
+                                                            <span className="text-xs font-black text-gray-900 uppercase tracking-wider">{p.jurisdictionCode}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                    <div className="mt-12 pt-10 border-t border-gray-50">
-                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Primary Registered Address</div>
-                                        <div className="inline-block px-4 py-2 bg-gray-50/50 border-2 border-dashed border-gray-200 rounded-xl text-xs font-black text-gray-400 uppercase tracking-widest">
-                                            {activeSubject?.fullAddress || '44 VOLKOV STREET, ST. PETERSBURG, RUSSIA'}
-                                        </div>
-                                    </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Company Type</div>
+                                                        <div className="text-xs font-bold text-gray-900">{p.companyType}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Incorporation Date</div>
+                                                        <div className="text-sm font-black text-gray-900 tracking-tight">{p.incorporationDate}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Current Status</div>
+                                                        <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${
+                                                            p.currentStatus === 'Active'
+                                                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                                                : 'bg-red-50 text-red-700 border-red-200'
+                                                        }`}>{p.currentStatus}</span>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Operational ID</div>
+                                                        <span className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-black uppercase tracking-widest border border-blue-100">{activeSubject?.id}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="pt-6 border-t border-gray-50">
+                                                    <div className="flex items-center gap-3 mb-4">
+                                                        <Building2 className="w-4 h-4 text-purple-500" />
+                                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Registered Address</div>
+                                                    </div>
+                                                    <div className="p-4 bg-gray-50/50 border border-gray-100 rounded-xl">
+                                                        <div className="text-sm font-bold text-gray-900">{p.registeredAddress.inFull}</div>
+                                                    </div>
+                                                </div>
+
+                                                {p.directors && p.directors.length > 0 && (
+                                                    <div className="pt-6 border-t border-gray-50">
+                                                        <div className="flex items-center gap-3 mb-4">
+                                                            <Users className="w-4 h-4 text-purple-500" />
+                                                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Directors & Shareholders</div>
+                                                        </div>
+                                                        <div className="overflow-x-auto rounded-xl border border-gray-200">
+                                                            <table className="w-full text-sm">
+                                                                <thead>
+                                                                    <tr className="bg-gray-50 border-b border-gray-200">
+                                                                        <th className="px-4 py-3 text-left text-[9px] font-black text-gray-500 uppercase tracking-widest">Name</th>
+                                                                        <th className="px-4 py-3 text-left text-[9px] font-black text-gray-500 uppercase tracking-widest">Nationality</th>
+                                                                        <th className="px-4 py-3 text-left text-[9px] font-black text-gray-500 uppercase tracking-widest">Residence</th>
+                                                                        <th className="px-4 py-3 text-left text-[9px] font-black text-gray-500 uppercase tracking-widest">Position</th>
+                                                                        <th className="px-4 py-3 text-left text-[9px] font-black text-gray-500 uppercase tracking-widest">DOB</th>
+                                                                        <th className="px-4 py-3 text-right text-[9px] font-black text-gray-500 uppercase tracking-widest">Shareholding</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody className="divide-y divide-gray-100">
+                                                                    {p.directors.map((dir, idx) => (
+                                                                        <tr key={idx} className="hover:bg-gray-50/50">
+                                                                            <td className="px-4 py-3 text-xs font-bold text-gray-900">{dir.name}</td>
+                                                                            <td className="px-4 py-3 text-xs text-gray-600 uppercase">{dir.nationality}</td>
+                                                                            <td className="px-4 py-3 text-xs text-gray-600 uppercase">{dir.countryOfResidence}</td>
+                                                                            <td className="px-4 py-3 text-xs text-gray-600">{dir.position}</td>
+                                                                            <td className="px-4 py-3 text-xs text-gray-600">{dir.partialDateOfBirth}</td>
+                                                                            <td className="px-4 py-3 text-right">
+                                                                                {dir.shareholding !== undefined ? (
+                                                                                    <span className={`text-xs font-black ${dir.shareholding > 25 ? 'text-red-600' : 'text-gray-900'}`}>
+                                                                                        {dir.shareholding}%
+                                                                                        {dir.shareholding > 25 && <span className="ml-1 text-[8px] text-red-500 font-black uppercase">Significant</span>}
+                                                                                    </span>
+                                                                                ) : <span className="text-xs text-gray-400">-</span>}
+                                                                            </td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })() : (
+                                        /* Fallback: original simple layout when no subjectProfile data available */
+                                        <>
+                                            <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+                                                <div>
+                                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Entity Designation</div>
+                                                    <div className="text-lg font-black text-gray-900 tracking-tight">{activeSubject?.name}</div>
+                                                </div>
+                                                <div>
+                                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Jurisdiction / Origin</div>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-6 h-4 bg-gray-100 rounded shadow-sm border border-gray-200" />
+                                                        <span className="text-xs font-black text-gray-900 uppercase tracking-wider">{activeSubject?.nationality || 'Global'}</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Operational ID</div>
+                                                    <span className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-black uppercase tracking-widest border border-blue-100">{activeSubject?.id}</span>
+                                                </div>
+                                                <div>
+                                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Birth / Incorp Date</div>
+                                                    <div className="text-sm font-black text-gray-900 tracking-tight">{activeSubject?.dob || '-'}</div>
+                                                </div>
+                                            </div>
+                                            <div className="mt-12 pt-10 border-t border-gray-50">
+                                                <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Primary Registered Address</div>
+                                                <div className="inline-block px-4 py-2 bg-gray-50/50 border-2 border-dashed border-gray-200 rounded-xl text-xs font-black text-gray-400 uppercase tracking-widest">
+                                                    {activeSubject?.fullAddress || 'Address not available'}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
@@ -786,6 +1110,99 @@ const CaseAnalysis = () => {
                             <textarea value={finalizeRationale} onChange={(e) => setFinalizeRationale(e.target.value)} placeholder="Enter closure rationale or executive summary..." className="w-full h-24 p-5 bg-white border border-gray-200 rounded-3xl text-xs font-bold mb-6 resize-none outline-none focus:ring-2 focus:ring-emerald-500" />
                             
                             <button onClick={handleConfirmFinalization} disabled={!finalizeOutcome || !finalizeRationale.trim() || (finalizeOutcome === 'DISSEMINATE' && !selectedAgency)} className="w-full py-5 bg-[#100628] text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-emerald-500/10 disabled:opacity-50">Confirm Finalization</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isRecordingFeedback && (
+                <div className="fixed inset-0 z-[200] bg-[#0c051a]/80 backdrop-blur-xl flex justify-center items-center p-4 animate-in fade-in duration-300">
+                    <div className="bg-white w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row animate-in zoom-in duration-300">
+                        <div className="md:w-5/12 bg-gradient-to-br from-[#0a1628] to-[#162040] p-10 text-white flex flex-col justify-between">
+                            <div>
+                                <FileCheck2 className="w-12 h-12 text-blue-400 mb-8" />
+                                <h3 className="text-3xl font-black tracking-tight leading-tight">Agency Feedback</h3>
+                                <p className="text-xs text-white/50 font-bold uppercase mt-6 tracking-[0.2em] italic">Intelligence Impact Record</p>
+                                <div className="mt-8 space-y-3">
+                                    {(activeCase.disseminations || []).map(d => (
+                                        <div key={d.id} className="bg-white/5 rounded-xl p-4 border border-white/10">
+                                            <div className="text-[10px] font-black text-blue-300 uppercase tracking-widest">{d.agency}</div>
+                                            <div className="text-[9px] text-white/40 font-bold mt-1">Sent {new Date(d.date).toLocaleDateString()}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 opacity-40">
+                                <Lock className="w-3 h-3" />
+                                <span className="text-[9px] font-black uppercase tracking-widest">Secured by Quantexa FIU Gateway</span>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 p-10 flex flex-col bg-gray-50/50">
+                            <div className="flex justify-between items-start mb-8">
+                                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Feedback Outcome</span>
+                                <button onClick={() => { setIsRecordingFeedback(false); setFeedbackOutcome(''); setFeedbackNotes(''); setFeedbackRef(''); }} className="p-2 hover:bg-white rounded-xl transition-all text-gray-300"><X className="w-5 h-5" /></button>
+                            </div>
+
+                            <div className="space-y-3 mb-8">
+                                {[
+                                    { value: 'CONVICTION', label: 'Conviction', desc: 'Prosecution successful based on intelligence', color: 'emerald' },
+                                    { value: 'ASSET_SEIZURE', label: 'Asset Seizure', desc: 'Assets frozen or seized by receiving agency', color: 'blue' },
+                                    { value: 'ONGOING', label: 'Ongoing Investigation', desc: 'Agency is still actively investigating', color: 'amber' },
+                                    { value: 'NO_OFFENCE_FOUND', label: 'No Offence Found', desc: 'Agency concluded no actionable offence', color: 'gray' },
+                                    { value: 'DISMISSED', label: 'Dismissed', desc: 'Agency declined to act on referral', color: 'red' },
+                                ].map(opt => (
+                                    <div
+                                        key={opt.value}
+                                        onClick={() => setFeedbackOutcome(opt.value)}
+                                        className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                                            feedbackOutcome === opt.value
+                                                ? `border-${opt.color}-500 bg-${opt.color}-50`
+                                                : `border-gray-100 bg-white hover:border-${opt.color}-200`
+                                        }`}
+                                    >
+                                        <div className="text-xs font-black uppercase tracking-widest">{opt.label}</div>
+                                        <div className="text-[10px] text-gray-400 font-medium mt-1">{opt.desc}</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <input
+                                type="text"
+                                value={feedbackRef}
+                                onChange={(e) => setFeedbackRef(e.target.value)}
+                                placeholder="Official reference number (optional)..."
+                                className="w-full p-4 bg-white border border-gray-200 rounded-2xl text-xs font-bold mb-4 outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+
+                            <textarea
+                                value={feedbackNotes}
+                                onChange={(e) => setFeedbackNotes(e.target.value)}
+                                placeholder="Agency feedback notes and observations..."
+                                className="w-full h-24 p-5 bg-white border border-gray-200 rounded-2xl text-xs font-bold mb-6 resize-none outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+
+                            <button
+                                onClick={() => {
+                                    const latestDis = (activeCase.disseminations || []).slice(-1)[0];
+                                    if (latestDis && feedbackOutcome) {
+                                        addFeedback(activeCase.id, latestDis.id, {
+                                            receivedDate: new Date().toISOString(),
+                                            outcome: feedbackOutcome,
+                                            notes: feedbackNotes,
+                                            officialRef: feedbackRef || undefined,
+                                        });
+                                        setIsRecordingFeedback(false);
+                                        setFeedbackOutcome('');
+                                        setFeedbackNotes('');
+                                        setFeedbackRef('');
+                                    }
+                                }}
+                                disabled={!feedbackOutcome || !feedbackNotes.trim()}
+                                className="w-full py-5 bg-[#0a1628] text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-blue-500/10 disabled:opacity-50"
+                            >
+                                Confirm Feedback
+                            </button>
                         </div>
                     </div>
                 </div>

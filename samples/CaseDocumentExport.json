@@ -1,0 +1,406 @@
+[
+  {
+    "caseId": "TASK-2026-MCB-1001",
+    "caseTitle": "Automated Triage: Structuring / Smurfing — Ahmad Bin Sulaiman",
+    "assignedAnalyst": "Insp. Lim",
+    "status": "ANALYSIS",
+    "quantexaInvestigationId": "QTX-INV-2026-SG-00341",
+    "relatedStrIds": ["STR-2026-MCB-1001"],
+    "relatedCmrIds": ["CMR-2026-0101"],
+    "relatedCtrIds": [],
+    "findings": "Subject Ahmad Bin Sulaiman conducted 29 sub-threshold cash deposits averaging SGD 9,800 over a 6-month period, consistent with deliberate structuring to avoid the SGD 10,000 reporting threshold. Structuring window ratio at 82% and round-amount ratio at 76% exceed thresholds. Consolidation outflow of SGD 285,000 directed to a Malaysian real estate entity within 3 days of final deposit tranche. Cross-border CMR (CMR-2026-0101) confirms SGD 53,500 physical cash on entry from Malaysia. Pattern indicates layered proceeds integration via property acquisition. Recommend dissemination to CAD for investigation under CDSA s.47(1)(b).",
+    "subjects": [
+      {
+        "caseSubjectId": 1001,
+        "subjectType": "Individual",
+        "roleInCase": "Subject",
+        "individual": {
+          "individualId": 10011001,
+          "fullName": "Ahmad Bin Sulaiman",
+          "parsedIndividualNames": [
+            {
+              "original": "Ahmad Bin Sulaiman",
+              "givenName": "Ahmad",
+              "middleName": "Bin",
+              "familyName": "Sulaiman",
+              "prefix": null,
+              "suffix": null
+            }
+          ],
+          "countryOfOrigin": "SG",
+          "dateOfBirth": "1987-04-14",
+          "parsedDateOfBirth": {
+            "year": 1987,
+            "month": 4,
+            "day": 14
+          },
+          "identificationNumber": "S8712340A",
+          "identificationCountryOfRegistration": "SG",
+          "identificationNumberType": "NRIC"
+        },
+        "business": null
+      }
+    ]
+  },
+  {
+    "caseId": "TASK-2026-MCB-1002",
+    "caseTitle": "Automated Triage: Cross-Border Layering / Sanctions Evasion — Natalia Petrova",
+    "assignedAnalyst": "Sgt. Wong",
+    "status": "ANALYSIS",
+    "quantexaInvestigationId": "QTX-INV-2026-SG-00342",
+    "relatedStrIds": ["STR-2026-SFG-1002"],
+    "relatedCmrIds": ["CMR-2026-0102"],
+    "relatedCtrIds": [],
+    "findings": "Subject Natalia Petrova, Russian national domiciled in Iran (FATF High Risk), operated an IRN→SGD→PRK triangulation pattern. Iranian inflows transited her Singapore account and exited to DPRK-linked entity North Star Resources Co. within 7 days per cycle, totalling USD 2,455,000. CMR-2026-0102 corroborates: USD 207,500 cash declared at Changi Airport with Iranian entity as source and North Korean entity as recipient. Pattern constitutes sanctions evasion under TSOFA and potential terrorism financing. Recommend urgent dissemination to MAS (Financial Sanctions Unit) and ICA.",
+    "subjects": [
+      {
+        "caseSubjectId": 1002,
+        "subjectType": "Individual",
+        "roleInCase": "Subject",
+        "individual": {
+          "individualId": 10021002,
+          "fullName": "Natalia Petrova",
+          "parsedIndividualNames": [
+            {
+              "original": "Natalia Petrova",
+              "givenName": "Natalia",
+              "middleName": null,
+              "familyName": "Petrova",
+              "prefix": null,
+              "suffix": null
+            }
+          ],
+          "countryOfOrigin": "RU",
+          "dateOfBirth": "1985-11-03",
+          "parsedDateOfBirth": {
+            "year": 1985,
+            "month": 11,
+            "day": 3
+          },
+          "identificationNumber": "M19283746",
+          "identificationCountryOfRegistration": "RU",
+          "identificationNumberType": "PASSPORT"
+        },
+        "business": null
+      }
+    ]
+  },
+  {
+    "caseId": "TASK-2026-MCB-1003",
+    "caseTitle": "Automated Triage: Hub-and-Spoke / Corporate ML — Dragon Gate Pte Limited",
+    "assignedAnalyst": "Insp. Lim",
+    "status": "TRIAGE",
+    "quantexaInvestigationId": null,
+    "relatedStrIds": ["STR-2026-PTB-1003"],
+    "relatedCmrIds": ["CMR-2026-0103"],
+    "relatedCtrIds": [],
+    "findings": null,
+    "subjects": [
+      {
+        "caseSubjectId": 1003,
+        "subjectType": "Business",
+        "roleInCase": "Subject",
+        "individual": null,
+        "business": {
+          "businessId": 10031003,
+          "legalName": "Dragon Gate Pte Limited",
+          "parsedBusinessNames": [
+            {
+              "original": "Dragon Gate Pte Limited",
+              "normalisedName": "DRAGON GATE PTE LIMITED",
+              "cleanedName": "Dragon Gate"
+            }
+          ],
+          "countryOfIncorporation": "SG",
+          "incorporationDate": "2023-06-15",
+          "parsedIncorporationDate": {
+            "year": 2023,
+            "month": 6,
+            "day": 15
+          },
+          "businessRegistrationNumber": "202312345W",
+          "countryOfRegistration": "SG"
+        }
+      },
+      {
+        "caseSubjectId": 1003002,
+        "subjectType": "Individual",
+        "roleInCase": "Related Party",
+        "individual": {
+          "individualId": 10030021,
+          "fullName": "Chen Jian Wei",
+          "parsedIndividualNames": [
+            {
+              "original": "Chen Jian Wei",
+              "givenName": "Jian Wei",
+              "middleName": null,
+              "familyName": "Chen",
+              "prefix": null,
+              "suffix": null
+            }
+          ],
+          "countryOfOrigin": "SG",
+          "dateOfBirth": "1984-03-22",
+          "parsedDateOfBirth": {
+            "year": 1984,
+            "month": 3,
+            "day": 22
+          },
+          "identificationNumber": "S8401232D",
+          "identificationCountryOfRegistration": "SG",
+          "identificationNumberType": "NRIC"
+        },
+        "business": null
+      }
+    ]
+  },
+  {
+    "caseId": "TASK-2026-MCB-1005",
+    "caseTitle": "Automated Triage: Trade-Based ML / Precious Metals — Lee Mei Ling & Jade Horizon Resources Ltd",
+    "assignedAnalyst": "Insp. Lim",
+    "status": "PENDING_APPROVAL",
+    "quantexaInvestigationId": null,
+    "relatedStrIds": ["STR-2026-PTB-1005"],
+    "relatedCmrIds": [],
+    "relatedCtrIds": ["CTR-2026-0105"],
+    "findings": "Two-pronged TBML mechanism identified: (1) Labuan wire cycling via Jade Horizon Resources Ltd with round-trip flows totalling USD 4.5M, and (2) precious metals mirror trade through MERIDIAN PRECIOUS ASSETS — back-to-back gold bullion purchase (SGD 450,000) and sale (SGD 394,200) within 24 hours accepting a 12.4% economic loss. Fifth bar destination unknown. CTR-2026-0105 filed by pawnbroker corroborates. Recommend escalation for formal investigation.",
+    "subjects": [
+      {
+        "caseSubjectId": 1005,
+        "subjectType": "Individual",
+        "roleInCase": "Subject",
+        "individual": {
+          "individualId": 10051005,
+          "fullName": "Lee Mei Ling",
+          "parsedIndividualNames": [
+            {
+              "original": "Lee Mei Ling",
+              "givenName": "Mei Ling",
+              "middleName": null,
+              "familyName": "Lee",
+              "prefix": null,
+              "suffix": null
+            }
+          ],
+          "countryOfOrigin": "SG",
+          "dateOfBirth": "1979-08-29",
+          "parsedDateOfBirth": {
+            "year": 1979,
+            "month": 8,
+            "day": 29
+          },
+          "identificationNumber": "S7934567H",
+          "identificationCountryOfRegistration": "SG",
+          "identificationNumberType": "NRIC"
+        },
+        "business": null
+      }
+    ]
+  },
+  {
+    "caseId": "TASK-2026-MCB-1008",
+    "caseTitle": "Automated Triage: Money Mule / Scam Proceeds — Tan Wei Jie (Jason)",
+    "assignedAnalyst": "Insp. Pei Shan",
+    "status": "DISSEMINATED",
+    "quantexaInvestigationId": "QTX-INV-2026-SG-00348",
+    "relatedStrIds": ["STR-2026-RBC-1008"],
+    "relatedCmrIds": [],
+    "relatedCtrIds": ["CTR-2026-0108"],
+    "findings": "Subject Tan Wei Jie (Jason) is a confirmed money mule. SGD 247,500 received from 7 unrelated senders, with 97% immediately withdrawn as cash. SPF CID referral CID-SCAM-2026-REF-8812 confirms link to ongoing investment scam syndicate. CTR-2026-0108 from GOLDEN LINK PAWNBROKERS documents 3 pawn transactions totalling SGD 16,500 — jewellery inconsistent with subject's profile as administrative assistant. Accounts cancelled with fraud flag. Intelligence disseminated to CAD.",
+    "subjects": [
+      {
+        "caseSubjectId": 1008,
+        "subjectType": "Individual",
+        "roleInCase": "Subject",
+        "individual": {
+          "individualId": 10081008,
+          "fullName": "Tan Wei Jie (Jason)",
+          "parsedIndividualNames": [
+            {
+              "original": "Tan Wei Jie",
+              "givenName": "Wei Jie",
+              "middleName": null,
+              "familyName": "Tan",
+              "prefix": null,
+              "suffix": null
+            }
+          ],
+          "countryOfOrigin": "SG",
+          "dateOfBirth": "1999-02-17",
+          "parsedDateOfBirth": {
+            "year": 1999,
+            "month": 2,
+            "day": 17
+          },
+          "identificationNumber": "S9901234B",
+          "identificationCountryOfRegistration": "SG",
+          "identificationNumberType": "NRIC"
+        },
+        "business": null
+      }
+    ]
+  },
+  {
+    "caseId": "TASK-2026-MCB-1011",
+    "caseTitle": "CRITICAL — Sanctions Evasion / PEP Network — Viktor Lazarev",
+    "assignedAnalyst": "Sgt. Wong",
+    "status": "PRIORITY",
+    "quantexaInvestigationId": "QTX-INV-2026-SG-00351",
+    "relatedStrIds": ["STR-2026-CCB-1011"],
+    "relatedCmrIds": ["CMR-2026-0111"],
+    "relatedCtrIds": [],
+    "findings": "CRITICAL case. Subject Viktor Lazarev is a confirmed PEP (former Russian Deputy Minister of Industry and Trade) with direct links to OFAC/EU sanctioned defence entities Rostec and Promtechnologia. Named in both OCCRP investigation and Pandora Papers leak. Operates a 7-layer ownership structure across 7 jurisdictions (Russia, UAE, Cyprus, Singapore, BVI, Cayman, Seychelles). Fund throughput of USD 8.5M with an average holding period of 1.8 hours — classic rapid transit pattern. Trade invoice discrepancies at 62% with 2.15x over-invoicing ratio indicating TBML. Extreme hub-and-spoke network with 14 spokes and 0.97 centrality score. CMR-2026-0111 corroborates USD 185,000 cash on entry from UAE (Russia via Dubai). Immediate dissemination to MAS Financial Sanctions Unit, CAD, and AGC recommended. Account frozen pending sanctions review.",
+    "subjects": [
+      {
+        "caseSubjectId": 1011,
+        "subjectType": "Individual",
+        "roleInCase": "Subject",
+        "individual": {
+          "individualId": 10111011,
+          "fullName": "Viktor Lazarev",
+          "parsedIndividualNames": [
+            {
+              "original": "Viktor Lazarev",
+              "givenName": "Viktor",
+              "middleName": null,
+              "familyName": "Lazarev",
+              "prefix": null,
+              "suffix": null
+            },
+            {
+              "original": "Viktor Andreyevich Lazarev",
+              "givenName": "Viktor",
+              "middleName": "Andreyevich",
+              "familyName": "Lazarev",
+              "prefix": null,
+              "suffix": null
+            }
+          ],
+          "countryOfOrigin": "RU",
+          "dateOfBirth": "1968-06-19",
+          "parsedDateOfBirth": {
+            "year": 1968,
+            "month": 6,
+            "day": 19
+          },
+          "identificationNumber": "RF72114589",
+          "identificationCountryOfRegistration": "RU",
+          "identificationNumberType": "PASSPORT"
+        },
+        "business": null
+      }
+    ]
+  },
+  {
+    "caseId": "TASK-2026-MCB-1012",
+    "caseTitle": "CRITICAL — Sanctions Evasion / Military-Linked Shell — Golden Phoenix International Ltd",
+    "assignedAnalyst": "Insp. Kumar",
+    "status": "PRIORITY",
+    "quantexaInvestigationId": "QTX-INV-2026-SG-00352",
+    "relatedStrIds": ["STR-2026-PTB-1012"],
+    "relatedCmrIds": ["CMR-2026-0112"],
+    "relatedCtrIds": [],
+    "findings": "CRITICAL case. Subject Golden Phoenix International Ltd is a Myanmar military-linked Labuan-registered shell company with direct ties to OFAC SDN-listed MEHL and UNSC-designated Myanmar Gems Enterprise. UBO is retired military general Gen. (Ret.) Aung Kyaw Moe — confirmed PEP. 6-layer ownership across 4 jurisdictions (Myanmar, Thailand, Labuan, BVI). Jade and gemstone trade with 55% invoice discrepancies. Fund throughput SGD 6.2M with 2.4hr holding period. Hub-and-spoke network with 11 spokes. CMR-2026-0112: USD 250,000 cash declared on entry from Thailand (Myanmar via Bangkok) by company representative. Source traced to Labuan shell linked to MEHL. Immediate dissemination to MAS, CAD, ICA, and AGC required.",
+    "subjects": [
+      {
+        "caseSubjectId": 1012,
+        "subjectType": "Business",
+        "roleInCase": "Subject",
+        "individual": null,
+        "business": {
+          "businessId": 10121012,
+          "legalName": "Golden Phoenix International Ltd",
+          "parsedBusinessNames": [
+            {
+              "original": "Golden Phoenix International Ltd",
+              "normalisedName": "GOLDEN PHOENIX INTERNATIONAL LTD",
+              "cleanedName": "Golden Phoenix International"
+            }
+          ],
+          "countryOfIncorporation": "MY",
+          "incorporationDate": "2023-09-01",
+          "parsedIncorporationDate": {
+            "year": 2023,
+            "month": 9,
+            "day": 1
+          },
+          "businessRegistrationNumber": "LL-2023-18876",
+          "countryOfRegistration": "MY"
+        }
+      },
+      {
+        "caseSubjectId": 1012002,
+        "subjectType": "Individual",
+        "roleInCase": "Related Party",
+        "individual": {
+          "individualId": 10120021,
+          "fullName": "Aung Kyaw Moe",
+          "parsedIndividualNames": [
+            {
+              "original": "Aung Kyaw Moe",
+              "givenName": "Kyaw Moe",
+              "middleName": null,
+              "familyName": "Aung",
+              "prefix": "Gen. (Ret.)",
+              "suffix": null
+            }
+          ],
+          "countryOfOrigin": "MM",
+          "dateOfBirth": "1960-01-15",
+          "parsedDateOfBirth": {
+            "year": 1960,
+            "month": 1,
+            "day": 15
+          },
+          "identificationNumber": "MM-MIL-AKM-1960",
+          "identificationCountryOfRegistration": "MM",
+          "identificationNumberType": "MILITARY_ID"
+        },
+        "business": null
+      }
+    ]
+  },
+  {
+    "caseId": "TASK-2026-MCB-1009",
+    "caseTitle": "Automated Triage: Low-Risk — Siti Rahmah Binte Yusof",
+    "assignedAnalyst": null,
+    "status": "HIBERNATED",
+    "quantexaInvestigationId": null,
+    "relatedStrIds": ["STR-2026-MCB-1009"],
+    "relatedCmrIds": [],
+    "relatedCtrIds": [],
+    "findings": null,
+    "subjects": [
+      {
+        "caseSubjectId": 1009,
+        "subjectType": "Individual",
+        "roleInCase": "Subject",
+        "individual": {
+          "individualId": 10091009,
+          "fullName": "Siti Rahmah Binte Yusof",
+          "parsedIndividualNames": [
+            {
+              "original": "Siti Rahmah Binte Yusof",
+              "givenName": "Siti Rahmah",
+              "middleName": "Binte",
+              "familyName": "Yusof",
+              "prefix": null,
+              "suffix": null
+            }
+          ],
+          "countryOfOrigin": "SG",
+          "dateOfBirth": "1992-07-12",
+          "parsedDateOfBirth": {
+            "year": 1992,
+            "month": 7,
+            "day": 12
+          },
+          "identificationNumber": "S9234567C",
+          "identificationCountryOfRegistration": "SG",
+          "identificationNumberType": "NRIC"
+        },
+        "business": null
+      }
+    ]
+  }
+]

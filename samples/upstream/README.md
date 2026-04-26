@@ -1,6 +1,6 @@
 # Upstream Mock Data — FIU Multi-Institution Intake
 
-> **Batch Run:** 2026-03-03 · **Jurisdiction:** Singapore (SG)
+> **Batch Run:** 2026-03-03 (base), 2026-04-24 (addition) · **Jurisdiction:** Singapore (SG)
 > **Purpose:** Simulated raw data from multiple Singapore financial institutions, ingested by the FIU's Quantexa AML platform upstream. This is the foundation data that generates the alerts, tasks, and linked reports (STR/CMR/CTR) consumed by the FIU downstream workflow.
 
 ---
@@ -19,7 +19,8 @@ Multiple Banks / Institutions (upstream — this folder)
                                                         │
                                                         ▼
                                         Tasks + Linked Reports
-                                        ├── MockTasksToLoad.json
+                                        ├── MockTasksToLoad(New).json       ← 12 base tasks
+                                        ├── MockTasksToLoad(Addition).json  ← 2 scan-ingestible tasks
                                         ├── MockSTRsToLoad.json  ← includes account data in Tab II
                                         ├── MockCMRsToLoad.json
                                         └── MockCTRsToLoad.json
@@ -38,9 +39,9 @@ Multiple Banks / Institutions (upstream — this folder)
 
 | Code | Full Name | UEN | Cases | Contact Officer |
 |------|-----------|-----|-------|-----------------|
-| MCB | Meridian Capital Bank Pte Ltd | 201209001G | 1001, 1006, 1009 | Lim Siew Ching |
+| MCB | Meridian Capital Bank Pte Ltd | 201209001G | 1001, 1006, 1009, 1014 | Lim Siew Ching |
 | SFG | Sentosa Financial Group Pte Ltd | 201512088H | 1002, 1004, 1010 | Raj Kumar |
-| PTB | Pacific Trade Bank Pte Ltd | 201703145K | 1003, 1005, 1012 | Angela Tan |
+| PTB | Pacific Trade Bank Pte Ltd | 201703145K | 1003, 1005, 1012, 1013 | Angela Tan |
 | CCB | Changi Commercial Bank Pte Ltd | 201809234M | 1007, 1011 | David Wong |
 | RBC | Raffles Banking Corporation Pte Ltd | 201604177J | 1008 | Michelle Koh |
 
@@ -78,6 +79,8 @@ Multiple Banks / Institutions (upstream — this folder)
 | STR-2026-SFG-1010 | SFG | Sunrise Wellness Pte Ltd | SGD 48,000 | Low Risk — Minor Geographic + Round Amount |
 | STR-2026-CCB-1011 | CCB | Viktor Lazarev | USD 8,500,000 | Sanctions Evasion / Proliferation Financing / PEP |
 | STR-2026-PTB-1012 | PTB | Golden Phoenix International Ltd | USD 6,200,000 | Sanctions Evasion / Military-Linked Shell / TBML |
+| STR-2026-PTB-1013 | PTB | Chen Hao Yang | SGD 1,200,000 | Cybercrime / Ransomware Proceeds |
+| STR-2026-MCB-1014 | MCB | Margaret Tan Siew Bee | SGD 8,500,000 | Tax Evasion / Offshore Trust |
 
 ### CMRs — Cash Movement Reports (filed at ICA checkpoints)
 
@@ -89,6 +92,7 @@ Multiple Banks / Institutions (upstream — this folder)
 | CMR-2026-0107 | Kim Sung Jin | China (Air China) | USD 250,000 | STR-2026-CCB-1007 |
 | CMR-2026-0111 | Viktor Lazarev | UAE (Emirates) | USD 185,000 | STR-2026-CCB-1011 |
 | CMR-2026-0112 | Zaw Min Tun | Thailand (Thai Airways) | USD 250,000 | STR-2026-PTB-1012 |
+| CMR-2026-0113 | Chen Hao Yang | Hong Kong | USD 95,000 | STR-2026-PTB-1013 |
 
 ### CTRs — Cash Transaction Reports (filed by PSMDs / Pawnbrokers)
 
@@ -105,7 +109,7 @@ Multiple Banks / Institutions (upstream — this folder)
 
 | File | Path | Rows | Description |
 |------|------|:----:|-------------|
-| `person.json` | `customer/raw/json/` | 7 | Person case class records for 7 individual customers (structured name, DOB, address parsing) |
+| `person.json` | `customer/raw/json/` | 7 | Person case class records for 7 individual customers in base batch (structured name, DOB, address parsing) |
 | `transactions.csv` | `transaction/raw/csv/` | 102 | All debit/credit transactions across the 12 cases |
 | `hotlist.csv` | `hotlist/raw/csv/` | 9 | Sanctions & watchlist entries (OFAC, UNSC) |
 | `companies.csv` | `opencorporates/raw/csv/` | 9 | Corporate registry records |
@@ -150,8 +154,12 @@ Multiple Banks / Institutions (upstream — this folder)
 | 1010 | Sunrise Wellness Pte Ltd | Corporate | SFG | SG | SG | 800 | — | Low Risk — Minor Geographic + Round Amount |
 | 1011 | Viktor Lazarev | Individual | CCB | RU | RU | 15,600 | Yes | Sanctions Evasion / Proliferation Financing / PEP |
 | 1012 | Golden Phoenix International Ltd | Corporate | PTB | MM | MY | 15,100 | — | Sanctions Evasion / Military-Linked Shell / TBML |
+| **1013** | **Chen Hao Yang** | **Individual** | **PTB** | **SG** | **SG** | **7,200** | **Yes** | **Cybercrime / Ransomware Proceeds** |
+| **1014** | **Margaret Tan Siew Bee** | **Individual** | **MCB** | **SG** | **SG** | **6,500** | **Yes** | **Tax Evasion / Offshore Trust** |
 
 > Account details (account numbers, holder names, branch, RM, risk ratings, AML flags) are in each STR's `tabII_accountInformation` — see [Account Data in STR Tab II](#account-data-in-str-tab-ii).
+>
+> **Bold rows** (1013, 1014) are from `MockTasksToLoad(Addition).json` — ingested via the Pulse-Sync scan button, not loaded on startup.
 
 ---
 
@@ -172,7 +180,8 @@ Multiple Banks / Institutions (upstream — this folder)
 | 1011 | Viktor Lazarev | CCB | 8 | 8,500,000 | USD | Sanctioned entity inflows → BVI/UAE/HK/CH outflows |
 | 1012 | Golden Phoenix International Ltd | PTB | 8 | 6,200,000 | USD | Myanmar sanctioned entity inflows → CN/TH/SG layering |
 
-**Grand Total: 102 transactions · ~SGD 53M equivalent across 5 banks**
+**Grand Total (base batch): 102 transactions · ~SGD 53M equivalent across 5 banks**
+**With addition tasks: 14 cases total · 14 STRs, 7 CMRs, 2 CTRs**
 
 ---
 
@@ -483,24 +492,72 @@ Score exceeds 150 due to duplicate hits from two sanctioned entities and subsidi
 
 ---
 
+### Case 13 — Chen Hao Yang (customer-1013)
+**Bank: Pacific Trade Bank (PTB) · Typology: Cybercrime / Ransomware Proceeds Laundering · Score: 72.0**
+
+Chen Hao Yang is a Singaporean IT consultant and freelance developer. He is linked to cryptocurrency wallets flagged by Chainalysis as associated with the **LockBit 4.0** ransomware affiliate programme. Within a 14-day period, SGD 1.2M in fiat conversions were processed through a local cryptocurrency exchange, followed by rapid disbursement to 8 unrelated personal accounts across different banks — all below reporting thresholds.
+
+ICA checkpoint CMR (CMR-2026-0113) documents USD 95,000 cash declared on arrival from Hong Kong with "personal investment" as the stated purpose and no supporting documentation.
+
+**Key indicators:**
+- Wallet cluster flagged by Chainalysis as LockBit 4.0 affiliate (matchConfidence 94%)
+- SGD 1.2M crypto-to-fiat conversion within 14 days
+- Disbursement to 8 unrelated accounts within 72 hours of conversion (below-threshold structuring)
+- Declared annual income SGD 72,000 vs. SGD 1.2M inflow — inconsistent profile
+- Exchange account opened 3 weeks before first large deposit — new account activity
+
+**Key evidence:**
+- **STR-2026-PTB-1013** (filed by PTB) + **CMR-2026-0113** (filed at ICA Changi)
+- Filed under CDSA s.39 + Computer Misuse Act
+
+> **Ingestion:** This task is not loaded on startup. It is ingested via the Pulse-Sync scan from `NewTasksToIngest.json`.
+
+---
+
+### Case 14 — Margaret Tan Siew Bee (customer-1014)
+**Bank: Meridian Capital Bank (MCB) · Typology: Tax Evasion / Offshore Trust Structures · Score: 65.0**
+
+Margaret Tan Siew Bee is a Singaporean former banker turned property investor. She maintains undeclared offshore trust structures in **BVI** (3 trusts) and **Labuan** (2 holding companies) with nominee directors, totalling estimated assets of SGD 8.5M. IRAS issued a formal referral flagging unreported foreign-sourced income exceeding SGD 2M annually for FY2023–2025.
+
+Trust distributions are routed through nominee accounts in Singapore before conversion to **physical gold** stored in safe deposit boxes at 2 institutions (3 boxes total). Her declared rental income is SGD 180,000/year — inconsistent with SGD 8.5M in offshore assets.
+
+**Key indicators:**
+- 3 BVI trusts + 2 Labuan holding companies with nominee directors — complex ownership
+- IRAS regulatory referral for unreported foreign income FY2023–2025
+- Trust → nominee accounts → physical gold conversion chain
+- 3 safe deposit boxes at 2 institutions; gold bars stored
+- Former banking professional — knowledge of AML controls and structuring avoidance
+
+**Key evidence:**
+- **STR-2026-MCB-1014** (filed by MCB) — SGD 8.5M estimated assets
+- Filed under Income Tax Act s.96 + CDSA s.39
+- No CMR/CTR — pure offshore/institutional case
+
+> **Ingestion:** This task is not loaded on startup. It is ingested via the Pulse-Sync scan from `NewTasksToIngest.json`.
+
+---
+
 ## Cross-Case Patterns
 
 | Pattern | Cases | Evidence |
 |---------|-------|---------|
-| CMR + STR (physical cash + electronic wires) | 1001, 1002, 1003, 1007, 1011, 1012 | CMR declarations at ICA corroborate SWIFT flows filed by banks |
+| CMR + STR (physical cash + electronic wires) | 1001, 1002, 1003, 1007, 1011, 1012, **1013** | CMR declarations at ICA corroborate SWIFT flows filed by banks |
 | CTR + STR (PSMD/pawnbroker + bank) | 1005, 1008 | CTR from non-bank institution links to bank-filed STR |
-| STR only (pure electronic) | 1004, 1006, 1009, 1010 | No physical cash component |
-| Multi-institution intelligence | 1005, 1008, 1011, 1012 | FIU cross-references reports from different institution types |
+| STR only (pure electronic) | 1004, 1006, 1009, 1010, **1014** | No physical cash component |
+| Multi-institution intelligence | 1005, 1008, 1011, 1012, **1013** | FIU cross-references reports from different institution types |
 | FATF high-risk jurisdiction | 1002, 1007, 1011, 1012 | Customer residence (IR, KP, RU, MM) or registration |
 | UNSC/OFAC sanctions nexus | 1002, 1004, 1007, 1011, 1012 | Hotlist entries #33–41 |
 | Corporate shell / front entity | 1003, 1005, 1007, 1011, 1012 | Companies with shell indicators across multiple banks |
 | Circular flow / round-trip | 1004, 1005 | Same counterparties appear on both sides |
-| Trust / offshore layering | 1003, 1006, 1011 | Mauritius trust, BVI/KY nominees, Swiss family trust |
+| Trust / offshore layering | 1003, 1006, 1011, **1014** | Mauritius trust, BVI/KY nominees, Swiss family trust, BVI/Labuan trusts |
 | Trade-based money laundering | 1003, 1005, 1007, 1011, 1012 | Invoice discrepancies, over-invoicing, commodity-based ML |
 | PEP exposure | 1002, 1004, 1007, 1011, 1012 | Politically exposed persons across 5 cases |
 | Dormant account trigger | 1006 | 59 months inactivity → sudden high-value reactivation |
 | Money mule / scam proceeds | 1008 | Multiple unrelated senders → immediate cash-out |
-| Structuring below threshold | 1001 | 13 deposits, all < SGD 10,000 |
+| Structuring below threshold | 1001, **1013** | Sub-threshold deposits / disbursements to avoid detection |
+| Cryptocurrency / ransomware | **1013** | Crypto-to-fiat conversion linked to LockBit 4.0 |
+| Offshore tax evasion | **1014** | Undeclared BVI/Labuan trusts, IRAS regulatory referral |
+| Physical gold / safe deposit | **1014** | Trust distributions converted to gold bars in safe deposit boxes |
 | PRIORITY auto-route (score >150) | 1011, 1012 | Duplicate score hits from multiple data sources |
 | HIBERNATED auto-route (score <10) | 1009, 1010 | Minimal risk — geographic flags only |
 
@@ -560,7 +617,7 @@ The 7 individual customers (excluding 5 corporates) are also represented in `cus
 |-------|-------------|
 | `personId` | Customer ID (1001–1011) |
 | `individualName` | Full name as `Seq[String]` |
-| `parsedIndividualName` | Structured: `initials`, `forename`, `familyName`, `maidenName` |
+| `parsedIndividualName` | Structured: `initials`, `forename`, `familyName` |
 | `gender` | M / F |
 | `countryOfBirth` | ISO country code (added — not in original CSV) |
 | `nationality` | ISO country code |
@@ -573,6 +630,8 @@ The 7 individual customers (excluding 5 corporates) are also represented in `cus
 | `address` | `Seq[Address]` with parsed block, street, floor, unit, postal code |
 
 Corporates (1003, 1005, 1007, 1010, 1012) are not included — they require a separate Business case class model.
+
+Addition tasks (1013, 1014) have `subjectProfile` data in `MockTasksToLoad(Addition).json` with the same schema fields.
 
 ---
 
@@ -595,3 +654,37 @@ All CSV files follow the exact column schemas from `pe_data/` (the Quantexa plat
 > **Retired schemas:**
 > - `customer.csv` (21 columns from `pe_data/customer/raw/csv/customer.csv`) — replaced by `person.json` for individuals + `opencorporates/companies.csv` for corporates + STR Tab III for entity information.
 > - `account.csv` (18 columns from `pe_data/customer/raw/csv/account.csv`) — embedded in STR Tab II. See [Account Data in STR Tab II](#account-data-in-str-tab-ii).
+
+---
+
+## Additional Data Files
+
+| File | Path | Description |
+|------|------|-------------|
+| `MockTasksToLoad(New).json` | `samples/` | 12 base tasks in Quantexa 3-part schema (`_1` scorecard, `_2` alert+profile, `_3` graph) |
+| `MockTasksToLoad(Addition).json` | `samples/` | 2 scan-ingestible tasks (customer-1013 Cybercrime, customer-1014 Tax Evasion) in same schema |
+| `NewTasksToIngest.json` | `samples/` + `public/samples/` | App-ready slim format for the 2 addition tasks (consumed by Pulse-Sync scan fetch) |
+| `CaseDocumentExport.json` | `samples/` | Sample Kafka export back to Quantexa — 8 `CaseDocument` records covering Individual/Business subjects, multiple statuses, and findings |
+
+### CaseDocument Export Schema (Downstream → Quantexa)
+
+Completed cases can be exported back to the Quantexa FIU platform via Kafka. The `CaseDocument` Scala case class structure maps the FIU's enriched investigation data:
+
+```
+CaseDocument
+  ├── caseId, caseTitle, assignedAnalyst, status
+  ├── quantexaInvestigationId (assigned post-approval)
+  ├── relatedStrIds[], relatedCmrIds[], relatedCtrIds[]
+  ├── findings (unified operational narrative)
+  └── subjects: Seq[CaseSubject]
+        ├── subjectType (Individual | Business)
+        ├── roleInCase (Subject | Related Party)
+        ├── individual: Option[Individual]
+        │     ├── fullName, parsedIndividualNames[] (Lens format)
+        │     ├── countryOfOrigin, dateOfBirth, parsedDateOfBirth
+        │     └── identificationNumber, identificationCountryOfRegistration, identificationNumberType
+        └── business: Option[Business]
+              ├── legalName, parsedBusinessNames[]
+              ├── countryOfIncorporation, incorporationDate, parsedIncorporationDate
+              └── businessRegistrationNumber, countryOfRegistration
+```

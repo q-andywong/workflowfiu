@@ -21,13 +21,19 @@ The Manager view has been refactored into a high-level operational command cente
 - **Priority Bypasses**: Critical alerts (Risk > 150) that bypassed standard protocols.
 - **Hibernated Registry**: Oversight of entities moved to background monitoring.
 
-## 3. Operations & Ingestion Simulations [v3.0]
+## 3. Operations & Ingestion Simulations [v3.1]
 
-### Quantexa Pulse-Sync (Scan Simulation)
-Managers can proactively synchronize with the Quantexa Platform via the **"Scan for latest tasks"** trigger. This simulates a modern data ingestion pipeline:
+### Quantexa Pulse-Sync (Live Scan Ingestion)
+Managers can proactively synchronize with the Quantexa Platform via the **"Scan for latest tasks"** trigger. This performs a live fetch of upstream data:
 - **Phase 1: Connecting (1.5s)**: Establishing secure handshake with Quantexa microservices.
-- **Phase 2: Retrieving (1.0s)**: Pulling the latest graph-triangulated tasks.
-- **Phase 3: Automated Triaging (1.0s)**: Distributing tasks to analyst specialization buckets.
+- **Phase 2: Retrieving (1.0s)**: Fetching tasks from `/samples/NewTasksToIngest.json`. The scan computes new-only counts by pre-checking existing case IDs before calling `ingestCases()`.
+- **Phase 3: Automated Triaging (1.0s)**: Distributing tasks to analyst specialization buckets. `initializeCases()` auto-routes by score (< 10 → HIBERNATED, > 150 → PRIORITY).
+
+### Results Panel [v3.1]
+On completion, the scan displays a **"New Items Discovered"** panel showing counts of newly ingested items only:
+- New tasks, new STRs, new CMRs, new CTRs — each shown as a separate count
+- Re-scanning when tasks are already ingested shows **"No new tasks found"** (deduplication by case ID)
+- The 2 ingestible tasks cover Cybercrime (Chen Hao Yang, score 72) and Tax Evasion (Margaret Tan Siew Bee, score 65) typologies
 
 ### Consolidated Governance Sign-off
 Managers can now perform "Sign-off and Escalate" actions directly from the **Integrated Approvals** sub-view.

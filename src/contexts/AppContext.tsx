@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { IntelligenceCase, DashboardStats, PersonProfile, Attachment, CaseModificationRequest } from '../types';
 import { MOCK_CASES, MOCK_STRS, MOCK_ENTITIES } from '../constants';
+import { MOCK_CASES_HISTORICAL } from '../constants-historical';
 import { useAuth } from './AuthContext';
 import { storage } from '../lib/firebase';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
@@ -30,11 +31,14 @@ interface AppContextType {
   saveMitigation: (caseId: string, subjectId: string, factorId: string, category: string, notes: string) => void;
   saveFindings: (caseId: string, findings: string) => void;
   createCase: (subjects: PersonProfile[], description: string, title?: string, reportIds?: string[]) => IntelligenceCase;
+  ingestCases: (rawCases: any[]) => number;
   view: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY';
   previousView: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY';
   triageSubView: 'SUMMARY' | 'TRIAGE' | 'PRIORITY' | 'HIBERNATED' | 'APPROVALS';
   setView: (v: 'DASHBOARD' | 'TRIAGE' | 'HIBERNATED' | 'ANALYSIS' | 'DISSEMINATION' | 'APPROVALS' | 'DIRECTORY' | 'STR_DIRECTORY' | 'PRIORITY', subView?: 'SUMMARY' | 'TRIAGE' | 'PRIORITY' | 'HIBERNATED' | 'APPROVALS') => void;
   setTriageSubView: (v: 'SUMMARY' | 'TRIAGE' | 'PRIORITY' | 'HIBERNATED' | 'APPROVALS') => void;
+  reportTypeFilter: string | null;
+  setReportTypeFilter: (v: string | null) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -64,11 +68,15 @@ const initializeCases = (rawCases: any[]) => {
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
-  const [cases, setCases] = useState<IntelligenceCase[]>(() => initializeCases(MOCK_CASES));
+  const [cases, setCases] = useState<IntelligenceCase[]>(() => [
+    ...initializeCases(MOCK_CASES),
+    ...MOCK_CASES_HISTORICAL,
+  ]);
   const [selectedCase, setSelectedCase] = useState<IntelligenceCase | null>(null);
   const [view, _setView] = useState<AppContextType['view']>('DASHBOARD');
   const [previousView, setPreviousView] = useState<AppContextType['view']>('DASHBOARD');
   const [triageSubView, setTriageSubView] = useState<AppContextType['triageSubView']>('SUMMARY');
+  const [reportTypeFilter, setReportTypeFilter] = useState<string | null>(null);
 
   // Reset view to dashboard on login
   useEffect(() => {
@@ -433,9 +441,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return newCase;
   };
 
+  const ingestCases = (rawCases: any[]): number => {
+    const initialized = initializeCases(rawCases);
+    let added = 0;
+    setCases(prev => {
+      const existingIds = new Set(prev.map(c => c.id));
+      const newOnes = initialized.filter(c => !existingIds.has(c.id));
+      added = newOnes.length;
+      return [...newOnes, ...prev];
+    });
+    return added;
+  };
+
   return (
-    <AppContext.Provider value={{ 
-      cases: activeCases, allCases: cases, stats, selectedCase, setSelectedCase, updateCaseStatus, reassignCase, saveMitigation, saveFindings, addFeedback, assessEntity, approveCase, rejectCase, createCase, bulkUpdateCases, bulkLinkReports, linkEntitiesToCase, addManualEntity, uploadAttachment, removeAttachment, saveChart, removeChart, requestModification, processModification, view, previousView, setView, triageSubView, setTriageSubView
+    <AppContext.Provider value={{
+      cases: activeCases, allCases: cases, stats, selectedCase, setSelectedCase, updateCaseStatus, reassignCase, saveMitigation, saveFindings, addFeedback, assessEntity, approveCase, rejectCase, createCase, ingestCases, bulkUpdateCases, bulkLinkReports, linkEntitiesToCase, addManualEntity, uploadAttachment, removeAttachment, saveChart, removeChart, requestModification, processModification, view, previousView, setView, triageSubView, setTriageSubView, reportTypeFilter, setReportTypeFilter
     }}>
       {children}
     </AppContext.Provider>

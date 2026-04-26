@@ -12,6 +12,7 @@ The analysis workbench is integrated with a stateful navigation system that ensu
 ### 2. Multi-Entity Intelligence Hub
 The workbench is engineered for investigating complex networks within a single operational folder.
 - **Subject-Switcher Infrastructure**: A dedicated entity pivot navigation allows investigators to switch between different subjects (Individuals or Companies) in real-time. Each subject maintains its own risk profile, typologies, and companies-associated map.
+- **Vital Particulars**: The subject profile section displays key entity data (name, DOB, nationality, ID number, address) for INDIVIDUAL subjects, and company registration details with director tables for COMPANY subjects. Upstream `subjectProfile` data from `MockTasksToLoad(New).json` provides enriched fields (parsed names, tax residency, country of birth).
 - **Unified Operational Findings**: While mitigation notes are subject-specific, the final investigative conclusion is consolidated at the case level in the **Findings** narrative.
 
 ### 3. Cross-Entity Discovery Engine & Integration
@@ -24,6 +25,7 @@ The platform automatically scans the entire historical registry for connections 
 ### 4. Interactive Risk Mitigation & Exposure Governance
 A real-time evaluation framework for documenting mitigation factors against identified risk indicators.
 - **Expandable Risk Workbench**: Investigators can drill down into specific risk factors within an interactive scorecard.
+- **Human-Readable Risk Factor Labels**: The Risk Factor Description column displays the `scoreId` in human-readable form (e.g., "Customer Indirect Link To Hotlist Ranked" instead of raw camelCase identifiers). When a risk factor row is expanded, an entity-specific description sentence appears below the scoreId, providing contextual detail for the specific subject.
 - **Categorical Governance**: Offers formal drop-down selections (e.g., "RFI sent to bank") combined with a high-density narrative field for mitigation rationale.
 - **Visual Audit System**: Saves immediately collapse the active panel and grant an emerald "Mitigated" badge, establishing a clear visual progression state.
 
@@ -32,7 +34,29 @@ Integrates direct evidentiary asset management within the investigation flow.
 - **Capabilities**: Direct file upload, secure cloud URL mapping, and attachment removal.
 - **Evidence Association**: Every asset is stamped with the analytical context and Case ID.
 
-## 6. Industrialized Synchronization (Kafka Simulation) [v3.0]
+### 6. Dissemination & Agency Feedback Tracking
+Cases with dissemination records display a dedicated section below the Evidence Locker showing the complete history of intelligence sharing and law enforcement agency responses.
+
+**Section Components:**
+- **Dissemination History Cards**: Each dissemination record displays:
+  - Target agency with visual badge (CAD, MAS, AGC, CPIB, ICA, FOREIGN_FIU)
+  - Dissemination date
+  - Status badge (Pending Feedback in amber with pulse, or feedback outcome)
+  - Intelligence summary shared with the agency
+  - Agency response narrative (if feedback recorded)
+  - Official reference number (if provided)
+
+**Visibility Logic:**
+- Section appears for any case with `disseminations.length > 0`
+- Displays all historical dissemination records chronologically
+- Supports multiple disseminations to different agencies for the same case
+
+**Data Integration:**
+- Pulls from `case.disseminations[]` array (type `DisseminationRecord[]`)
+- Feedback outcomes: `CONVICTION`, `ASSET_SEIZURE`, `ONGOING`, `NO_OFFENCE_FOUND`, `DISMISSED`
+- Terminal outcomes enable case closure; `ONGOING` keeps case in `DISSEMINATED` status
+
+## 7. Industrialized Synchronization (Kafka Simulation) [v3.0]
 
 The platform now features a high-fidelity **Kafka Sync Simulation** layer that replaces generic confirmations with industry-standard "broadcasting" feedback loops. This builds user trust by visually demonstrating data propagation to the Quantexa Platform.
 
@@ -40,6 +64,17 @@ The platform now features a high-fidelity **Kafka Sync Simulation** layer that r
 - **Preservation of Findings**: Triggered when clicking "Save Changes" on the Operational Narrative. Simulates `update.event.narrative` broadcasting. Investigators remain in the workbench to continue their analysis.
 - **Sign-off and Escalate**: Triggered when an Analyst escalates a lead or a Manager approves a case. Simulates `decision.event.triage` broadcasting. Returns the user to the queue upon completion.
 - **Administrative Disposal**: Triggered during the "Confirm Finalization" handshake. Simulates `update.event.disposal` broadcasting. Marks the Case as archived and returns the user to the queue.
+
+### PRIORITY Case Finalization
+Cases in `PRIORITY` status now display the "Finalize Case" button alongside `ANALYSIS` status cases. Since priority bypass means auto-escalation to a formal case, PRIORITY cases follow the same finalization workflow as standard ANALYSIS cases — including outcome selection (Disseminate, Hibernate, Close), agency targeting, and rationale entry.
+
+### Dissemination Record Creation
+When finalizing a case with the `DISSEMINATE` outcome, the system now creates a proper `DisseminationRecord` containing the target `agency`, `date`, and `intelligenceSummary` (from the closure rationale). This record is appended to the case's `disseminations` array so the case correctly appears in the Dissemination tracker.
+
+### Agency Feedback Flow (DISSEMINATED Cases)
+Cases in `DISSEMINATED` status display two header action buttons:
+- **"Record Agency Feedback"**: Opens a feedback modal with 5 outcome options: `CONVICTION`, `ASSET_SEIZURE`, `ONGOING`, `NO_OFFENCE_FOUND`, `DISMISSED`. Includes optional reference number and notes fields. Uses the existing `addFeedback` function from AppContext.
+- **"Close Case"**: Appears only after terminal feedback has been recorded (i.e., any outcome other than `ONGOING`). Cases with `ONGOING` feedback remain in `DISSEMINATED` status until a terminal outcome is received.
 
 ### Broadcast UI Components:
 - **1s Synchronization Modal**: A premium backdrop-blurred overlay featuring an animated progress bar.

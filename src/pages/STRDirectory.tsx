@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { MOCK_STRS } from '../constants';
 import { FileText, Search, Filter, Download, ExternalLink, AlertCircle, PlusCircle, Link, Calendar, DollarSign, Settings2, Trash2, Check, ChevronDown, X as XIcon } from 'lucide-react';
@@ -15,16 +15,29 @@ interface QueryRule {
 }
 
 const STRDirectory: React.FC = () => {
-    const { allCases } = useApp();
+    const { allCases, reportTypeFilter, setReportTypeFilter } = useApp();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSTR, setSelectedSTR] = useState<string | null>(null);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [showCreateModal, setShowCreateModal] = useState(false);
-    
+
     // Query Builder State
     const [activeRules, setActiveRules] = useState<QueryRule[]>([]);
     const [isAddingRule, setIsAddingRule] = useState(false);
     const [newRule, setNewRule] = useState<Partial<QueryRule>>({ field: 'name', operator: 'contains' });
+
+    // Apply report type filter from dashboard card click
+    useEffect(() => {
+        if (reportTypeFilter) {
+            setActiveRules([{
+                id: `filter-${reportTypeFilter}`,
+                field: 'type',
+                operator: 'eq',
+                value: reportTypeFilter,
+            }]);
+            setReportTypeFilter(null);
+        }
+    }, [reportTypeFilter, setReportTypeFilter]);
 
     const getSubjectForSTR = React.useCallback((strId: string) => {
         const linkedCase = allCases.find(c => 
