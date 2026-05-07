@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { IntelligenceCase, Attachment, IntelligenceChart } from '../types';
-import { FileText, Check, Package, Eye, ChevronRight, Image as ImageIcon, BarChart3, Clock, User, ShieldCheck, Download, ExternalLink, Trash2, Target, Plus, X } from 'lucide-react';
+import { FileText, Check, Package, Eye, ChevronRight, Image as ImageIcon, BarChart3, Clock, User, ShieldCheck, Download, ExternalLink, Trash2, Target, Plus, X, Zap } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import ChartComposer from './ChartComposer';
 import { useApp as useAppContext } from '../contexts/AppContext';
@@ -24,6 +24,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ activeCase, onPackage, on
   const [isSyncingKafka, setIsSyncingKafka] = useState(false);
   const [kafkaSyncProgress, setKafkaSyncProgress] = useState(0);
   const [isSyncComplete, setIsSyncComplete] = useState(false);
+  const [showChartComposer, setShowChartComposer] = useState(false);
 
   const handleFinalizeAndDisseminate = () => {
     setIsSyncingKafka(true);
@@ -375,11 +376,11 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ activeCase, onPackage, on
                 </div>
 
                 <div className="relative z-10 text-center">
-                    <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-10 transition-all duration-500 ${isSyncComplete ? 'bg-red-50 scale-110' : 'bg-blue-50'}`}>
+                    <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-10 transition-all duration-500 ${isSyncComplete ? 'bg-green-50 scale-110' : 'bg-blue-50'}`}>
                         {!isSyncComplete ? (
                             <Zap className="w-12 h-12 text-blue-600 animate-pulse" />
                         ) : (
-                            <Check className="w-14 h-14 text-red-600" strokeWidth={4} />
+                            <Check className="w-14 h-14 text-green-600" strokeWidth={4} />
                         )}
                     </div>
 
@@ -387,18 +388,18 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ activeCase, onPackage, on
                         {!isSyncComplete ? 'Broadcasting Intelligence Package' : 'Package Synchronized Successfully'}
                     </h3>
                     <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-10">
-                        {!isSyncComplete ? 'Broadcasting: report.event.disseminate' : 'Ingestion status: COMPLETE (RED-TICK)'}
+                        {!isSyncComplete ? 'Broadcasting: report.event.disseminate' : 'Ingestion status: COMPLETE (GREEN-TICK)'}
                     </p>
 
                     <div className="space-y-4">
                         <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
                             <div 
-                                className={`h-full transition-all duration-75 ease-linear ${isSyncComplete ? 'bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.5)]' : 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)]'}`}
+                                className={`h-full transition-all duration-75 ease-linear ${isSyncComplete ? 'bg-green-600 shadow-[0_0_20px_rgba(22,163,74,0.5)]' : 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)]'}`}
                                 style={{ width: `${kafkaSyncProgress}%` }}
                             ></div>
                         </div>
                         <div className="flex justify-between items-center px-1">
-                            <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${isSyncComplete ? 'text-red-600' : 'text-blue-600'}`}>
+                            <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${isSyncComplete ? 'text-green-600' : 'text-blue-600'}`}>
                                 {isSyncComplete ? 'BROADCAST COMPLETE' : 'KAFKA TRANSMISSION'}
                             </span>
                             <span className="text-[9px] font-black text-gray-400">{Math.round(kafkaSyncProgress)}%</span>
@@ -408,7 +409,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ activeCase, onPackage, on
                     {isSyncComplete && (
                         <button 
                             onClick={handleCompleteDissemination}
-                            className="w-full mt-10 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-red-500/20 animate-in fade-in slide-in-from-bottom-2 duration-500"
+                            className="w-full mt-10 py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-green-500/20 animate-in fade-in slide-in-from-bottom-2 duration-500"
                         >
                             Complete Dissemination
                         </button>

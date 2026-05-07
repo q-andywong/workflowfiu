@@ -1026,15 +1026,15 @@ const TriageQueue: React.FC = () => {
                     <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 relative overflow-hidden border border-gray-100">
                         {/* Animated Mesh Gradient Background (Subtle) */}
                         <div className="absolute inset-0 opacity-[0.05] pointer-events-none">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-red-500 rounded-full blur-3xl -mr-32 -mt-32 animate-pulse"></div>
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-green-500 rounded-full blur-3xl -mr-32 -mt-32 animate-pulse"></div>
                         </div>
 
                         <div className="relative z-10 text-center">
-                            <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-10 transition-all duration-500 ${isSyncComplete ? 'bg-red-50 scale-110' : 'bg-blue-50'}`}>
+                            <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-10 transition-all duration-500 ${isSyncComplete ? 'bg-green-50 scale-110' : 'bg-blue-50'}`}>
                                 {!isSyncComplete ? (
                                     <Network className="w-12 h-12 text-blue-600 animate-pulse" />
                                 ) : (
-                                    <CheckCircle className="w-14 h-14 text-red-600" />
+                                    <CheckCircle className="w-14 h-14 text-green-600" />
                                 )}
                             </div>
 
@@ -1042,18 +1042,18 @@ const TriageQueue: React.FC = () => {
                                 {!isSyncComplete ? "Sending Kafka Topic to Quantexa Platform" : "Case Doc updated Successfully"}
                             </h3>
                             <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-10">
-                                {!isSyncComplete ? "Broadcasting Decision decision.event.triage" : "Ingestion status: COMPLETE (RED-TICK)"}
+                                {!isSyncComplete ? "Broadcasting Decision decision.event.triage" : "Ingestion status: COMPLETE (GREEN-TICK)"}
                             </p>
 
                             <div className="space-y-4">
                                 <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
                                     <div 
-                                        className={`h-full transition-all duration-75 ease-linear ${isSyncComplete ? 'bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.5)]' : 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)]'}`}
+                                        className={`h-full transition-all duration-75 ease-linear ${isSyncComplete ? 'bg-green-600 shadow-[0_0_20px_rgba(22,163,74,0.5)]' : 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)]'}`}
                                         style={{ width: `${kafkaSyncProgress}%` }}
                                     ></div>
                                 </div>
                                 <div className="flex justify-between items-center px-1">
-                                    <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${isSyncComplete ? 'text-red-600' : 'text-blue-600'}`}>
+                                    <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${isSyncComplete ? 'text-green-600' : 'text-blue-600'}`}>
                                         {isSyncComplete ? 'BROADCAST COMPLETE' : 'KAFKA TRANSMISSION'}
                                     </span>
                                     <span className="text-[9px] font-black text-gray-400">{Math.round(kafkaSyncProgress)}%</span>
@@ -1063,7 +1063,7 @@ const TriageQueue: React.FC = () => {
                             {isSyncComplete && (
                                 <button 
                                     onClick={handleCloseSyncModal}
-                                    className="w-full mt-10 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-red-500/20 animate-in fade-in slide-in-from-bottom-2 duration-500"
+                                    className="w-full mt-10 py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-green-500/20 animate-in fade-in slide-in-from-bottom-2 duration-500"
                                 >
                                     Return to Queue
                                 </button>
